@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso CDV Ajalvir</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="login-body">
+
+  <main class="login-card">
+    <h1>Acceso privado</h1>
+    <p>CDV Ajalvir</p>
+
+    <form id="loginForm">
+      <label>DNI</label>
+      <input type="text" id="dni" required placeholder="12345678A">
+
+      <label>Contraseña</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    <p id="loginError" class="error"></p>
+  </main>
+
+  <script type="module">
+    import { loginConDni } from "./assets/js/auth.js";
+
+    const form = document.getElementById("loginForm");
+    const error = document.getElementById("loginError");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      try {
+        const usuario = await loginConDni(
+          document.getElementById("dni").value,
+          document.getElementById("password").value
+        );
+
+        if (usuario.rol === "directiva") {
+          window.location.href = "directiva/index.html";
+        } else {
+          window.location.href = "socios/index.html";
+        }
+
+      } catch (err) {
+        error.textContent = "DNI o contraseña incorrectos.";
+      }
+    });
+  </script>
+
+</body>
+</html>
