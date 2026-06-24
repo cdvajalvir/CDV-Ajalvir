@@ -9,13 +9,18 @@ import {
     getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-function dniToEmail(dni) {
-    return dni.trim().toUpperCase() + "@cdv-ajalvir.local";
+function idSocioToEmail(idSocio) {
+    return String(idSocio || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, "") + "@cdv-ajalvir.local";
 }
 
-export async function loginConDni(dni, password) {
-    const email = dniToEmail(dni);
+export async function loginConIdSocio(idSocio, password) {
+    const email = idSocioToEmail(idSocio);
+
     const cred = await signInWithEmailAndPassword(auth, email, password);
+
     const ref = doc(db, "usuarios", cred.user.uid);
     const snap = await getDoc(ref);
 
@@ -33,7 +38,6 @@ export async function loginConDni(dni, password) {
 
     return usuario;
 }
-
 export async function cerrarSesion() {
     await signOut(auth);
     window.location.href = getLoginUrl();
