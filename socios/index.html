@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Socios · CD Veteranos Ajalvir</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-mark">CDV</span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+
+            <div class="nav-links" data-nav-links>
+                <a href="../index.html">Inicio</a>
+                <a href="../general/equipos.html">Equipos</a>
+                <a href="../general/calendario.html">Calendario</a>
+                <a href="../general/noticias.html">Noticias</a>
+                <a class="active" href="index.html">Socios</a>
+                <a href="../directiva/index.html">Directiva</a>
+                <button type="button" class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-hero">
+            <p class="eyebrow">Área privada</p>
+            <h1>Portal de socios</h1>
+            <p class="lead">Información privada para socios activos del CD Veteranos Ajalvir.</p>
+        </section>
+
+        <section class="dashboard">
+            <aside class="side-panel">
+                <a href="#comunicados">Comunicados</a>
+                <a href="#cuotas">Cuotas</a>
+                <a href="#documentos">Documentos</a>
+                <a href="#ventajas">Ventajas</a>
+            </aside>
+
+            <div class="content-grid">
+                <article class="card wide" id="comunicados">
+                    <h3>Comunicados recientes</h3>
+                    <p class="notice">
+                        Reunión informativa de inicio de temporada:
+                        jueves 2 de julio a las 19:30 en la sede del club.
+                    </p>
+                </article>
+
+                <article class="card" id="cuotas">
+                    <h3>Estado de cuotas</h3>
+                    <p class="metric">92%</p>
+                    <p>Cuotas ordinarias actualizadas.</p>
+                    <span class="status warn">8% pendiente</span>
+                </article>
+
+                <article class="card">
+                    <h3>Próximas convocatorias</h3>
+                    <p>Asamblea ordinaria · 10/07/2026 · 20:00</p>
+                    <p>Entrega de equipaciones · 15/07/2026 · 18:30</p>
+                </article>
+
+                <article class="card wide" id="documentos">
+                    <h3>Documentación</h3>
+                    <table class="table">
+                        <tr>
+                            <th>Documento</th>
+                            <th>Estado</th>
+                        </tr>
+                        <tr>
+                            <td>Normativa interna</td>
+                            <td><span class="status">Disponible</span></td>
+                        </tr>
+                        <tr>
+                            <td>Autorización menores</td>
+                            <td><span class="status">Disponible</span></td>
+                        </tr>
+                        <tr>
+                            <td>Calendario de pagos</td>
+                            <td><span class="status warn">Pendiente actualización</span></td>
+                        </tr>
+                    </table>
+                </article>
+
+                <article class="card wide" id="ventajas">
+                    <h3>Ventajas del socio</h3>
+                    <p>
+                        Descuentos en campus, prioridad en eventos, comunicación interna y acceso
+                        a documentación del club.
+                    </p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="../assets/js/app.js"></script>
+    <script type="module">
+        import { protegerPagina, cerrarSesion } from "../assets/js/auth.js";
+
+        protegerPagina("socio");
+        window.cerrarSesion = cerrarSesion;
+    </script>
+</body>
+
+</html>
