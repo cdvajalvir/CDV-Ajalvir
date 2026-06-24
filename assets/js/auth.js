@@ -42,7 +42,7 @@ export async function cerrarSesion() {
 export function protegerPagina(rolNecesario) {
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
-            window.location.href = getLoginUrl();
+            window.location.href = "../login.html";
             return;
         }
 
@@ -51,25 +51,43 @@ export function protegerPagina(rolNecesario) {
 
         if (!snap.exists()) {
             await signOut(auth);
-            window.location.href = getLoginUrl();
+            window.location.href = "../login.html";
             return;
         }
 
-        const usuario = snap.data();
+        const data = snap.data();
 
-        if (!usuario.activo) {
+        if (!data.activo) {
             await signOut(auth);
-            window.location.href = getLoginUrl();
+            window.location.href = "../login.html";
             return;
         }
 
-        if (rolNecesario === "socio" && usuario.rol !== "socio" && usuario.rol !== "directiva") {
-            window.location.href = getLoginUrl();
-            return;
+        const rol = data.rol;
+
+        if (rolNecesario === "socio") {
+            if (
+                rol !== "socio" &&
+                rol !== "directiva" &&
+                rol !== "administrador"
+            ) {
+                window.location.href = "../login.html";
+            }
         }
 
-        if (rolNecesario === "directiva" && usuario.rol !== "directiva") {
-            window.location.href = getLoginUrl();
+        if (rolNecesario === "directiva") {
+            if (
+                rol !== "directiva" &&
+                rol !== "administrador"
+            ) {
+                window.location.href = "../login.html";
+            }
+        }
+
+        if (rolNecesario === "administrador") {
+            if (rol !== "administrador") {
+                window.location.href = "../login.html";
+            }
         }
     });
 }
