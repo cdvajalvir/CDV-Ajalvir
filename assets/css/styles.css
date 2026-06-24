@@ -716,4 +716,21 @@ textarea {
         border: 3px solid #feda0a;
         box-shadow: 0 12px 32px rgba(0, 0, 0, .28);
     }
+
+    .login-card {
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-card::before {
+        pointer-events: none;
+    }
+
+    .login-card form,
+    .login-card input,
+    .login-card button,
+    .login-card label {
+        position: relative;
+        z-index: 2;
+    }
 }
