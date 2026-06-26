@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestión de socios · CD Veteranos Ajalvir</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+
+            <div class="nav-links" data-nav-links>
+                <a href="../index.html">Inicio</a>
+                <a href="index.html">Panel directiva</a>
+                <a href="socios.html" class="active">Socios</a>
+                <button type="button" class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="page-hero">
+            <p class="eyebrow">Administración</p>
+            <h1>Gestión de socios</h1>
+            <p class="lead">
+                Alta, edición y control de fichas de socios del CD Veteranos Ajalvir.
+            </p>
+        </section>
+
+        <section class="dashboard">
+
+            <aside class="side-panel">
+                <a href="#nuevo">Nuevo socio</a>
+                <a href="#listado">Listado</a>
+                <a href="#ayuda">Ayuda</a>
+            </aside>
+
+            <div class="content-grid">
+
+                <article class="card wide" id="nuevo">
+                    <h3>Nueva ficha de socio</h3>
+
+                    <p class="notice">
+                        Antes de crear la ficha, crea el usuario en Firebase Authentication con el email interno:
+                        <strong>CDV0001@cdv-ajalvir.local</strong>. Después copia aquí su UID.
+                    </p>
+
+                    <form class="form" id="formSocio">
+                        <input type="hidden" id="modoEdicion" value="nuevo">
+
+                        <label for="idSocio">ID de socio</label>
+                        <input class="input" type="text" id="idSocio" required placeholder="CDV0001">
+
+                        <label for="uidAuth">UID de Firebase Authentication</label>
+                        <input class="input" type="text" id="uidAuth" required placeholder="UID del usuario creado en Authentication">
+
+                        <label for="nombre">Nombre</label>
+                        <input class="input" type="text" id="nombre" required placeholder="Nombre">
+
+                        <label for="apellidos">Apellidos</label>
+                        <input class="input" type="text" id="apellidos" placeholder="Apellidos">
+
+                        <label for="dni">DNI / NIE</label>
+                        <input class="input" type="text" id="dni" placeholder="12345678A">
+
+                        <label for="email">Email de contacto</label>
+                        <input class="input" type="email" id="email" placeholder="correo@ejemplo.com">
+
+                        <label for="telefono">Teléfono</label>
+                        <input class="input" type="tel" id="telefono" placeholder="600000000">
+
+                        <label for="equipo">Equipo / grupo</label>
+                        <input class="input" type="text" id="equipo" placeholder="Veteranos">
+
+                        <label for="rol">Rol</label>
+                        <select class="input" id="rol">
+                            <option value="socio">Socio</option>
+                            <option value="directiva">Directiva</option>
+                            <option value="administrador">Administrador</option>
+                        </select>
+
+                        <label>
+                            <input type="checkbox" id="activo" checked>
+                            Socio activo
+                        </label>
+
+                        <label>
+                            <input type="checkbox" id="cuotaPagada">
+                            Cuota pagada
+                        </label>
+
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" placeholder="Notas internas"></textarea>
+
+                        <button type="submit" class="btn btn-primary">
+                            Guardar ficha
+                        </button>
+
+                        <button type="button" class="btn btn-secondary" id="btnLimpiar">
+                            Limpiar formulario
+                        </button>
+
+                        <p id="mensajeSocio"></p>
+                    </form>
+                </article>
+
+                <article class="card wide" id="listado">
+                    <h3>Listado de socios</h3>
+
+                    <input class="input" type="search" id="buscadorSocios" placeholder="Buscar por ID, nombre, DNI o equipo">
+
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>DNI</th>
+                                    <th>Equipo</th>
+                                    <th>Rol</th>
+                                    <th>Cuota</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaSocios">
+                                <tr>
+                                    <td colspan="8">Cargando socios...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="card wide" id="ayuda">
+                    <h3>Procedimiento de alta</h3>
+
+                    <p>
+                        1. Crear usuario en Firebase Authentication.
+                    </p>
+
+                    <p>
+                        Email interno:
+                        <strong>CDV0001@cdv-ajalvir.local</strong>
+                    </p>
+
+                    <p>
+                        2. Copiar el UID generado.
+                    </p>
+
+                    <p>
+                        3. Crear la ficha del socio desde esta pantalla.
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../assets/js/app.js"></script>
+
+    <script type="module">
+        import { protegerPagina, cerrarSesion } from "../assets/js/auth.js";
+        import { db } from "../assets/js/firebase-config.js";
+
+        import {
+            collection,
+            doc,
+            setDoc,
+            getDocs,
+            getDoc,
+            deleteDoc,
+            orderBy,
+            query
+        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+        protegerPagina("administrador");
+        window.cerrarSesion = cerrarSesion;
+
+        const form = document.getElementById("formSocio");
+        const tabla = document.getElementById("tablaSocios");
+        const mensaje = document.getElementById("mensajeSocio");
+        const buscador = document.getElementById("buscadorSocios");
+        const btnLimpiar = document.getElementById("btnLimpiar");
+
+        let sociosCache = [];
+
+        function normalizarTexto(valor) {
+            return String(valor || "")
+                .trim()
+                .toUpperCase();
+        }
+
+        function normalizarIdSocio(valor) {
+            return normalizarTexto(valor).replace(/\s+/g, "");
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            mensaje.textContent = texto;
+            mensaje.className = tipo || "";
+        }
+
+        function limpiarFormulario() {
+            form.reset();
+            document.getElementById("modoEdicion").value = "nuevo";
+            document.getElementById("idSocio").disabled = false;
+            mostrarMensaje("", "");
+        }
+
+        function datosFormulario() {
+            const idSocio = normalizarIdSocio(document.getElementById("idSocio").value);
+
+            return {
+                idSocio: idSocio,
+                uidAuth: document.getElementById("uidAuth").value.trim(),
+                nombre: document.getElementById("nombre").value.trim(),
+                apellidos: document.getElementById("apellidos").value.trim(),
+                dni: normalizarTexto(document.getElementById("dni").value),
+                email: document.getElementById("email").value.trim(),
+                telefono: document.getElementById("telefono").value.trim(),
+                equipo: document.getElementById("equipo").value.trim(),
+                rol: document.getElementById("rol").value,
+                activo: document.getElementById("activo").checked,
+                cuotaPagada: document.getElementById("cuotaPagada").checked,
+                observaciones: document.getElementById("observaciones").value.trim(),
+                actualizadoEn: new Date().toISOString()
+            };
+        }
+
+        function pintarTabla(lista) {
+            if (!lista.length) {
+                tabla.innerHTML = `
+                    <tr>
+                        <td colspan="8">No hay socios registrados.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tabla.innerHTML = "";
+
+            lista.forEach((socio) => {
+                const tr = document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${socio.idSocio || ""}</td>
+                    <td>${socio.nombre || ""} ${socio.apellidos || ""}</td>
+                    <td>${socio.dni || ""}</td>
+                    <td>${socio.equipo || ""}</td>
+                    <td>
+                        <span class="status">
+                            ${socio.rol || "socio"}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status ${socio.cuotaPagada ? "" : "warn"}">
+                            ${socio.cuotaPagada ? "Pagada" : "Pendiente"}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status ${socio.activo ? "" : "danger"}">
+                            ${socio.activo ? "Activo" : "Baja"}
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-secondary btn-small" data-editar="${socio.idSocio}">
+                            Editar
+                        </button>
+                    </td>
+                `;
+
+                tabla.appendChild(tr);
+            });
+
+            document.querySelectorAll("[data-editar]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    cargarSocioEnFormulario(btn.dataset.editar);
+                });
+            });
+        }
+
+        async function cargarSocios() {
+            tabla.innerHTML = `
+                <tr>
+                    <td colspan="8">Cargando socios...</td>
+                </tr>
+            `;
+
+            try {
+                const q = query(
+                    collection(db, "socios"),
+                    orderBy("idSocio")
+                );
+
+                const snap = await getDocs(q);
+
+                sociosCache = [];
+
+                snap.forEach((docSnap) => {
+                    sociosCache.push(docSnap.data());
+                });
+
+                pintarTabla(sociosCache);
+
+            } catch (error) {
+                tabla.innerHTML = `
+                    <tr>
+                        <td colspan="8">Error al cargar socios.</td>
+                    </tr>
+                `;
+            }
+        }
+
+        async function cargarSocioEnFormulario(idSocio) {
+            const ref = doc(db, "socios", idSocio);
+            const snap = await getDoc(ref);
+
+            if (!snap.exists()) {
+                mostrarMensaje("No se ha encontrado el socio.", "error");
+                return;
+            }
+
+            const s = snap.data();
+
+            document.getElementById("modoEdicion").value = "editar";
+            document.getElementById("idSocio").value = s.idSocio || "";
+            document.getElementById("idSocio").disabled = true;
+            document.getElementById("uidAuth").value = s.uidAuth || "";
+            document.getElementById("nombre").value = s.nombre || "";
+            document.getElementById("apellidos").value = s.apellidos || "";
+            document.getElementById("dni").value = s.dni || "";
+            document.getElementById("email").value = s.email || "";
+            document.getElementById("telefono").value = s.telefono || "";
+            document.getElementById("equipo").value = s.equipo || "";
+            document.getElementById("rol").value = s.rol || "socio";
+            document.getElementById("activo").checked = Boolean(s.activo);
+            document.getElementById("cuotaPagada").checked = Boolean(s.cuotaPagada);
+            document.getElementById("observaciones").value = s.observaciones || "";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+            mostrarMensaje("Editando socio " + idSocio, "success");
+        }
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const datos = datosFormulario();
+
+            if (!datos.idSocio) {
+                mostrarMensaje("El ID de socio es obligatorio.", "error");
+                return;
+            }
+
+            if (!datos.uidAuth) {
+                mostrarMensaje("El UID de Firebase Authentication es obligatorio.", "error");
+                return;
+            }
+
+            if (!datos.nombre) {
+                mostrarMensaje("El nombre es obligatorio.", "error");
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "socios", datos.idSocio), datos, {
+                    merge: true
+                });
+
+                await setDoc(doc(db, "usuarios", datos.uidAuth), {
+                    idSocio: datos.idSocio,
+                    nombre: datos.nombre + " " + datos.apellidos,
+                    dni: datos.dni,
+                    rol: datos.rol,
+                    activo: datos.activo
+                }, {
+                    merge: true
+                });
+
+                mostrarMensaje("Ficha guardada correctamente.", "success");
+
+                limpiarFormulario();
+                await cargarSocios();
+
+            } catch (error) {
+                mostrarMensaje("No se pudo guardar la ficha.", "error");
+            }
+        });
+
+        buscador.addEventListener("input", () => {
+            const texto = normalizarTexto(buscador.value);
+
+            const filtrados = sociosCache.filter((socio) => {
+                const combinado = normalizarTexto(`
+                    ${socio.idSocio}
+                    ${socio.nombre}
+                    ${socio.apellidos}
+                    ${socio.dni}
+                    ${socio.equipo}
+                    ${socio.rol}
+                `);
+
+                return combinado.includes(texto);
+            });
+
+            pintarTabla(filtrados);
+        });
+
+        btnLimpiar.addEventListener("click", limpiarFormulario);
+
+        cargarSocios();
+    </script>
+
+</body>
+
+</html>
