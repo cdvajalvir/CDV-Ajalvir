@@ -1,2 +1,155 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mi perfil · CD Veteranos Ajalvir</title><link rel="stylesheet" href="../assets/css/styles.css"></head><body><header class="site-header"><nav class="navbar container"><a class="brand" href="../index.html"><span class="brand-logo"><img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo"></span><span>CD Veteranos Ajalvir</span></a><button class="nav-toggle" data-nav-toggle>☰</button><div class="nav-links" data-nav-links><a href="index.html">Socios</a><a class="active" href="perfil.html">Mi perfil</a><button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button></div></nav></header><main class="container"><section class="page-hero"><p class="eyebrow">Área privada</p><h1>Mi perfil</h1><p class="lead">Datos registrados en la ficha del club.</p></section><section class="card wide"><div class="profile-grid" id="perfilGrid"></div></section></main><script src="../assets/js/app.js"></script><script type="module">import { protegerPagina, cerrarSesion } from "../assets/js/auth.js"; window.cerrarSesion = cerrarSesion; const campos = [["ID socio","idSocio"],["Nombre","nombre"],["Alias","alias"],["DNI","dni"],["Teléfono","telefono"],["Email","email"],["Fecha nacimiento","fecNacimiento"],["Dorsal","dorsal"],["Rol","rol"],["Cuota","cuota"],["Observaciones","observaciones"]]; protegerPagina("socio", (u) => { const grid = document.getElementById("perfilGrid"); grid.innerHTML = campos.map(([label, key]) => `<div class="profile-item"><span>${label}</span><strong>${u[key] ?? "-"}</strong></div>`).join(""); });</script></body></html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Mi perfil · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+
+            <a class="brand" href="../index.html">
+
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
+                        alt="Escudo CD Veteranos Ajalvir">
+                </span>
+
+                <span>CD Veteranos Ajalvir</span>
+
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>
+                ☰
+            </button>
+
+            <div class="nav-links" data-nav-links>
+
+                <a href="index.html">
+                    Socios
+                </a>
+
+                <a class="active" href="perfil.html">
+                    Mi perfil
+                </a>
+
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Mi perfil
+            </h1>
+
+            <p class="lead">
+                Datos registrados en la ficha del club.
+            </p>
+
+        </section>
+
+        <!-- Datos del socio -->
+
+        <section class="card wide">
+
+            <div class="profile-grid" id="perfilGrid">
+                <!-- Se rellena automáticamente -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="../assets/js/app.js"></script>
+
+    <script type="module">
+
+        import {
+            protegerPagina,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+        window.cerrarSesion = cerrarSesion;
+
+        /* ------------------------------------------------------
+         * Campos del perfil
+         * ---------------------------------------------------- */
+
+        const campos = [
+
+            ["ID socio", "idSocio"],
+            ["Nombre", "nombre"],
+            ["Alias", "alias"],
+            ["DNI", "dni"],
+            ["Teléfono", "telefono"],
+            ["Email", "email"],
+            ["Fecha nacimiento", "fecNacimiento"],
+            ["Dorsal", "dorsal"],
+            ["Rol", "rol"],
+            ["Cuota", "cuota"],
+            ["Observaciones", "observaciones"]
+
+        ];
+
+        /* ------------------------------------------------------
+         * Cargar perfil
+         * ---------------------------------------------------- */
+
+        protegerPagina("socio", (usuario) => {
+
+            const grid = document.getElementById("perfilGrid");
+
+            grid.innerHTML = campos.map(([titulo, campo]) => `
+
+                <div class="profile-item">
+
+                    <span>${titulo}</span>
+
+                    <strong>${usuario[campo] ?? "-"}</strong>
+
+                </div>
+
+            `).join("");
+
+        });
+
+    </script>
+
+</body>
+
+</html>
