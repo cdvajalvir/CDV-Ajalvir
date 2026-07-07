@@ -1,8 +1,292 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Panel directiva · CD Veteranos Ajalvir</title><link rel="stylesheet" href="../assets/css/styles.css"></head>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Panel directiva · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
 <body>
-<header class="site-header"><nav class="navbar container"><a class="brand" href="../index.html"><span class="brand-logo"><img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo"></span><span>CD Veteranos Ajalvir</span></a><button class="nav-toggle" data-nav-toggle>☰</button><div class="nav-links" data-nav-links><a href="../index.html">Inicio</a><a class="active" href="index.html">Directiva</a><a href="socios.html">Socios</a><button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button></div></nav></header>
-<main class="container"><section class="page-hero"><p class="eyebrow">Área privada</p><h1>Panel de directiva</h1><p class="lead">Panel de trabajo para gestión interna del club.</p></section><section class="app-layout"><aside class="app-sidebar"><div class="app-sidebar-title"><span class="brand-mark">CDV</span> Menú</div><nav class="app-menu"><a class="active" href="index.html">Resumen</a><a href="socios.html">Socios</a><a href="equipos.html">Equipos</a><a href="cuotas.html">Cuotas</a><a href="noticias.html">Noticias</a><a href="documentos.html">Documentos</a></nav></aside><div class="app-main"><div class="content-grid"><article class="card"><h3>Socios activos</h3><p class="metric" id="sociosActivos">-</p></article><article class="card"><h3>Directiva</h3><p class="metric" id="totalDirectiva">-</p></article><article class="card"><h3>Administradores</h3><p class="metric" id="totalAdmin">-</p></article><article class="card"><h3>Cuotas con importe</h3><p class="metric" id="totalCuotas">-</p></article><article class="card wide"><h3>Acceso a gestión</h3><p>La gestión de fichas se hace desde <a href="socios.html">Gestión de socios</a>. Solo los administradores pueden guardar cambios.</p></article></div></div></section></main>
-<script src="../assets/js/app.js"></script><script type="module">import { protegerPagina, cerrarSesion } from "../assets/js/auth.js"; import { db } from "../assets/js/firebase-config.js"; import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js"; window.cerrarSesion = cerrarSesion; protegerPagina("directiva", async () => { const snap = await getDocs(collection(db,"usuarios")); let activos=0, directiva=0, admin=0, cuotas=0; snap.forEach(d=>{ const u=d.data(); if(u.activo) activos++; if(u.rol === "directiva") directiva++; if(u.rol === "administrador") admin++; if(Number(u.cuota || 0) > 0) cuotas++; }); document.getElementById("sociosActivos").textContent=activos; document.getElementById("totalDirectiva").textContent=directiva; document.getElementById("totalAdmin").textContent=admin; document.getElementById("totalCuotas").textContent=cuotas; });</script>
-</body></html>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+
+            <a class="brand" href="../index.html">
+
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
+                        alt="Escudo CD Veteranos Ajalvir">
+                </span>
+
+                <span>CD Veteranos Ajalvir</span>
+
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>
+                ☰
+            </button>
+
+            <div class="nav-links" data-nav-links>
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a class="active" href="index.html">
+                    Directiva
+                </a>
+
+                <a href="socios.html">
+                    Socios
+                </a>
+
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Panel de directiva
+            </h1>
+
+            <p class="lead">
+                Panel de trabajo para la gestión interna del club.
+            </p>
+
+        </section>
+
+        <!-- Aplicación -->
+
+        <section class="app-layout">
+
+            <!-- Menú lateral -->
+
+            <aside class="app-sidebar">
+
+                <div class="app-sidebar-title">
+
+                    <span class="brand-mark">
+                        CDV
+                    </span>
+
+                    <span>
+                        Menú
+                    </span>
+
+                </div>
+
+                <nav class="app-menu">
+
+                    <a class="active" href="index.html">
+                        Resumen
+                    </a>
+
+                    <a href="socios.html">
+                        Socios
+                    </a>
+
+                    <a href="equipos.html">
+                        Equipos
+                    </a>
+
+                    <a href="cuotas.html">
+                        Cuotas
+                    </a>
+
+                    <a href="noticias.html">
+                        Noticias
+                    </a>
+
+                    <a href="documentos.html">
+                        Documentos
+                    </a>
+
+                </nav>
+
+            </aside>
+
+            <!-- Panel principal -->
+
+            <div class="app-main">
+
+                <div class="content-grid">
+
+                    <article class="card">
+
+                        <h3>
+                            Socios activos
+                        </h3>
+
+                        <p class="metric" id="sociosActivos">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Directiva
+                        </h3>
+
+                        <p class="metric" id="totalDirectiva">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Administradores
+                        </h3>
+
+                        <p class="metric" id="totalAdmin">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Cuotas con importe
+                        </h3>
+
+                        <p class="metric" id="totalCuotas">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card wide">
+
+                        <h3>
+                            Acceso a gestión
+                        </h3>
+
+                        <p>
+                            La gestión de fichas se realiza desde
+                            <a href="socios.html">
+                                Gestión de socios
+                            </a>.
+
+                            Solo los administradores pueden guardar
+                            modificaciones.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="../assets/js/app.js"></script>
+
+    <script type="module">
+
+        /* ======================================================
+         * IMPORTACIONES
+         * ==================================================== */
+
+        import {
+            protegerPagina,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+        import {
+            db
+        } from "../assets/js/firebase-config.js";
+
+        import {
+            collection,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+        /* ======================================================
+         * INICIALIZACIÓN
+         * ==================================================== */
+
+        window.cerrarSesion = cerrarSesion;
+
+        protegerPagina("directiva", async () => {
+
+            const snap = await getDocs(
+                collection(db, "usuarios")
+            );
+
+            let activos = 0;
+            let directiva = 0;
+            let administradores = 0;
+            let cuotas = 0;
+
+            snap.forEach((doc) => {
+
+                const usuario = doc.data();
+
+                if (usuario.activo) {
+                    activos++;
+                }
+
+                if (usuario.rol === "directiva") {
+                    directiva++;
+                }
+
+                if (usuario.rol === "administrador") {
+                    administradores++;
+                }
+
+                if (Number(usuario.cuota || 0) > 0) {
+                    cuotas++;
+                }
+
+            });
+
+            document.getElementById("sociosActivos").textContent = activos;
+            document.getElementById("totalDirectiva").textContent = directiva;
+            document.getElementById("totalAdmin").textContent = administradores;
+            document.getElementById("totalCuotas").textContent = cuotas;
+
+        });
+
+    </script>
+
+</body>
+
+</html>
