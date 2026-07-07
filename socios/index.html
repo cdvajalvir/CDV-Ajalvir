@@ -1,8 +1,220 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Área de socios · CD Veteranos Ajalvir</title><link rel="stylesheet" href="../assets/css/styles.css"></head>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Área de socios · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
 <body>
-<header class="site-header"><nav class="navbar container"><a class="brand" href="../index.html"><span class="brand-logo"><img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo"></span><span>CD Veteranos Ajalvir</span></a><button class="nav-toggle" data-nav-toggle>☰</button><div class="nav-links" data-nav-links><a href="../index.html">Inicio</a><a class="active" href="index.html">Socios</a><a href="perfil.html">Mi perfil</a><button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button></div></nav></header>
-<main class="container"><section class="page-hero"><p class="eyebrow">Área privada</p><h1>Portal de socios</h1><p class="lead">Bienvenido/a, <strong id="nombreSocio">socio</strong>.</p></section><section class="dashboard"><aside class="side-panel"><a class="active" href="index.html">Resumen</a><a href="perfil.html">Mi perfil</a><a href="#cuotas">Cuotas</a><a href="#documentos">Documentos</a></aside><div class="content-grid"><article class="card" id="cuotas"><h3>Cuota</h3><p class="metric" id="estadoCuota">-</p><p>Estado de cuota registrado en la ficha del club.</p></article><article class="card"><h3>Dorsal</h3><p class="metric" id="dorsalSocio">-</p><p>Dorsal registrado.</p></article><article class="card wide"><h3>Comunicados</h3><p class="notice">Revisa periódicamente esta área para comunicaciones internas del club.</p></article><article class="card wide" id="documentos"><h3>Documentación</h3><p>Normativa interna, autorizaciones y documentos del club aparecerán en esta sección.</p></article></div></section></main>
-<script src="../assets/js/app.js"></script><script type="module">import { protegerPagina, cerrarSesion } from "../assets/js/auth.js"; window.cerrarSesion = cerrarSesion; protegerPagina("socio", (u) => { document.getElementById("nombreSocio").textContent = u.nombre || u.alias || u.idSocio || "socio"; document.getElementById("estadoCuota").textContent = Number(u.cuota || 0) === 0 ? "Al día" : `${u.cuota} €`; document.getElementById("dorsalSocio").textContent = u.dorsal || "-"; });</script>
-</body></html>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+
+            <a class="brand" href="../index.html">
+
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
+                         alt="Escudo CD Veteranos Ajalvir">
+                </span>
+
+                <span>CD Veteranos Ajalvir</span>
+
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>
+                ☰
+            </button>
+
+            <div class="nav-links" data-nav-links>
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a class="active" href="index.html">
+                    Socios
+                </a>
+
+                <a href="perfil.html">
+                    Mi perfil
+                </a>
+
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera de la página -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Portal de socios
+            </h1>
+
+            <p class="lead">
+                Bienvenido/a,
+                <strong id="nombreSocio">
+                    socio
+                </strong>.
+            </p>
+
+        </section>
+
+        <!-- Panel principal -->
+
+        <section class="dashboard">
+
+            <!-- Menú lateral -->
+
+            <aside class="side-panel">
+
+                <a class="active" href="index.html">
+                    Resumen
+                </a>
+
+                <a href="perfil.html">
+                    Mi perfil
+                </a>
+
+                <a href="#cuotas">
+                    Cuotas
+                </a>
+
+                <a href="#documentos">
+                    Documentos
+                </a>
+
+            </aside>
+
+            <!-- Tarjetas -->
+
+            <div class="content-grid">
+
+                <article class="card" id="cuotas">
+
+                    <h3>
+                        Cuota
+                    </h3>
+
+                    <p class="metric" id="estadoCuota">
+                        -
+                    </p>
+
+                    <p>
+                        Estado de cuota registrado en la ficha del club.
+                    </p>
+
+                </article>
+
+                <article class="card">
+
+                    <h3>
+                        Dorsal
+                    </h3>
+
+                    <p class="metric" id="dorsalSocio">
+                        -
+                    </p>
+
+                    <p>
+                        Dorsal registrado.
+                    </p>
+
+                </article>
+
+                <article class="card wide">
+
+                    <h3>
+                        Comunicados
+                    </h3>
+
+                    <p class="notice">
+                        Revisa periódicamente esta área para consultar
+                        las comunicaciones internas del club.
+                    </p>
+
+                </article>
+
+                <article class="card wide" id="documentos">
+
+                    <h3>
+                        Documentación
+                    </h3>
+
+                    <p>
+                        Normativa interna, autorizaciones y documentos
+                        del club aparecerán en esta sección.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="../assets/js/app.js"></script>
+
+    <script type="module">
+
+        import {
+            protegerPagina,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+        window.cerrarSesion = cerrarSesion;
+
+        protegerPagina("socio", (usuario) => {
+
+            document.getElementById("nombreSocio").textContent =
+                usuario.nombre ||
+                usuario.alias ||
+                usuario.idSocio ||
+                "socio";
+
+            document.getElementById("estadoCuota").textContent =
+                Number(usuario.cuota || 0) === 0
+                    ? "Al día"
+                    : `${usuario.cuota} €`;
+
+            document.getElementById("dorsalSocio").textContent =
+                usuario.dorsal || "-";
+
+        });
+
+    </script>
+
+</body>
+
+</html>
