@@ -1,1 +1,179 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Documentos · CD Veteranos Ajalvir</title><link rel="stylesheet" href="../assets/css/styles.css"></head><body><header class="site-header"><nav class="navbar container"><a class="brand" href="../index.html"><span class="brand-logo"><img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo"></span><span>CD Veteranos Ajalvir</span></a><button class="nav-toggle" data-nav-toggle>☰</button><div class="nav-links" data-nav-links><a href="index.html">Directiva</a><a href="socios.html">Socios</a><button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button></div></nav></header><main class="container"><section class="page-hero"><p class="eyebrow">Directiva</p><h1>Documentos</h1><p class="lead">Módulo preparado para ampliar la gestión del club.</p></section><section class="app-layout"><aside class="app-sidebar"><div class="app-sidebar-title"><span class="brand-mark">CDV</span> Menú</div><nav class="app-menu"><a href="index.html">Resumen</a><a href="socios.html">Socios</a><a href="equipos.html">Equipos</a><a href="cuotas.html">Cuotas</a><a href="noticias.html">Noticias</a><a href="documentos.html">Documentos</a></nav></aside><div class="app-main"><article class="card"><h3>En preparación</h3><p>Esta sección queda protegida para directiva y preparada para futuras funciones.</p></article></div></section></main><script src="../assets/js/app.js"></script><script type="module">import { protegerPagina, cerrarSesion } from "../assets/js/auth.js"; window.cerrarSesion = cerrarSesion; protegerPagina("directiva");</script></body></html>
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Documentos · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+
+            <a class="brand" href="../index.html">
+
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
+                        alt="Escudo CD Veteranos Ajalvir">
+                </span>
+
+                <span>CD Veteranos Ajalvir</span>
+
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>
+                ☰
+            </button>
+
+            <div class="nav-links" data-nav-links>
+
+                <a href="index.html">
+                    Directiva
+                </a>
+
+                <a href="socios.html">
+                    Socios
+                </a>
+
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Directiva
+            </p>
+
+            <h1>
+                Documentos
+            </h1>
+
+            <p class="lead">
+                Módulo preparado para ampliar la gestión documental
+                del club.
+            </p>
+
+        </section>
+
+        <!-- Aplicación -->
+
+        <section class="app-layout">
+
+            <!-- Menú lateral -->
+
+            <aside class="app-sidebar">
+
+                <div class="app-sidebar-title">
+
+                    <span class="brand-mark">
+                        CDV
+                    </span>
+
+                    <span>
+                        Menú
+                    </span>
+
+                </div>
+
+                <nav class="app-menu">
+
+                    <a href="index.html">
+                        Resumen
+                    </a>
+
+                    <a href="socios.html">
+                        Socios
+                    </a>
+
+                    <a href="equipos.html">
+                        Equipos
+                    </a>
+
+                    <a href="cuotas.html">
+                        Cuotas
+                    </a>
+
+                    <a href="noticias.html">
+                        Noticias
+                    </a>
+
+                    <a class="active" href="documentos.html">
+                        Documentos
+                    </a>
+
+                </nav>
+
+            </aside>
+
+            <!-- Área principal -->
+
+            <div class="app-main">
+
+                <article class="card">
+
+                    <h3>
+                        En preparación
+                    </h3>
+
+                    <p>
+                        Esta sección queda protegida para los miembros
+                        de la directiva y preparada para futuras
+                        funcionalidades relacionadas con la gestión
+                        documental del club.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script src="../assets/js/app.js"></script>
+
+    <script type="module">
+
+        import {
+            protegerPagina,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+        window.cerrarSesion = cerrarSesion;
+
+        protegerPagina("directiva");
+
+    </script>
+
+</body>
+
+</html>
