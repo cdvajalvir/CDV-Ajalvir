@@ -8,17 +8,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
-async function probarConexion() {
-    const { data, error } = await supabase
-        .from("socios")
-        .select("*");
-
-    console.log(data);
-
-    if (error) {
-        console.error(error);
-    }
-}
-
-probarConexion();
