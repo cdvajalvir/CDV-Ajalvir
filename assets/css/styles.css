@@ -209,3 +209,5 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 .social-link.instagram:hover { background: #E4405F; color: #ffffff; }
 .social-link.mail { color: #EA4335; }
 .social-link.mail:hover { background: #EA4335; color: #ffffff; }
+.social-link.facebook { color: #1877F2; }
+.social-link.facebook:hover { background: #1877F2; color: #ffffff; }
