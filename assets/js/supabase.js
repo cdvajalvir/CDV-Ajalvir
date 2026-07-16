@@ -19,3 +19,20 @@ async function probarConexion() {
 }
 
 probarConexion();
+
+
+async function insertarSocio() {
+
+    const { data, error } = await supabaseClient
+        .from("socios")
+        .insert({
+            nombre: "Juan",
+            apellido: "Pérez",
+            email: "juan@test.com",
+            password_hash: "temporal"
+        });
+
+    console.log(data, error);
+}
+
+insertarSocio();
