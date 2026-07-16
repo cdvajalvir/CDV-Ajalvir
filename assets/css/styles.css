@@ -83,7 +83,7 @@ button { cursor: pointer; }
 
 .hero { padding: 45px 0 35px; }
 .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 42px; align-items: center; }
-.eyebrow { margin: 0 0 12px; color: var(--yellow); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 1000; }
+.eyebrow { margin: 0 0 4px; color: var(--yellow); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 1000; }
 h1, h2, h3 { letter-spacing: -.04em; }
 .hero h1, .page-hero h1 { margin: 0 0 14px; line-height: 1.05; font-size: clamp(1.8rem, 3.5vw, 3.2rem); }
 .section h2 { margin: 0 0 10px; font-size: clamp(1.5rem, 3vw, 2.4rem); }
@@ -93,14 +93,14 @@ h1, h2, h3 { letter-spacing: -.04em; }
     border: 1px solid var(--border-yellow); border-radius: var(--radius); background: var(--surface);
     box-shadow: 0 14px 40px rgba(0,0,0,.18);
 }
-.card { padding: 18px; }
-.card h3 { margin: 0 0 12px; font-size: 1.34rem; }
-.card p { color: var(--muted); }
+.card { padding: 14px; }
+.card h3 { margin: 0 0 6px; font-size: 1.2rem; }
+.card p { color: var(--muted); line-height: 1.35; margin: 0; }
 .card a { color: var(--yellow); font-weight: 900; }
 .cards { display: grid; gap: 22px; }
 .cards.three { grid-template-columns: repeat(3, 1fr); }
-.section { padding: 40px 0; }
-.section-heading { margin-bottom: 18px; }
+.section { padding: 25px 0; }
+.section-heading { margin-bottom: 10px; }
 .alt { background: rgba(255,255,255,.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
 .hero-card { padding: 18px; box-shadow: var(--shadow); }
