@@ -17,7 +17,7 @@ form.addEventListener("submit", async(e)=>{
 
     try{
         const respuesta =
-        await fetch("https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/registro", {
+        await fetch("https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/crear-registro", {
             method:"POST",
             headers:{
                 "Content-Type":"application/json"
