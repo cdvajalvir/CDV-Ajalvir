@@ -85,9 +85,9 @@ button { cursor: pointer; }
 .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 42px; align-items: center; }
 .eyebrow { margin: 0 0 12px; color: var(--yellow); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 1000; }
 h1, h2, h3 { letter-spacing: -.04em; }
-.hero h1, .page-hero h1 { margin: 0 0 20px; line-height: .98; font-size: clamp(2rem, 4vw, 3.8rem); }
-.section h2 { margin: 0 0 18px; font-size: clamp(1.9rem, 4vw, 3.4rem); }
-.lead { max-width: 760px; color: var(--muted); font-size: 1.16rem; }
+.hero h1, .page-hero h1 { margin: 0 0 14px; line-height: 1.05; font-size: clamp(1.8rem, 3.5vw, 3.2rem); }
+.section h2 { margin: 0 0 10px; font-size: clamp(1.5rem, 3vw, 2.4rem); }
+.lead { max-width: 760px; color: var(--muted); font-size: 1rem; line-height: 1.45; }
 
 .card, .hero-card, .side-panel, .app-sidebar, .login-card {
     border: 1px solid var(--border-yellow); border-radius: var(--radius); background: var(--surface);
@@ -100,6 +100,7 @@ h1, h2, h3 { letter-spacing: -.04em; }
 .cards { display: grid; gap: 22px; }
 .cards.three { grid-template-columns: repeat(3, 1fr); }
 .section { padding: 40px 0; }
+.section-heading { margin-bottom: 18px; }
 .alt { background: rgba(255,255,255,.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
 .hero-card { padding: 18px; box-shadow: var(--shadow); }
