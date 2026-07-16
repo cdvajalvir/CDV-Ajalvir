@@ -143,6 +143,8 @@ h1, h2, h3 { letter-spacing: -.04em; }
 .status.ok { color: #5eead4; background: rgba(15,118,110,.22); }
 
 .form, .login-form { display: grid; gap: 12px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; }
 label { font-weight: 900; }
 .input, textarea, select, .login-card input, .login-card select, .card input, .card select {
     width: 100%; padding: 13px 14px; border: 1px solid var(--border); border-radius: 14px;
@@ -185,6 +187,7 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
     .nav-links.open { display: flex; }
     .hero-grid, .dashboard, .app-layout { grid-template-columns: 1fr; }
     .cards.three, .content-grid, .profile-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
     .side-panel, .app-sidebar { position: static; }
     .footer-grid { flex-direction: column; }
     .footer-grid div:last-child { flex-wrap: wrap; }
