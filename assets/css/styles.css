@@ -47,7 +47,7 @@ button { cursor: pointer; }
     backdrop-filter: blur(18px);
 }
 .navbar {
-    min-height: 78px;
+    min-height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -55,7 +55,7 @@ button { cursor: pointer; }
 }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; letter-spacing: -.03em; }
 .brand-logo {
-    width: 54px; height: 54px; display: grid; place-items: center;
+    width: 46px; height: 46px; display: grid; place-items: center;
     overflow: hidden; border-radius: 50%; background: #fff;
     border: 2px solid var(--yellow); box-shadow: 0 10px 26px rgba(0,0,0,.28);
 }
@@ -81,26 +81,25 @@ button { cursor: pointer; }
 .btn-danger, .btn-logout { background: var(--danger); color: #fff; border: 0; }
 .btn-small { width: auto !important; padding: .45rem .75rem !important; font-size: .85rem; border-radius: 12px; }
 
-.hero { padding: 86px 0 68px; }
+.hero { padding: 45px 0 35px; }
 .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 42px; align-items: center; }
 .eyebrow { margin: 0 0 12px; color: var(--yellow); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 1000; }
 h1, h2, h3 { letter-spacing: -.04em; }
-.hero h1, .page-hero h1 { margin: 0 0 20px; line-height: .98; font-size: clamp(2.2rem, 5vw, 4.8rem); }
+.hero h1, .page-hero h1 { margin: 0 0 20px; line-height: .98; font-size: clamp(2rem, 4vw, 3.8rem); }
 .section h2 { margin: 0 0 18px; font-size: clamp(1.9rem, 4vw, 3.4rem); }
 .lead { max-width: 760px; color: var(--muted); font-size: 1.16rem; }
-.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 30px; }
 
 .card, .hero-card, .side-panel, .app-sidebar, .login-card {
     border: 1px solid var(--border-yellow); border-radius: var(--radius); background: var(--surface);
     box-shadow: 0 14px 40px rgba(0,0,0,.18);
 }
-.card { padding: 26px; }
+.card { padding: 18px; }
 .card h3 { margin: 0 0 12px; font-size: 1.34rem; }
 .card p { color: var(--muted); }
 .card a { color: var(--yellow); font-weight: 900; }
 .cards { display: grid; gap: 22px; }
 .cards.three { grid-template-columns: repeat(3, 1fr); }
-.section { padding: 70px 0; }
+.section { padding: 40px 0; }
 .alt { background: rgba(255,255,255,.04); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
 .hero-card { padding: 18px; box-shadow: var(--shadow); }
