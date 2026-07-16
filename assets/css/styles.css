@@ -197,40 +197,15 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
    FOOTER
 ===================================================== */
 
-.footer-links {
+.footer-links { display: flex; align-items: center; gap: 18px; }
+.social-link { display: inline-flex; justify-content: center; align-items: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.08); color: #feda0a; font-size: 1.3rem; transition: .25s; }
+.social-link:hover { background: #0f5ead; color: #ffffff; transform: translateY(-3px); }
 
-    display: flex;
-    align-items: center;
-    gap: 18px;
+/* =====================================================
+   COLORES REDES SOCIALES
+===================================================== */
 
-}
-
-.social-link {
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.08);
-
-    color: #feda0a;
-
-    font-size: 1.3rem;
-
-    transition: .25s;
-
-}
-
-.social-link:hover {
-
-    background: #0f5ead;
-    color: #ffffff;
-
-    transform: translateY(-3px);
-
-}
+.social-link.instagram { color: #E4405F; }
+.social-link.instagram:hover { background: #E4405F; color: #ffffff; }
+.social-link.mail { color: #EA4335; }
+.social-link.mail:hover { background: #EA4335; color: #ffffff; }
