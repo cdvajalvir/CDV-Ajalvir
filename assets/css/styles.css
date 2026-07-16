@@ -189,3 +189,45 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
     .footer-grid { flex-direction: column; }
     .footer-grid div:last-child { flex-wrap: wrap; }
 }
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer-links {
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+}
+
+.social-link {
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.08);
+
+    color: #feda0a;
+
+    font-size: 1.3rem;
+
+    transition: .25s;
+
+}
+
+.social-link:hover {
+
+    background: #0f5ead;
+    color: #ffffff;
+
+    transform: translateY(-3px);
+
+}
