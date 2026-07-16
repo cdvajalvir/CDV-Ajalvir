@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso privado · CD Veteranos Ajalvir</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="login-body">
+    <main class="login-card">
+        <img class="login-logo" src="assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+        <h1>Acceso privado</h1>
+        <p>CD Veteranos Ajalvir</p>
+
+        <form id="loginForm" class="login-form">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" required placeholder="Nombre" autocomplete="username">
+
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" required placeholder="Apellido" autocomplete="username">
+
+            <label for="dni">DNI</label>
+            <input type="text" id="dni" required placeholder="DNI" autocomplete="username">
+
+            <label for="email">DNI</label>
+            <input type="text" id="email" required placeholder="Email" autocomplete="username">
+
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" required placeholder="Contraseña" autocomplete="current-password">
+
+            <button type="submit">Solicitar alta</button>
+        </form>
+
+        <p id="loginError" class="error"></p>
+        <p><a href="index.html">Volver a la página principal</a></p>
+    </main>
+
+    <script src="assets/js/registro.js"></script>
+</body>
+</html>
