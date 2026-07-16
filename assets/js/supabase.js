@@ -5,3 +5,17 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
 );
+
+async function probarConexion() {
+    const { data, error } = await supabaseClient
+        .from("socios")
+        .select("*");
+
+    console.log(data);
+
+    if (error) {
+        console.error(error);
+    }
+}
+
+probarConexion();
