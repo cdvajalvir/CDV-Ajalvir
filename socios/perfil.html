@@ -45,7 +45,7 @@
                     Mi perfil
                 </a>
 
-                <button class="btn-logout" onclick="cerrarSesion()">
+                <button class="btn-logout" id="btnLogout">
                     Cerrar sesión
                 </button>
 
@@ -83,6 +83,45 @@
 
         <section class="card wide">
 
+            <div class="profile-header">
+
+                <h2>
+                    Información personal
+                </h2>
+
+                <div class="profile-actions">
+
+                    <button
+                        id="btnEditar"
+                        class="btn-primary">
+
+                        Editar perfil
+
+                    </button>
+
+                    <button
+                        id="btnGuardar"
+                        class="btn-primary"
+                        hidden>
+
+                        Guardar
+
+                    </button>
+
+                    <button
+                        id="btnCancelar"
+                        class="btn-secondary"
+                        hidden>
+
+                        Cancelar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
             <div class="profile-grid" id="perfilGrid">
                 <!-- Se rellena automáticamente -->
             </div>
@@ -95,62 +134,7 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <script type="module">
-
-        import {
-            comprobarAcceso,
-            cerrarSesion
-        } from "../assets/js/auth.js";
-
-        window.cerrarSesion = cerrarSesion;
-
-        /* ------------------------------------------------------
-         * Campos del perfil
-         * ---------------------------------------------------- */
-
-        const campos = [
-
-            ["Nombre", "nombre"],
-            // ["Apellido", "apellido"], // en el mismo campo que nombre
-            ["Alias", "alias"],
-            ["DNI", "dni"],
-            ["Teléfono", "telefono"],
-            ["Email", "email"],
-            ["Fecha nacimiento", "fecha_nacimiento"],
-            ["Dorsal", "numero"],
-            ["Talla", "talla"],
-            ["Rol", "rol"],
-            ["Cuota", "cantidad_pagada"],
-
-        ];
-
-        /* ------------------------------------------------------
-         * Cargar perfil
-         * ---------------------------------------------------- */
-
-        comprobarAcceso([
-            "administrador",
-            "directiva",
-            "socio"
-        ], (socio) => {
-
-            const grid = document.getElementById("perfilGrid");
-
-            grid.innerHTML = campos.map(([titulo, campo]) => `
-
-                <div class="profile-item">
-
-                    <span>${titulo}</span>
-
-                    <strong>${socio[campo] ?? "-"}</strong>
-
-                </div>
-
-            `).join("");
-
-        });
-
-    </script>
+    <script type="module" src="../assets/js/perfil.js"></script>
 
 </body>
 
