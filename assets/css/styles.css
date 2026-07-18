@@ -81,6 +81,10 @@ button { cursor: pointer; }
 .btn-danger, .btn-logout { background: var(--danger); color: #fff; border: 0; }
 .btn-small { width: auto !important; padding: .45rem .75rem !important; font-size: .85rem; border-radius: 12px; }
 
+[hidden] {
+    display: none !important;
+}
+
 .hero { padding: 45px 0 35px; }
 .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 42px; align-items: center; }
 .eyebrow { margin: 0 0 4px; color: var(--yellow); text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 1000; }
