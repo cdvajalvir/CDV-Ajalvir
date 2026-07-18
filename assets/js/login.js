@@ -17,26 +17,30 @@ form.addEventListener("submit", async (event) => {
               "Content-Type":"application/json"
           },
           body:JSON.stringify({
-              dni,
-              password
+              dni
           })
       });
 
-    const usuario = await respuesta.json();
+    const email = await respuesta.json();
 
     if(!respuesta.ok){
       alert(usuario.error);
       return;
     }
 
-    sessionStorage.setItem(
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    /*sessionStorage.setItem(
         "usuario",
         JSON.stringify(usuario)
     );
 
     if (usuario.rol === "administrador") window.location.href = "directiva/socios.html";
     else if (usuario.rol === "directiva") window.location.href = "directiva/index.html";
-    else window.location.href = "socios/index.html";
+    else window.location.href = "socios/index.html";*/
     
     } catch (err) {
         console.error(err);
