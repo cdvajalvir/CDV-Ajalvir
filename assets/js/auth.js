@@ -8,7 +8,7 @@ export async function comprobarAcceso(rolesPermitidos, callback){
     } = await supabaseClient.auth.getSession();
 
     if(!session){
-        window.location.href="login.html";
+        window.location.href="../login.html";
         return;
     }
 
@@ -26,14 +26,14 @@ export async function comprobarAcceso(rolesPermitidos, callback){
 
     if(!respuesta.ok){
         await supabaseClient.auth.signOut();
-        window.location.href="login.html";
+        window.location.href="../login.html";
         return;
     }
 
     if(!usuario.activo){
         await supabaseClient.auth.signOut();
         alert("Tu cuenta está pendiente de aprobación.");
-        window.location.href ="login.html";
+        window.location.href ="../login.html";
         return;
     }
 
@@ -53,5 +53,5 @@ export async function comprobarAcceso(rolesPermitidos, callback){
 
 export async function cerrarSesion() {
     await supabaseClient.auth.signOut();
-    window.location.href ="login.html";
+    window.location.href ="../login.html";
 }
