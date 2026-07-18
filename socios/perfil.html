@@ -95,13 +95,10 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script>
-
-    <!--<script type="module">
+    <script type="module">
 
         import {
-            protegerPagina,
+            comprobarAcceso,
             cerrarSesion
         } from "../assets/js/auth.js";
 
@@ -131,7 +128,11 @@
          * Cargar perfil
          * ---------------------------------------------------- */
 
-        protegerPagina("socio", (usuario) => {
+        comprobarAcceso([
+            "administrador",
+            "directiva",
+            "socio"
+        ], (socio) => {
 
             const grid = document.getElementById("perfilGrid");
 
@@ -141,7 +142,7 @@
 
                     <span>${titulo}</span>
 
-                    <strong>${usuario[campo] ?? "-"}</strong>
+                    <strong>${socio[campo] ?? "-"}</strong>
 
                 </div>
 
@@ -149,7 +150,7 @@
 
         });
 
-    </script>-->
+    </script>
 
 </body>
 
