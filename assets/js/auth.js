@@ -13,7 +13,7 @@ export async function comprobarAcceso(rolesPermitidos, callback){
     }
 
     const respuesta = await fetch(
-        "/functions/v1/perfil",
+        "https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/perfil",
         {
             headers:{
                 Authorization:
