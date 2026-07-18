@@ -6,7 +6,14 @@ const SUPABASE_KEY = "sb_publishable_ij8DKD_mYxqLxtF1L6PlCA_EZfXE_hc";
 
 export const supabaseClient = createClient(
     SUPABASE_URL,
-    SUPABASE_KEY
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionUrl: true
+        }
+    }
 );
 
 async function probarConexion() {
