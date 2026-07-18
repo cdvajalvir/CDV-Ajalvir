@@ -1,4 +1,5 @@
 import { comprobarAcceso, cerrarSesion } from "./auth.js";
+import { supabaseClient } from "./supabase.js";
 
 const campos = [
 {
@@ -72,8 +73,6 @@ const btnEditar = document.getElementById("btnEditar");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 
-console.log(btnEditar, btnGuardar, btnCancelar);
-
 let socioActual;
 
 comprobarAcceso([
@@ -108,17 +107,9 @@ btnGuardar.addEventListener(
 
 function mostrarPerfil(){
 
-    console.log("mostrarPerfil");
-
     btnEditar.hidden = false;
     btnGuardar.hidden = true;
     btnCancelar.hidden = true;
-
-    console.log(
-        btnEditar.hidden,
-        btnGuardar.hidden,
-        btnCancelar.hidden
-    );
 
     grid.innerHTML = "";
 
@@ -230,6 +221,78 @@ function editarPerfil(){
 
 async function guardarPerfil(){
 
-    // aquí llamaremos a la edge function
+    try {
+        const {
+            data: { session },
+            error
+        } = await supabaseClient.auth.getSession();
 
+        if(error || !session){
+            alert("Sesión no válida");
+            return;
+        }
+
+        const datos = {
+            nombre:
+                document.getElementById("nombre").value.trim(),
+
+            apellido:
+                document.getElementById("apellido").value.trim(),
+
+            alias:
+                document.getElementById("alias")?.value.trim() || null,
+
+            telefono:
+                document.getElementById("telefono")?.value.trim() || null,
+
+            email:
+                document.getElementById("email")?.value.trim().toLowerCase() || null,
+
+            fecha_nacimiento:
+                document.getElementById("fecha_nacimiento")?.value || null,
+
+            numero:
+                document.getElementById("numero")?.value || null,
+
+            talla:
+                document.getElementById("talla")?.value.trim() || null
+        };
+
+        const respuesta = await fetch(
+            "https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/actualizar-perfil",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+
+                    "Authorization":
+                        `Bearer ${session.access_token}`
+                },
+                body:JSON.stringify(datos)
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if(!respuesta.ok){
+
+            alert(resultado.error || "Error actualizando perfil");
+            return;
+
+        }
+
+        // Actualizamos los datos locales
+        socioActual = {
+            ...socioActual,
+            ...datos
+        };
+
+        alert("Perfil actualizado correctamente");
+
+        mostrarPerfil();
+
+    } catch(error){
+        console.error(error);
+        alert("Error de conexión");
+    }
 }
