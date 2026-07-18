@@ -261,10 +261,9 @@ async function guardarPerfil(){
         const respuesta = await fetch(
             "https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/actualizar-perfil",
             {
-                method:"POST",
+                method:"PATCH",
                 headers:{
                     "Content-Type":"application/json",
-
                     "Authorization":
                         `Bearer ${session.access_token}`
                 },
@@ -275,10 +274,8 @@ async function guardarPerfil(){
         const resultado = await respuesta.json();
 
         if(!respuesta.ok){
-
             alert(resultado.error || "Error actualizando perfil");
             return;
-
         }
 
         // Actualizamos los datos locales
