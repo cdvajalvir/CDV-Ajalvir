@@ -183,6 +183,9 @@
          JAVASCRIPT
     ======================================================= -->
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase.js"></script>
+
     <script type="module">
 
         import {
@@ -204,13 +207,13 @@
                 socio.idSocio ||
                 "socio";
 
-            /*document.getElementById("estadoCuota").textContent =
-                Number(usuario.cuota || 0) === 0
+            document.getElementById("estadoCuota").textContent =
+                Number(socio.cantidad_pagada || 0) === 0
                     ? "Al día"
-                    : `${usuario.cuota} €`;
+                    : `${socio.cantidad_pagada} €`;
 
             document.getElementById("dorsalSocio").textContent =
-                usuario.dorsal || "-";*/
+                socio.numero || "-";
 
         });
 

@@ -1,5 +1,3 @@
-import { supabaseClient } from "./supabase.js"
-
 export async function comprobarAcceso(rolesPermitidos, callback){
     const {
         data:{
