@@ -57,9 +57,6 @@ form.addEventListener("submit", async (event) => {
 
     const textoPerfil = await respuestaPerfil.text();
 
-    console.log("STATUS PERFIL:", respuestaPerfil.status);
-    console.log("RESPUESTA PERFIL RAW:", textoPerfil);
-
     const socio = JSON.parse(textoPerfil);
 
     if (!respuestaPerfil.ok) {
