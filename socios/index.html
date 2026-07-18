@@ -192,6 +192,8 @@
 
         window.cerrarSesion = cerrarSesion;
 
+        const cuota = 100; // total a pagar, se deberia guardar en algun sitio
+
         comprobarAcceso([
             "administrador",
             "directiva",
@@ -205,9 +207,9 @@
                 "socio";
 
             document.getElementById("estadoCuota").textContent =
-                Number(socio.cantidad_pagada || 0) === 0
+                (cuota - Number(socio.cantidad_pagada || 0)) === 0
                     ? "Al día"
-                    : `${socio.cantidad_pagada} €`;
+                    : `${cuota - socio.cantidad_pagada} €`;
 
             document.getElementById("dorsalSocio").textContent =
                 socio.numero || "-";
