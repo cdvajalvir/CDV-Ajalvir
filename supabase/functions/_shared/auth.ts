@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-export async function getUsuario(req) {
+export async function getUsuario(req: Request) {
     const authHeader = req.headers.get("Authorization");
 
     if (!authHeader) {

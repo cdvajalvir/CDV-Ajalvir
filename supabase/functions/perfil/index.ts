@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { getUsuario } from "../_shared/auth.js";
-import { getPerfil } from "../_shared/perfil.js";
+import { getUsuario } from "../_shared/auth.ts";
+import { getPerfil } from "../_shared/perfil.ts";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",

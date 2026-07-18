@@ -1,5 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { validarDocumento } from "../_shared/validaciones.js";
+import { validarDocumento } from "../_shared/validaciones.ts";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
