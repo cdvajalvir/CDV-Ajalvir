@@ -72,6 +72,8 @@ const btnEditar = document.getElementById("btnEditar");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 
+console.log(btnEditar, btnGuardar, btnCancelar);
+
 let socioActual;
 
 comprobarAcceso([
@@ -106,9 +108,17 @@ btnGuardar.addEventListener(
 
 function mostrarPerfil(){
 
+    console.log("mostrarPerfil");
+
     btnEditar.hidden = false;
     btnGuardar.hidden = true;
     btnCancelar.hidden = true;
+
+    console.log(
+        btnEditar.hidden,
+        btnGuardar.hidden,
+        btnCancelar.hidden
+    );
 
     grid.innerHTML = "";
 
