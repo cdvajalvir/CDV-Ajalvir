@@ -1,9 +1,11 @@
-async function comprobarAcceso(rolesPermitidos){
+import { supabaseClient } from "./supabase.js"
+
+export async function comprobarAcceso(rolesPermitidos, callback){
     const {
         data:{
             session
         }
-    } = await supabase.auth.getSession();
+    } = await supabaseClient.auth.getSession();
 
     if(!session){
         window.location.href="/login.html";
@@ -22,15 +24,34 @@ async function comprobarAcceso(rolesPermitidos){
 
     const usuario = await respuesta.json();
 
-    if(!usuario.activo){
-        window.location.href="/pendiente.html";
+    if(!respuesta.ok){
+        await supabaseClient.auth.signOut();
+        window.location.href="/login.html";
         return;
     }
+
+    if(!socio.activo){
+        await supabaseClient.auth.signOut();
+        alert("Tu cuenta está pendiente de aprobación.");
+        window.location.href ="/login.html";
+        return;
+    }
+
+
 
     if(!rolesPermitidos.includes(usuario.rol)){
         window.location.href="/403.html";
         return;
     }
 
+    if (callback) {
+        callback(usuario);
+    }
+
     return usuario;
+}
+
+export async function cerrarSesion() {
+    await supabaseClient.auth.signOut();
+    window.location.href ="/login.html";
 }

@@ -23,8 +23,7 @@
             <a class="brand" href="../index.html">
 
                 <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
-                         alt="Escudo CD Veteranos Ajalvir">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
 
                 <span>CD Veteranos Ajalvir</span>
@@ -184,10 +183,7 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script>
-
-   <!-- <script type="module">
+    <script type="module">
 
         import {
             protegerPagina,
@@ -196,7 +192,11 @@
 
         window.cerrarSesion = cerrarSesion;
 
-        protegerPagina("socio", (usuario) => {
+        protegerPagina([
+            "administrador",
+            "directiva",
+            "socio"
+        ], (socio) => {
 
             document.getElementById("nombreSocio").textContent =
                 usuario.nombre ||
@@ -204,17 +204,17 @@
                 usuario.idSocio ||
                 "socio";
 
-            document.getElementById("estadoCuota").textContent =
+            /*document.getElementById("estadoCuota").textContent =
                 Number(usuario.cuota || 0) === 0
                     ? "Al día"
                     : `${usuario.cuota} €`;
 
             document.getElementById("dorsalSocio").textContent =
-                usuario.dorsal || "-";
+                usuario.dorsal || "-";*/
 
         });
 
-    </script> -->
+    </script>
 
 </body>
 
