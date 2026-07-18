@@ -39,8 +39,6 @@ form.addEventListener("submit", async (event) => {
       password
     });
 
-    console.log("SESSION LOGIN: ", data.session);
-
     if (authError) {
       alert(authError.message);
       return;
