@@ -19,6 +19,9 @@ Deno.serve(async (req) => {
 
         const { user } = await getUsuario(req);
 
+        console.log("USER: ", user);
+        console.log("USER ID: ", user?.id);
+
         const {
             nombre,
             apellido,
