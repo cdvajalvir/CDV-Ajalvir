@@ -55,6 +55,8 @@ form.addEventListener("submit", async (event) => {
 
     const socio = await respuestaPerfil.json();
 
+    console.log("PERFIL: ", socio);
+
     if (!respuestaPerfil.ok) {
       alert(socio.error);
       await supabaseClient.auth.signOut();
