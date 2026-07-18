@@ -1,5 +1,3 @@
-import { supabaseClient } from "./supabase.js"
-
 const form = document.getElementById("loginForm");
 const error = document.getElementById("loginError");
 
