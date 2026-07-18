@@ -1,4 +1,4 @@
-export async function getPerfil(supabase, userId) {
+export async function getPerfil(supabase, userId:string) {
 
     const { data:socio, error } = await supabase
         .from("socios")
@@ -6,11 +6,15 @@ export async function getPerfil(supabase, userId) {
             id,
             nombre,
             apellido,
-            dni,
-            email,
-            telefono,
+            alias,
+            numero,
             talla,
+            dni,
             fecha_nacimiento,
+            telefono,
+            email,
+            fecha_alta,
+            fecha_baja,
             cantidad_pagada,
             rol,
             activo

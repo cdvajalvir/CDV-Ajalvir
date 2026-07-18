@@ -18,18 +18,6 @@ Deno.serve(async (req) => {
     try {
         const authHeader = req.headers.get("Authorization");
 
-        if (!authHeader) {
-            return Response.json(
-                {
-                    error: "No autorizado"
-                },
-                {
-                    status: 401,
-                    headers: corsHeaders
-                }
-            );
-        }
-
         const user = await getUsuario(req);
 
         const supabase = createClient(
@@ -44,10 +32,10 @@ Deno.serve(async (req) => {
             }
         );
 
-        const socio = getPerfil(supabase, user.id);
+        const perfil = await getPerfil(supabase, user.id);
 
         return Response.json(
-            socio,
+            perfil,
             {
                 headers: corsHeaders
             }

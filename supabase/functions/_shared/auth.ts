@@ -28,7 +28,9 @@ export async function getUsuario(req: Request) {
         throw new Error("Sesión inválida");
     }
 
-    // Buscar socio
+    return user;
+
+    /*// Buscar socio
     const { data:socio } = await supabase
         .from("socios")
         .select(`
@@ -46,5 +48,5 @@ export async function getUsuario(req: Request) {
     return {
         user,
         socio
-    };
+    };*/
 }
