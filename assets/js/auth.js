@@ -30,7 +30,7 @@ export async function comprobarAcceso(rolesPermitidos, callback){
         return;
     }
 
-    if(!socio.activo){
+    if(!usuario.activo){
         await supabaseClient.auth.signOut();
         alert("Tu cuenta está pendiente de aprobación.");
         window.location.href ="/login.html";
