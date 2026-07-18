@@ -31,3 +31,9 @@ También puedes copiar directamente tu archivo `firebase-config.js` actual encim
 ## Reglas
 
 Incluye `firestore.rules` preparado para usar la colección `usuarios`.
+
+## Supabase
+
+To download functions from UI: `npx supabase functions download`
+
+To deploy local functions: `npx supabase functions deploy <function name>`
