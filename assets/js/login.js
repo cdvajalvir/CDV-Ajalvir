@@ -1,3 +1,5 @@
+import { supabaseClient } from "./supabase.js"
+
 const form = document.getElementById("loginForm");
 const error = document.getElementById("loginError");
 
@@ -32,7 +34,7 @@ form.addEventListener("submit", async (event) => {
     const email = resultado.email;
 
     // Login Supabase Auth
-    const { data, error:authError } = await supabase.auth.signInWithPassword({
+    const { data, error:authError } = await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
@@ -57,13 +59,13 @@ form.addEventListener("submit", async (event) => {
 
     if (!respuestaPerfil.ok) {
       alert(socio.error);
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
       return;
     }
 
     // Usuario pendiente
     if (!socio.activo) {
-      await supabase.auth.signOut();
+      await supabaseClient.auth.signOut();
       alert("Tu solicitud todavía está pendiente de aprobación.");
       return;
     }
