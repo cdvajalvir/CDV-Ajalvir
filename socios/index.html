@@ -186,13 +186,13 @@
     <script type="module">
 
         import {
-            protegerPagina,
+            comprobarAcceso,
             cerrarSesion
         } from "../assets/js/auth.js";
 
         window.cerrarSesion = cerrarSesion;
 
-        protegerPagina([
+        comprobarAcceso([
             "administrador",
             "directiva",
             "socio"
