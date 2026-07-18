@@ -53,8 +53,6 @@ form.addEventListener("submit", async (event) => {
         }
     );
 
-    const socio = await respuestaPerfil.json();
-
     const textoPerfil = await respuestaPerfil.text();
 
     console.log("STATUS PERFIL:", respuestaPerfil.status);
