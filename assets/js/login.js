@@ -33,14 +33,32 @@ form.addEventListener("submit", async (event) => {
       password
     });
 
-    /*sessionStorage.setItem(
-        "usuario",
-        JSON.stringify(usuario)
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    // Pedir perfil
+    const respuestaPerfil = await fetch("https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/perfil",
+        {
+            method:"GET",
+            headers:{
+                "Authorization":
+                    `Bearer ${data.session.access_token}`
+            }
+        }
     );
+
+    const socio = await respuestaPerfil.json();
+    if (!socio.activo) {
+      await supabase.auth.signOut();
+      alert("Tu solicitud todavía está pendiente de aprobación.");
+      return;
+    }
 
     if (usuario.rol === "administrador") window.location.href = "directiva/socios.html";
     else if (usuario.rol === "directiva") window.location.href = "directiva/index.html";
-    else window.location.href = "socios/index.html";*/
+    else window.location.href = "socios/index.html";
     
     } catch (err) {
         console.error(err);
