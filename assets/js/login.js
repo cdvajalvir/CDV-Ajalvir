@@ -10,6 +10,7 @@ form.addEventListener("submit", async (event) => {
 
   try {
 
+    // Obtener email mediante DNI
     const respuesta = await fetch("https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/login",
       {
           method:"POST",
@@ -21,24 +22,27 @@ form.addEventListener("submit", async (event) => {
           })
       });
 
-    const email = await respuesta.json();
+    const resultado = await respuesta.json();
 
     if(!respuesta.ok){
-      alert(usuario.error);
+      alert(resultado.error);
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const email = resultado.email;
+
+    // Login Supabase Auth
+    const { data, error:authError } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
-    if (error) {
-      alert(error.message);
+    if (authError) {
+      alert(authError.message);
       return;
     }
 
-    // Pedir perfil
+    // Obtener perfil
     const respuestaPerfil = await fetch("https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/perfil",
         {
             method:"GET",
@@ -50,15 +54,26 @@ form.addEventListener("submit", async (event) => {
     );
 
     const socio = await respuestaPerfil.json();
+
+    if (!respuestaPerfil.ok) {
+      alert(socio.error);
+      await supabase.auth.signOut();
+      return;
+    }
+
+    // Usuario pendiente
     if (!socio.activo) {
       await supabase.auth.signOut();
       alert("Tu solicitud todavía está pendiente de aprobación.");
       return;
     }
 
-    if (usuario.rol === "administrador") window.location.href = "directiva/socios.html";
-    else if (usuario.rol === "directiva") window.location.href = "directiva/index.html";
-    else window.location.href = "socios/index.html";
+    if (socio.rol === "administrador") 
+      window.location.href = "directiva/socios.html";
+    else if (socio.rol === "directiva") 
+      window.location.href = "directiva/index.html";
+    else 
+      window.location.href = "socios/index.html";
     
     } catch (err) {
         console.error(err);

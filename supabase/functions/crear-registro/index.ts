@@ -1,49 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { validarDocumento } from "../_shared/validaciones.js";
 
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers":
         "authorization, x-client-info, apikey, content-type",
 };
-
-function validarDocumento(documento: string): boolean {
-    if (!documento) return false;
-
-    documento = documento.trim().toUpperCase();
-
-    const letras = "TRWAGMYFPDXBNJZSQVHLCKE";
-
-    // DNI
-    const dniRegex = /^(\d{8})([A-Z])$/;
-
-    // NIE
-    const nieRegex = /^([XYZ])(\d{7})([A-Z])$/;
-
-    let match = documento.match(dniRegex);
-
-    if (match) {
-        const numero = parseInt(match[1], 10);
-        const letra = match[2];
-        return letras[numero % 23] === letra;
-    }
-
-    match = documento.match(nieRegex);
-
-    if (match) {
-        const prefijo = {
-            X: "0",
-            Y: "1",
-            Z: "2"
-        }[match[1]]!;
-
-        const numero = parseInt(prefijo + match[2], 10);
-        const letra = match[3];
-
-        return letras[numero % 23] === letra;
-    }
-
-    return false;
-}
 
 Deno.serve(async (req) => {
     if(req.method === "OPTIONS"){

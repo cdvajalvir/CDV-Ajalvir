@@ -217,8 +217,26 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script>
+    <!-- <script src="../assets/js/sesion.js"></script>
+    <script> protegerPagina() </script> -->
+
+    <script type="module">
+
+        import {
+            comprobarAcceso
+        } from "../assets/js/auth.js";
+
+
+        const usuario =
+        await comprobarAcceso([
+            "administrador",
+            "directiva"
+        ]);
+
+        console.log(usuario);
+
+        </script>
+
 
     <!--<script type="module">
 
