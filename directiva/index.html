@@ -217,35 +217,14 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <!-- <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script> -->
-
     <script type="module">
-
-        import {
-            comprobarAcceso
-        } from "../assets/js/auth.js";
-
-
-        const usuario =
-        await comprobarAcceso([
-            "administrador",
-            "directiva"
-        ]);
-
-        console.log(usuario);
-
-        </script>
-
-
-    <!--<script type="module">
 
         /* ======================================================
          * IMPORTACIONES
          * ==================================================== */
 
         import {
-            protegerPagina,
+            comprobarAcceso,
             cerrarSesion
         } from "../assets/js/auth.js";
 
@@ -259,52 +238,67 @@
         } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
         /* ======================================================
-         * INICIALIZACIÓN
+         * INICIALIZACIÓN Y EVENTOS GLOBALES
          * ==================================================== */
 
+        // Expone la función de cerrar sesión al HTML para el evento onclick
         window.cerrarSesion = cerrarSesion;
 
-        protegerPagina("directiva", async () => {
+        async function init() {
+            // 1. Verificación de acceso
+            const usuario = await comprobarAcceso([
+                "administrador",
+                "directiva"
+            ]);
 
-            const snap = await getDocs(
-                collection(db, "usuarios")
-            );
+            console.log("Usuario autenticado:", usuario);
 
-            let activos = 0;
-            let directiva = 0;
-            let administradores = 0;
-            let cuotas = 0;
+            // 2. Carga de métricas del panel
+            try {
+                const snap = await getDocs(
+                    collection(db, "usuarios")
+                );
 
-            snap.forEach((doc) => {
+                let activos = 0;
+                let directiva = 0;
+                let administradores = 0;
+                let cuotas = 0;
 
-                const usuario = doc.data();
+                snap.forEach((doc) => {
+                    const usuarioData = doc.data();
 
-                if (usuario.activo) {
-                    activos++;
-                }
+                    if (usuarioData.activo) {
+                        activos++;
+                    }
 
-                if (usuario.rol === "directiva") {
-                    directiva++;
-                }
+                    if (usuarioData.rol === "directiva") {
+                        directiva++;
+                    }
 
-                if (usuario.rol === "administrador") {
-                    administradores++;
-                }
+                    if (usuarioData.rol === "administrador") {
+                        administra
+                        dores++;
+                    }
 
-                if (Number(usuario.cuota || 0) > 0) {
-                    cuotas++;
-                }
+                    if (Number(usuarioData.cuota || 0) > 0) {
+                        cuotas++;
+                    }
+                });
 
-            });
+                document.getElementById("sociosActivos").textContent = activos;
+                document.getElementById("totalDirectiva").textContent = directiva;
+                document.getElementById("totalAdmin").textContent = administradores;
+                document.getElementById("totalCuotas").textContent = cuotas;
 
-            document.getElementById("sociosActivos").textContent = activos;
-            document.getElementById("totalDirectiva").textContent = directiva;
-            document.getElementById("totalAdmin").textContent = administradores;
-            document.getElementById("totalCuotas").textContent = cuotas;
+            } catch (error) {
+                console.error("Error al obtener datos del panel:", error);
+            }
+        }
 
-        });
+        // Ejecutar inicialización
+        init();
 
-    </script>-->
+    </script>
 
 </body>
 
