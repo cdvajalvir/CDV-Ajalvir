@@ -132,26 +132,24 @@
                 </article>
 
                 <!-- Tarjeta Dorsal + Foto de Socio -->
-                <article class="card">
+                <article class="card" style="position: relative;">
+
+                    <!-- Foto posicionada arriba a la derecha (80x100px) -->
+                    <div style="position: absolute; top: 1rem; right: 1.25rem;">
+                        <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
+                    </div>
 
                     <h3>
                         Dorsal
                     </h3>
 
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.5rem;">
-                        <div>
-                            <p class="metric" id="dorsalSocio" style="margin: 0;">
-                                -
-                            </p>
-                            <p style="margin: 0.5rem 0 0 0;">
-                                Dorsal registrado.
-                            </p>
-                        </div>
-
-                        <!-- Foto del socio a la derecha -->
-                        <div style="flex-shrink: 0; margin-top: 0.25rem;">
-                            <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
-                        </div>
+                    <div style="margin-top: 1rem; padding-right: 90px;">
+                        <p class="metric" id="dorsalSocio" style="margin: 0;">
+                            -
+                        </p>
+                        <p style="margin: 0.5rem 0 0 0;">
+                            Dorsal registrado.
+                        </p>
                     </div>
 
                 </article>
