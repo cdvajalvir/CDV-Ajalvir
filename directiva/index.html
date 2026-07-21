@@ -212,7 +212,7 @@
 
     </main>
 
-   <!-- ======================================================
+    <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
 
@@ -234,25 +234,15 @@
 
 
         /* ======================================================
-         * 3. CONTROL DE ACCESO Y MUESTRA DEL PERFIL
+         * 3. CONTROL DE ACCESO
          * ==================================================== */
         comprobarAcceso([
             "administrador",
             "directiva"
         ], (usuario) => {
 
-            if (!usuario) {
-                console.warn("No se encontró usuario o no tiene permisos.");
-                return;
-            }
-
-            console.log("Usuario autenticado en Directiva:", usuario);
-
-            // Si necesitas mostrar el nombre del usuario en pantalla:
-            const elNombre = document.getElementById("nombreUsuario");
-            if (elNombre && usuario.nombre) {
-                elNombre.textContent = usuario.nombre;
-            }
+            // Se ejecuta solo cuando Supabase/Edge Function confirman el perfil y el rol
+            console.log("Acceso concedido a Directiva para el usuario:", usuario);
 
         });
 
