@@ -220,9 +220,8 @@
     <script type="module">
 
         /* ======================================================
-         * IMPORTACIONES
+         * 1. IMPORTACIONES
          * ==================================================== */
-
         import {
             comprobarAcceso,
             cerrarSesion
@@ -237,30 +236,39 @@
             getDocs
         } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-        /* ======================================================
-         * EXPOSICIÓN A WINDOW (Para que funcione el onclick)
-         * ==================================================== */
 
+        /* ======================================================
+         * 2. EXPOSICIÓN INMEDIATA A WINDOW (SIN ESPERAR AWAITS)
+         * ==================================================== */
         window.cerrarSesion = cerrarSesion;
 
+
         /* ======================================================
-         * INICIALIZACIÓN Y LÓGICA DE LA PÁGINA
+         * 3. REGISTRO DE EVENTO POR DELEGACIÓN (DOBLE SEGURIDAD)
          * ==================================================== */
+        document.addEventListener("click", (e) => {
+            if (e.target.matches(".btn-logout, .btn-logout *")) {
+                e.preventDefault();
+                cerrarSesion();
+            }
+        });
 
+
+        /* ======================================================
+         * 4. LÓGICA ASÍNCRONA DE LA PÁGINA
+         * ==================================================== */
         async function init() {
-            // Verificar permisos del usuario
-            const usuario = await comprobarAcceso([
-                "administrador",
-                "directiva"
-            ]);
-
-            console.log("Usuario autenticado:", usuario);
-
-            // Cargar datos del panel desde Firestore
             try {
-                const snap = await getDocs(
-                    collection(db, "usuarios")
-                );
+                // Verificar permisos del usuario
+                const usuario = await comprobarAcceso([
+                    "administrador",
+                    "directiva"
+                ]);
+
+                console.log("Usuario autenticado:", usuario);
+
+                // Cargar datos del panel desde Firestore
+                const snap = await getDocs(collection(db, "usuarios"));
 
                 let activos = 0;
                 let directiva = 0;
@@ -270,38 +278,30 @@
                 snap.forEach((doc) => {
                     const usuarioData = doc.data();
 
-                    if (usuarioData.activo) {
-                        activos++;
-                    }
-
-                    if (usuarioData.rol === "directiva") {
-                        directiva++;
-                    }
-
-                    if (usuarioData.rol === "administrador") {
-                        administradores++;
-                    }
-
-                    if (Number(usuarioData.cuota || 0) > 0) {
-                        cuotas++;
-                    }
+                    if (usuarioData.activo) activos++;
+                    if (usuarioData.rol === "directiva") directiva++;
+                    if (usuarioData.rol === "administrador") administradores++;
+                    if (Number(usuarioData.cuota || 0) > 0) cuotas++;
                 });
 
-                document.getElementById("sociosActivos").textContent = activos;
-                document.getElementById("totalDirectiva").textContent = directiva;
-                document.getElementById("totalAdmin").textContent = administradores;
-                document.getElementById("totalCuotas").textContent = cuotas;
+                const elActivos = document.getElementById("sociosActivos");
+                const elDirectiva = document.getElementById("totalDirectiva");
+                const elAdmin = document.getElementById("totalAdmin");
+                const elCuotas = document.getElementById("totalCuotas");
+
+                if (elActivos) elActivos.textContent = activos;
+                if (elDirectiva) elDirectiva.textContent = directiva;
+                if (elAdmin) elAdmin.textContent = administradores;
+                if (elCuotas) elCuotas.textContent = cuotas;
 
             } catch (error) {
-                console.error("Error al obtener datos del panel:", error);
+                console.error("Error al cargar la página de directiva:", error);
             }
         }
 
-        // Ejecutar al cargar la página
+        // Ejecutar carga de datos
         init();
 
     </script>
-
 </body>
-
 </html>
