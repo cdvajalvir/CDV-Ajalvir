@@ -213,7 +213,7 @@
 
     </main>
 
-    <!-- ======================================================
+   <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
 
@@ -238,14 +238,17 @@
         } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
         /* ======================================================
-         * INICIALIZACIÓN Y EVENTOS GLOBALES
+         * EXPOSICIÓN A WINDOW (Para que funcione el onclick)
          * ==================================================== */
 
-        // Expone la función de cerrar sesión al HTML para el evento onclick
         window.cerrarSesion = cerrarSesion;
 
+        /* ======================================================
+         * INICIALIZACIÓN Y LÓGICA DE LA PÁGINA
+         * ==================================================== */
+
         async function init() {
-            // 1. Verificación de acceso
+            // Verificar permisos del usuario
             const usuario = await comprobarAcceso([
                 "administrador",
                 "directiva"
@@ -253,7 +256,7 @@
 
             console.log("Usuario autenticado:", usuario);
 
-            // 2. Carga de métricas del panel
+            // Cargar datos del panel desde Firestore
             try {
                 const snap = await getDocs(
                     collection(db, "usuarios")
@@ -276,8 +279,7 @@
                     }
 
                     if (usuarioData.rol === "administrador") {
-                        administra
-                        dores++;
+                        administradores++;
                     }
 
                     if (Number(usuarioData.cuota || 0) > 0) {
@@ -295,7 +297,7 @@
             }
         }
 
-        // Ejecutar inicialización
+        // Ejecutar al cargar la página
         init();
 
     </script>
