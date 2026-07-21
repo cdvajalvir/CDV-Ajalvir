@@ -4,49 +4,33 @@ export async function getUsuario(req: Request) {
     const authHeader = req.headers.get("Authorization");
 
     if (!authHeader) {
-        throw new Error("No autorizado");
+        return { user: null, error: "No hay cabecera de autorización" };
     }
 
     const supabase = createClient(
         Deno.env.get("SUPABASE_URL"),
         Deno.env.get("SUPABASE_ANON_KEY"),
         {
-            global:{
-                headers:{
-                    Authorization:authHeader
+            global: {
+                headers: {
+                    Authorization: authHeader
                 }
             }
         }
     );
 
+    // Extraer el token JWT
+    const token = authHeader.replace("Bearer ", "").trim();
+
     const {
-        data:{ user },
+        data: { user },
         error
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
 
-    if(error || !user){
-        throw new Error("Sesión inválida");
+    if (error || !user) {
+        return { user: null, error: error?.message || "Sesión inválida" };
     }
 
-    return user;
-
-    /*// Buscar socio
-    const { data:socio } = await supabase
-        .from("socios")
-        .select(`
-            id,
-            rol,
-            activo
-        `)
-        .eq("id", user.id)
-        .single();
-    
-    if(!socio){
-        throw new Error("Socio no encontrado");
-    }
-
-    return {
-        user,
-        socio
-    };*/
+    // Devuelve el objeto { user } para poder hacer: const { user } = await getUsuario(req);
+    return { user, error: null };
 }
