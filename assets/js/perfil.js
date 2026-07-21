@@ -42,7 +42,7 @@ const campos = [
     titulo: "Dorsal",
     campo: "numero",
     editable: true,
-    tipo: "number"
+    tipo: "text"
 },
 
 {
