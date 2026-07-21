@@ -212,7 +212,7 @@
 
     </main>
 
-    <!-- ======================================================
+   <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
 
@@ -234,25 +234,27 @@
 
 
         /* ======================================================
-         * 3. CONTROL DE ACCESO Y CARGA
+         * 3. CONTROL DE ACCESO Y MUESTRA DEL PERFIL
          * ==================================================== */
-        async function init() {
-            try {
-                // Verificar que el usuario sea Administrador o Directiva
-                const usuario = await comprobarAcceso([
-                    "administrador",
-                    "directiva"
-                ]);
+        comprobarAcceso([
+            "administrador",
+            "directiva"
+        ], (usuario) => {
 
-                console.log("Acceso concedido a Directiva:", usuario);
-
-            } catch (error) {
-                console.error("Error en la comprobación de acceso:", error);
+            if (!usuario) {
+                console.warn("No se encontró usuario o no tiene permisos.");
+                return;
             }
-        }
 
-        // Ejecutar inicialización
-        init();
+            console.log("Usuario autenticado en Directiva:", usuario);
+
+            // Si necesitas mostrar el nombre del usuario en pantalla:
+            const elNombre = document.getElementById("nombreUsuario");
+            if (elNombre && usuario.nombre) {
+                elNombre.textContent = usuario.nombre;
+            }
+
+        });
 
     </script>
 
