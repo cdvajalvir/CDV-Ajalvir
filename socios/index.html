@@ -121,12 +121,16 @@
                         Cuota
                     </h3>
 
-                    <p class="metric" id="estadoCuota">
-                        -
+                    <!-- Métrica principal con el texto de pendiente a la derecha -->
+                    <p class="metric" id="estadoCuota" style="display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;">
+                        <span>- €</span>
+                        <small id="cuotaPendiente" style="font-size: 0.85rem; font-weight: normal; opacity: 0.8; color: #666;">
+                            (- € pendiente)
+                        </small>
                     </p>
 
                     <p>
-                        Cuota registrada en la ficha del club.
+                        Estado de cuota registrado en la ficha del club.
                     </p>
 
                 </article>
@@ -210,14 +214,36 @@
                 socio.idSocio ||
                 "socio";
 
-            document.getElementById("estadoCuota").textContent =
-                `${socio.cantidad_pagada ?? 0} €`;
+            // 1. Mostrar la cantidad pagada
+            const pagado = socio.cantidad_pagada ?? 0;
+            
+            // 2. Obtener la cantidad pendiente que calculó la Edge Function
+            const pendiente = socio.cantidad_pendiente ?? 0;
 
+            // 3. Renderizar en el DOM
+            const estadoCuotaElem = document.getElementById("estadoCuota");
+            const cuotaPendienteElem = document.getElementById("cuotaPendiente");
+
+            if (estadoCuotaElem && cuotaPendienteElem) {
+                // Actualiza la cifra pagada principal
+                estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
+                
+                // Actualiza el texto pequeño a la derecha
+                if (pendiente > 0) {
+                    cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
+                    cuotaPendienteElem.style.color = "#d9534f"; // Rojo/Aviso si debe algo
+                } else {
+                    cuotaPendienteElem.textContent = `(al día)`;
+                    cuotaPendienteElem.style.color = "#2e7d32"; // Verde si está pagado al completo
+                }
+            }
+
+            // Dorsal como texto
             const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
             document.getElementById("dorsalSocio").textContent =
                 dorsalTexto !== "" ? dorsalTexto : "-";
 
-            // Cargar la foto del socio si existe en su perfil o mantener la de por defecto
+            // Foto del socio
             const imgElement = document.getElementById("fotoSocio");
             if (socio.foto) {
                 imgElement.src = `../assets/img/${socio.foto}`;
