@@ -214,36 +214,36 @@
                 socio.idSocio ||
                 "socio";
 
-            // 1. Mostrar la cantidad pagada
+            // 1. Obtener la cantidad pagada real desde la tabla
             const pagado = socio.cantidad_pagada ?? 0;
             
-            // 2. Obtener la cantidad pendiente que calculó la Edge Function
+            // 2. Obtener la cantidad pendiente calculada por la Edge Function
             const pendiente = socio.cantidad_pendiente ?? 0;
 
-            // 3. Renderizar en el DOM
+            // 3. Pintar en el DOM
             const estadoCuotaElem = document.getElementById("estadoCuota");
             const cuotaPendienteElem = document.getElementById("cuotaPendiente");
 
             if (estadoCuotaElem && cuotaPendienteElem) {
-                // Actualiza la cifra pagada principal
+                // Muestra la cantidad realmente pagada
                 estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
                 
-                // Actualiza el texto pequeño a la derecha
+                // Muestra el texto a la derecha según si debe dinero o no
                 if (pendiente > 0) {
                     cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
-                    cuotaPendienteElem.style.color = "#d9534f"; // Rojo/Aviso si debe algo
+                    cuotaPendienteElem.style.color = "#d9534f"; // Rojo
                 } else {
                     cuotaPendienteElem.textContent = `(al día)`;
-                    cuotaPendienteElem.style.color = "#2e7d32"; // Verde si está pagado al completo
+                    cuotaPendienteElem.style.color = "#2e7d32"; // Verde
                 }
             }
 
-            // Dorsal como texto
+            // Dorsal
             const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
             document.getElementById("dorsalSocio").textContent =
                 dorsalTexto !== "" ? dorsalTexto : "-";
 
-            // Foto del socio
+            // Foto
             const imgElement = document.getElementById("fotoSocio");
             if (socio.foto) {
                 imgElement.src = `../assets/img/${socio.foto}`;
