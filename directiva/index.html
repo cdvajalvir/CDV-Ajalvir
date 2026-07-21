@@ -23,8 +23,7 @@
             <a class="brand" href="../index.html">
 
                 <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
-                        alt="Escudo CD Veteranos Ajalvir">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
 
                 <span>CD Veteranos Ajalvir</span>
@@ -213,95 +212,50 @@
 
     </main>
 
-   <!-- ======================================================
+    <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
 
     <script type="module">
 
         /* ======================================================
-         * 1. IMPORTACIONES
+         * 1. IMPORTACIONES LOCALES
          * ==================================================== */
         import {
             comprobarAcceso,
             cerrarSesion
         } from "../assets/js/auth.js";
 
-        import {
-            db
-        } from "../assets/js/firebase-config.js";
-
-        import {
-            collection,
-            getDocs
-        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
 
         /* ======================================================
-         * 2. EXPOSICIÓN INMEDIATA A WINDOW (SIN ESPERAR AWAITS)
+         * 2. EXPOSICIÓN GLOBAL PARA EL ONCLICK DEL HTML
          * ==================================================== */
         window.cerrarSesion = cerrarSesion;
 
 
         /* ======================================================
-         * 3. REGISTRO DE EVENTO POR DELEGACIÓN (DOBLE SEGURIDAD)
-         * ==================================================== */
-        document.addEventListener("click", (e) => {
-            if (e.target.matches(".btn-logout, .btn-logout *")) {
-                e.preventDefault();
-                cerrarSesion();
-            }
-        });
-
-
-        /* ======================================================
-         * 4. LÓGICA ASÍNCRONA DE LA PÁGINA
+         * 3. CONTROL DE ACCESO Y CARGA
          * ==================================================== */
         async function init() {
             try {
-                // Verificar permisos del usuario
+                // Verificar que el usuario sea Administrador o Directiva
                 const usuario = await comprobarAcceso([
                     "administrador",
                     "directiva"
                 ]);
 
-                console.log("Usuario autenticado:", usuario);
-
-                // Cargar datos del panel desde Firestore
-                const snap = await getDocs(collection(db, "usuarios"));
-
-                let activos = 0;
-                let directiva = 0;
-                let administradores = 0;
-                let cuotas = 0;
-
-                snap.forEach((doc) => {
-                    const usuarioData = doc.data();
-
-                    if (usuarioData.activo) activos++;
-                    if (usuarioData.rol === "directiva") directiva++;
-                    if (usuarioData.rol === "administrador") administradores++;
-                    if (Number(usuarioData.cuota || 0) > 0) cuotas++;
-                });
-
-                const elActivos = document.getElementById("sociosActivos");
-                const elDirectiva = document.getElementById("totalDirectiva");
-                const elAdmin = document.getElementById("totalAdmin");
-                const elCuotas = document.getElementById("totalCuotas");
-
-                if (elActivos) elActivos.textContent = activos;
-                if (elDirectiva) elDirectiva.textContent = directiva;
-                if (elAdmin) elAdmin.textContent = administradores;
-                if (elCuotas) elCuotas.textContent = cuotas;
+                console.log("Acceso concedido a Directiva:", usuario);
 
             } catch (error) {
-                console.error("Error al cargar la página de directiva:", error);
+                console.error("Error en la comprobación de acceso:", error);
             }
         }
 
-        // Ejecutar carga de datos
+        // Ejecutar inicialización
         init();
 
     </script>
+
 </body>
+
 </html>
