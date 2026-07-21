@@ -131,19 +131,28 @@
 
                 </article>
 
+                <!-- Tarjeta Dorsal + Foto de Socio -->
                 <article class="card">
 
                     <h3>
-                        Dorsal
+                        Dorsal y Ficha
                     </h3>
 
-                    <p class="metric" id="dorsalSocio">
-                        -
-                    </p>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.5rem;">
+                        <div>
+                            <p class="metric" id="dorsalSocio" style="margin: 0;">
+                                -
+                            </p>
+                            <p style="margin: 0.5rem 0 0 0;">
+                                Dorsal registrado.
+                            </p>
+                        </div>
 
-                    <p>
-                        Dorsal registrado.
-                    </p>
+                        <!-- Foto del socio a la derecha -->
+                        <div style="flex-shrink: 0;">
+                            <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #ccc;">
+                        </div>
+                    </div>
 
                 </article>
 
@@ -207,10 +216,17 @@
                 "socio";
 
             document.getElementById("estadoCuota").textContent =
-                `${socio.cantidad_pagada} €`;
+                `${socio.cantidad_pagada ?? 0} €`;
 
+            const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
             document.getElementById("dorsalSocio").textContent =
-                socio.numero || "-";
+                dorsalTexto !== "" ? dorsalTexto : "-";
+
+            // Cargar la foto del socio si existe en su perfil o mantener la de por defecto
+            const imgElement = document.getElementById("fotoSocio");
+            if (socio.foto) {
+                imgElement.src = `../assets/img/${socio.foto}`;
+            }
 
         });
 
