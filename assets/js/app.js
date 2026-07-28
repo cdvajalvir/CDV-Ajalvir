@@ -16,10 +16,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (session) {
-            // Usar siempre ruta absoluta desde la raíz
-            const rutaAreaSocios = "/socios/index.html";
+            const currentPath = window.location.pathname;
+            const estaEnSocios = currentPath.includes("/socios/");
 
-            // Buscamos el botón de login/acceso privado en la cabecera de las páginas públicas
+            // Si estamos dentro de socios/, para ir al panel usamos index.html.
+            // Si estamos fuera (en el inicio raíz), para ir al panel usamos socios/index.html.
+            const rutaAreaSocios = estaEnSocios ? "index.html" : "socios/index.html";
+
+            // Buscar el enlace de "Acceso privado" o "login" en la cabecera
             const enlaceAcceso = document.querySelector('a[href*="login.html"]');
 
             if (enlaceAcceso) {
