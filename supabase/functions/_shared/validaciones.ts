@@ -1,4 +1,4 @@
-function validarDocumento(documento: string): boolean {
+export function validarDocumento(documento: string): boolean {
     if (!documento) return false;
 
     documento = documento.trim().toUpperCase();
