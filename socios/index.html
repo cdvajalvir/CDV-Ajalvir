@@ -4,9 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Área de socios · CD Veteranos Ajalvir</title>
 
+    <!-- ESTA LÍNEA FIJA LA RAÍZ DEL PROYECTO DESDE SUBDIRECTORIOS -->
+    <base href="../">
+    
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
@@ -20,9 +22,9 @@
 
         <nav class="navbar container">
             <!-- Subir un nivel al inicio público del raíz -->
-            <a class="brand" href="../index.html">
+            <a class="brand" href="index.html">
                 <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                    <img src="assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
                 <span>CD Veteranos Ajalvir</span>
             </a>
@@ -31,13 +33,13 @@
 
             <div class="nav-links" data-nav-links>
                 <!-- Inicio público (sube a la raíz) -->
-                <a href="../index.html">Inicio</a>
+                <a href="index.html">Inicio</a>
 
                 <!-- Área privada de socios (permanece en la carpeta actual) -->
-                <a class="active" href="index.html">Socios</a>
+                <a class="active" href="socios/index.html">Socios</a>
 
                 <!-- Perfil -->
-                <a href="perfil.html">Mi perfil</a>
+                <a href="socios/perfil.html">Mi perfil</a>
 
                 <button class="btn-logout" onclick="cerrarSesion()">
                     Cerrar sesión
