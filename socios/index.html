@@ -19,35 +19,30 @@
     <header class="site-header">
 
         <nav class="navbar container">
-
-            <a class="brand" href="/index.html">
-
+            <!-- Subir un nivel al inicio público del raíz -->
+            <a class="brand" href="../index.html">
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
-
                 <span>CD Veteranos Ajalvir</span>
-
             </a>
 
             <button class="nav-toggle" data-nav-toggle>☰</button>
 
             <div class="nav-links" data-nav-links>
-                <!-- Enlace Inicio: apunta explícitamente a la portada pública global -->
-                <a href="/index.html">Inicio</a>
+                <!-- Inicio público (sube a la raíz) -->
+                <a href="../index.html">Inicio</a>
 
-                <!-- Enlace Socios: página actual del área privada -->
-                <a class="active" href="/socios/index.html">Socios</a>
+                <!-- Área privada de socios (permanece en la carpeta actual) -->
+                <a class="active" href="index.html">Socios</a>
 
-                <!-- Enlace Perfil -->
-                <a href="/socios/perfil.html">Mi perfil</a>
+                <!-- Perfil -->
+                <a href="perfil.html">Mi perfil</a>
 
                 <button class="btn-logout" onclick="cerrarSesion()">
                     Cerrar sesión
                 </button>
-
             </div>
-
         </nav>
 
     </header>
