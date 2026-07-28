@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Área de socios · CD Veteranos Ajalvir</title>
 
-    <!-- ESTA LÍNEA FIJA LA RAÍZ DEL PROYECTO DESDE SUBDIRECTORIOS -->
-    <base href="../">
-    
+    <!-- Ruta explícita: Sube de socios/ a la raíz para entrar en assets/ -->
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
@@ -21,10 +19,10 @@
     <header class="site-header">
 
         <nav class="navbar container">
-            <!-- Subir un nivel al inicio público del raíz -->
-            <a class="brand" href="index.html">
+            <!-- Escudo e Inicio público: Suben a la raíz (../) -->
+            <a class="brand" href="../index.html">
                 <span class="brand-logo">
-                    <img src="assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
                 <span>CD Veteranos Ajalvir</span>
             </a>
@@ -32,14 +30,11 @@
             <button class="nav-toggle" data-nav-toggle>☰</button>
 
             <div class="nav-links" data-nav-links>
-                <!-- Inicio público (sube a la raíz) -->
-                <a href="index.html">Inicio</a>
+                <a href="../index.html">Inicio</a>
 
-                <!-- Área privada de socios (permanece en la carpeta actual) -->
-                <a class="active" href="socios/index.html">Socios</a>
-
-                <!-- Perfil -->
-                <a href="socios/perfil.html">Mi perfil</a>
+                <!-- Archivos dentro de la propia carpeta socios/ (rutas locales directas) -->
+                <a class="active" href="index.html">Socios</a>
+                <a href="perfil.html">Mi perfil</a>
 
                 <button class="btn-logout" onclick="cerrarSesion()">
                     Cerrar sesión
@@ -80,7 +75,7 @@
 
         <section class="dashboard">
 
-            <!-- Menú lateral -->
+            <!-- Menú lateral (rutas relativas a socios/) -->
 
             <aside class="side-panel">
 
@@ -121,7 +116,7 @@
                 <!-- Tarjeta Dorsal + Foto de Socio -->
                 <article class="card" style="position: relative;">
 
-                    <!-- Foto posicionada arriba a la derecha (80x100px) -->
+                    <!-- Foto por defecto: sube un nivel a assets/ -->
                     <div style="position: absolute; top: 1rem; right: 1.25rem;">
                         <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
                     </div>
@@ -226,7 +221,7 @@
             document.getElementById("dorsalSocio").textContent =
                 dorsalTexto !== "" ? dorsalTexto : "-";
 
-            // Foto
+            // Foto personalizada del socio
             const imgElement = document.getElementById("fotoSocio");
             if (socio.foto) {
                 imgElement.src = `../assets/img/${socio.foto}`;
