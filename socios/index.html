@@ -20,7 +20,7 @@
 
         <nav class="navbar container">
 
-            <a class="brand" href="../index.html">
+            <a class="brand" href="/index.html">
 
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
@@ -30,23 +30,17 @@
 
             </a>
 
-            <button class="nav-toggle" data-nav-toggle>
-                ☰
-            </button>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
 
             <div class="nav-links" data-nav-links>
+                <!-- Enlace Inicio: apunta explícitamente a la portada pública global -->
+                <a href="/index.html">Inicio</a>
 
-                <a href="../index.html">
-                    Inicio
-                </a>
+                <!-- Enlace Socios: página actual del área privada -->
+                <a class="active" href="/socios/index.html">Socios</a>
 
-                <a class="active" href="index.html">
-                    Socios
-                </a>
-
-                <a href="perfil.html">
-                    Mi perfil
-                </a>
+                <!-- Enlace Perfil -->
+                <a href="/socios/perfil.html">Mi perfil</a>
 
                 <button class="btn-logout" onclick="cerrarSesion()">
                     Cerrar sesión
