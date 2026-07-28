@@ -20,7 +20,7 @@
 
         <nav class="navbar container">
 
-            <a class="brand" href="../index.html">
+            <a class="brand" href="/index.html">
 
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg"
@@ -31,21 +31,19 @@
 
             </a>
 
-            <button class="nav-toggle" data-nav-toggle>
-                ☰
-            </button>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
 
             <div class="nav-links" data-nav-links>
+                <!-- Inicio siempre sube a la portada raíz del proyecto -->
+                <a href="/index.html">Inicio</a>
 
-                <a href="index.html">
-                    Socios
-                </a>
+                <!-- Socios se queda en el área privada -->
+                <a class="active" href="/socios/index.html">Socios</a>
 
-                <a class="active" href="perfil.html">
-                    Mi perfil
-                </a>
+                <!-- Perfil -->
+                <a href="/socios/perfil.html">Mi perfil</a>
 
-                <button class="btn-logout" id="btnLogout">
+                <button class="btn-logout" onclick="cerrarSesion()">
                     Cerrar sesión
                 </button>
 
