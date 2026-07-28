@@ -2,8 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # Se ejecuta automáticamente todos los días a las 00:00 UTC
-    - cron: '0 0 * * *'
+    # Se ejecuta 4 veces al día (cada 6 horas: 00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
   # Permite ejecutar manualmente la tarea desde la pestaña Actions en GitHub
   workflow_dispatch:
 
