@@ -16,27 +16,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (session) {
-            // Comprobar si la página actual es la portada pública
+            // Comprobar si la página actual es la portada pública principal (de la raíz)
             const path = window.location.pathname;
-            const esPaginaInicio = path.endsWith("index.html") || path === "/" || path.endsWith("/");
+            const esPortadaPublica = path === "/" || path.endsWith("/index.html") && !path.includes("/socios/");
 
-            if (esPaginaInicio) {
-                // Redirigir al panel privado si ya está logueado
-                window.location.href = "panel.html"; // <-- Ajusta el nombre si tu archivo de panel es otro (ej. socio/dashboard.html)
+            // Si está logueado y entra a la portada pública, lo llevamos al panel de socios
+            if (esPortadaPublica) {
+                window.location.href = "/socios/index.html"; 
                 return;
             }
 
-            // Actualizar enlaces de la cabecera para mantener la navegación privada
-            const linkInicio = document.querySelector('.nav-links a[href="index.html"], .brand');
-            const linkAcceso = document.querySelector('.nav-links a[href="login.html"]');
+            // Actualizar enlaces de la cabecera para mantener la navegación dentro de socios
+            const linkInicio = document.querySelector('.nav-links a[href="index.html"], .nav-links a[href="../index.html"], .brand');
+            const linkAcceso = document.querySelector('.nav-links a[href="login.html"], .nav-links a[href="../login.html"]');
 
             if (linkInicio) {
-                linkInicio.setAttribute("href", "panel.html");
+                linkInicio.setAttribute("href", "/socios/index.html");
             }
 
             if (linkAcceso) {
                 linkAcceso.textContent = "Mi Perfil";
-                linkAcceso.setAttribute("href", "panel.html");
+                linkAcceso.setAttribute("href", "/socios/perfil.html");
             }
         }
     } catch (err) {
