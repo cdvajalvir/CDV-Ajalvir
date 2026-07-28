@@ -11,44 +11,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 2. Gestión inteligente de la navegación según el estado de la sesión
+    // 2. Control visual del menú según el estado de la sesión
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (session) {
             const currentPath = window.location.pathname;
-
-            // Detectar si estamos en la portada pública (raíz)
-            const esPortadaPublica = 
-                currentPath === "/" || 
-                (currentPath.endsWith("/index.html") && !currentPath.includes("/socios/")) ||
-                currentPath.endsWith("/login.html");
-
-            // Si el socio entra a la portada pública estando logueado, lo devolvemos al panel de socios
-            if (esPortadaPublica) {
-                window.location.href = "socios/index.html";
-                return;
-            }
-
-            // Si está dentro de alguna página de socios, ajustamos los enlaces de la cabecera
             const estaEnSocios = currentPath.includes("/socios/");
-            const rutaDestinoInicio = estaEnSocios ? "index.html" : "socios/index.html";
-            const rutaDestinoPerfil = estaEnSocios ? "perfil.html" : "socios/perfil.html";
 
-            // Interceptar todos los enlaces de "Inicio" y el logo "brand"
-            const enlacesInicio = document.querySelectorAll('a[href*="index.html"], a.brand');
-            enlacesInicio.forEach(enlace => {
-                // Solo modificar si no es el enlace activo dentro de socios
-                if (!enlace.classList.contains("active") || !estaEnSocios) {
-                    enlace.setAttribute("href", rutaDestinoInicio);
-                }
-            });
+            // Definimos la ruta al panel de socios según dónde estemos
+            const rutaAreaSocios = estaEnSocios ? "index.html" : "socios/index.html";
 
-            // Interceptamos el enlace de "Acceso privado" o "Login" para cambiarlo a "MiPerfil"
+            // Buscamos el botón de login/acceso privado en la cabecera
             const enlaceAcceso = document.querySelector('a[href*="login.html"]');
+
             if (enlaceAcceso) {
-                enlaceAcceso.textContent = "Mi perfil";
-                enlaceAcceso.setAttribute("href", rutaDestinoPerfil);
+                // Lo transformamos en un botón directo a su área privada
+                enlaceAcceso.textContent = "Área de socios";
+                enlaceAcceso.setAttribute("href", rutaAreaSocios);
             }
         }
     } catch (err) {
