@@ -1,5 +1,15 @@
-// Función para inicializar la fecha apunte (DD-MM-AAAA)
-function inicializarFechaApunte() {
+// 1. Asignar la fecha de apunte INMEDIATAMENTE al cargar la página
+window.addEventListener("DOMContentLoaded", () => {
+    // Validar sesión si existe
+    if (typeof protegerPagina === "function") {
+        try {
+            protegerPagina();
+        } catch (err) {
+            console.warn("Error al verificar sesión:", err);
+        }
+    }
+
+    // Insertar fecha del día de hoy en formato DD-MM-YYYY
     const inputFechaApunte = document.getElementById("fecha_apunte");
     if (inputFechaApunte) {
         const hoy = new Date();
@@ -8,13 +18,14 @@ function inicializarFechaApunte() {
         const anio = hoy.getFullYear();
 
         const fechaFormateada = `${dia}-${mes}-${anio}`;
+        
         inputFechaApunte.value = fechaFormateada;
-        inputFechaApunte.setAttribute("value", fechaFormateada); // Fuerza el atributo HTML
+        inputFechaApunte.setAttribute("value", fechaFormateada);
         inputFechaApunte.readOnly = true;
     }
-}
+});
 
-// Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
+// 2. Función auxiliar para formatear la fecha a YYYY-MM-DD para Supabase
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -22,13 +33,8 @@ function formatearFechaParaBackend(fechaDMY) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
-function inicializarFormulario() {
-    if (typeof protegerPagina === "function") {
-        protegerPagina();
-    }
-
-    inicializarFechaApunte();
-
+// 3. Manejo del formulario de movimientos
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formMovimiento");
     const mensaje = document.getElementById("mensajeMovimiento");
     const btnLimpiar = document.getElementById("btnLimpiar");
@@ -43,65 +49,67 @@ function inicializarFormulario() {
         }
     }
 
-    function limpiarFormulario() {
-        if (form) form.reset();
-        inicializarFechaApunte();
-        mostrarMensaje("");
-    }
-
-    async function guardarMovimiento(evento) {
-        evento.preventDefault();
-
-        const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
-
-        const movimiento = {
-            temporada: document.getElementById("temporada").value,
-            fecha_contable: document.getElementById("fecha_contable").value,
-            fecha_apunte: fechaApunteFormateada,
-            concepto: document.getElementById("concepto").value,
-            importe: parseFloat(document.getElementById("importe").value),
-            tipo: document.getElementById("tipo").value || null,
-            saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null,
-            codigo_cuenta: document.getElementById("codigo_cuenta").value
-        };
-
-        try {
-            mostrarMensaje("Guardando registro...");
-
-            const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(movimiento)
-            });
-
-            const resultado = await respuesta.json();
-
-            if (!respuesta.ok) {
-                throw new Error(resultado.error || "Error al registrar el movimiento");
-            }
-
-            mostrarMensaje("Movimiento registrado correctamente.");
-            limpiarFormulario();
-
-        } catch (error) {
-            console.error(error);
-            mostrarMensaje(error.message, true);
+    function reponerFecha() {
+        if (inputFechaApunte) {
+            const hoy = new Date();
+            const dia = String(hoy.getDate()).padStart(2, "0");
+            const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+            const anio = hoy.getFullYear();
+            inputFechaApunte.value = `${dia}-${mes}-${anio}`;
         }
     }
 
+    function limpiarFormulario() {
+        if (form) form.reset();
+        reponerFecha();
+        mostrarMensaje("");
+    }
+
     if (form) {
-        form.addEventListener("submit", guardarMovimiento);
+        form.addEventListener("submit", async (evento) => {
+            evento.preventDefault();
+
+            const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
+
+            const movimiento = {
+                temporada: document.getElementById("temporada").value,
+                fecha_contable: document.getElementById("fecha_contable").value,
+                fecha_apunte: fechaApunteFormateada,
+                concepto: document.getElementById("concepto").value,
+                importe: parseFloat(document.getElementById("importe").value),
+                tipo: document.getElementById("tipo").value || null,
+                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null,
+                codigo_cuenta: document.getElementById("codigo_cuenta").value
+            };
+
+            try {
+                mostrarMensaje("Guardando registro...");
+
+                const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(movimiento)
+                });
+
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    throw new Error(resultado.error || "Error al registrar el movimiento");
+                }
+
+                mostrarMensaje("Movimiento registrado correctamente.");
+                limpiarFormulario();
+
+            } catch (error) {
+                console.error(error);
+                mostrarMensaje(error.message, true);
+            }
+        });
     }
 
     if (btnLimpiar) {
         btnLimpiar.addEventListener("click", limpiarFormulario);
     }
-}
-
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializarFormulario);
-} else {
-    inicializarFormulario();
-}
+});
