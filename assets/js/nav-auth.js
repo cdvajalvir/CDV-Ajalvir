@@ -96,7 +96,7 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="${basePath}index.html">Inicio</a>
         <a href="${basePath}socios/socios.html">Área socios</a>
-        <a href="../directiva/directiva.html">Directiva</a>
+        <a href="${basePath}directiva/directiva.html">Directiva</a>
         <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
     `;
     const btnLogout = document.getElementById("btn-logout");
