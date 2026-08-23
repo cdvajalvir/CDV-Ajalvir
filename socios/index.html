@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Área de socios · CD Veteranos Ajalvir</title>
 
-    <!-- Ruta explícita: Sube de socios/ a la raíz para entrar en assets/ -->
+    <!-- Ruta a la hoja de estilos subiendo un nivel a la raíz -->
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
@@ -19,7 +19,7 @@
     <header class="site-header">
 
         <nav class="navbar container">
-            <!-- Escudo e Inicio público: Suben a la raíz (../) -->
+            <!-- Logotipo que lleva al Inicio público (raíz) -->
             <a class="brand" href="../index.html">
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
@@ -29,9 +29,12 @@
 
             <button class="nav-toggle" data-nav-toggle>☰</button>
 
-            <!-- EL SCRIPT NAV-AUTH.JS RELLENARÁ DINÁMICAMENTE ESTE CONTENEDOR -->
+            <!-- Menú estático para socios: Inicio público + Cerrar sesión -->
             <div class="nav-links" data-nav-links>
                 <a href="../index.html">Inicio</a>
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
             </div>
         </nav>
 
@@ -105,7 +108,7 @@
                 <!-- Tarjeta Dorsal + Foto de Socio -->
                 <article class="card" style="position: relative;">
 
-                    <!-- Foto por defecto: sube un nivel a assets/ -->
+                    <!-- Foto por defecto -->
                     <div style="position: absolute; top: 1rem; right: 1.25rem;">
                         <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
                     </div>
@@ -157,7 +160,6 @@
     <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
-    <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/app.js"></script>
     <script type="module">
 
