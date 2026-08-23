@@ -182,7 +182,23 @@ document.addEventListener("DOMContentLoaded", () => {
             formatearDecimales(inputImporte);
             calcularNuevoSaldo(); // Asegurar saldo calculado justo antes de enviar
 
-            const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
+            // Preparamos la fecha en formato ISO YYYY-MM-DD
+            let fechaApunteVal = inputFechaApunte ? inputFechaApunte.value : "";
+            let fechaApunteFormateada = fechaApunteVal;
+
+            if (fechaApunteVal.includes("-")) {
+                const partes = fechaApunteVal.split("-");
+                if (partes[0].length === 2) {
+                    // Si venía como DD-MM-YYYY, la invertimos a YYYY-MM-DD
+                    fechaApunteFormateada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+                }
+            }
+
+            // Parsear socio/código de cuenta a número si aplica
+            const valCodigoCuenta = document.getElementById("codigo_cuenta").value;
+            const codigoCuentaParsed = !isNaN(valCodigoCuenta) && valCodigoCuenta !== "" 
+                ? parseInt(valCodigoCuenta, 10) 
+                : valCodigoCuenta;
 
             const movimiento = {
                 temporada: document.getElementById("temporada").value,
@@ -190,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 fecha_apunte: fechaApunteFormateada,
                 concepto: document.getElementById("concepto").value,
                 tipo: document.getElementById("tipo").value || null,
-                codigo_cuenta: document.getElementById("codigo_cuenta").value,
+                codigo_cuenta: codigoCuentaParsed,
                 importe: parseFloat(document.getElementById("importe").value),
                 saldo: parseFloat(document.getElementById("saldo").value)
             };
@@ -198,6 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 mostrarMensaje("Guardando registro...");
 
+                // Invocamos la Edge Function correcta
                 const { data, error } = await supabaseClient.functions.invoke("crear-apunte", {
                     body: movimiento
                 });
