@@ -16,6 +16,8 @@
                 <span>CD Veteranos Ajalvir</span>
             </a>
             <button class="nav-toggle" data-nav-toggle>☰</button>
+            
+            <!-- EL SCRIPT NAV-AUTH.JS RELLENARÁ DINÁMICAMENTE ESTE CONTENEDOR -->
             <div class="nav-links" data-nav-links>
                 <a class="active" href="index.html">Inicio</a>
                 <a href="general/calendario.html">Calendario</a>
@@ -84,9 +86,8 @@
         </div>
     </footer>
 
-    <script type="module">
-        import { supabaseClient } from "./assets/js/supabase.js";
-    </script>
+    <!-- SCRIPTS MODULARES -->
+    <script type="module" src="assets/js/nav-auth.js"></script>
     <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
