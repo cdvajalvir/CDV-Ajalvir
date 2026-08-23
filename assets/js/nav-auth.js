@@ -39,7 +39,7 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
-        } else if (pathName.includes("directiva") || pathName.endsWith("directiva/index.html")) {
+        } else if (pathName.includes("directiva") || pathName.endsWith("directiva/directiva.html")) {
             renderizarMenuPaginaDirectiva(contenedorNav, basePath);
         } else {
             renderizarMenuSegunRol(contenedorNav, rol, basePath);
@@ -96,7 +96,7 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="${basePath}index.html">Inicio</a>
         <a href="${basePath}socios/socios.html">Área socios</a>
-        <a href="../directiva/index.html">Directiva</a>
+        <a href="../directiva/directiva.html">Directiva</a>
         <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
     `;
     const btnLogout = document.getElementById("btn-logout");
