@@ -34,25 +34,7 @@
                 ☰
             </button>
 
-            <div class="nav-links" data-nav-links>
-
-                <a href="../index.html">
-                    Inicio
-                </a>
-
-                <a class="active" href="index.html">
-                    Directiva
-                </a>
-
-                <a href="socios.html">
-                    Socios
-                </a>
-
-                <button class="btn-logout" onclick="cerrarSesion()">
-                    Cerrar sesión
-                </button>
-
-            </div>
+            <div class="nav-links" data-nav-links></div>
 
         </nav>
 
@@ -246,6 +228,14 @@
 
         });
 
+    </script>
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module">
+        import { comprobarAcceso, cerrarSesion } from "../assets/js/auth.js";
+        window.cerrarSesion = cerrarSesion;
+        comprobarAcceso(["administrador", "directiva"], (usuario) => {
+            console.log("Acceso concedido a Directiva para el usuario:", usuario);
+        });
     </script>
 
 </body>
