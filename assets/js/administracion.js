@@ -1,4 +1,4 @@
-// Función principal para inicializar la fecha apunte (DD-MM-AAAA)
+// Función para inicializar la fecha apunte (DD-MM-AAAA)
 function inicializarFechaApunte() {
     const inputFechaApunte = document.getElementById("fecha_apunte");
     if (inputFechaApunte) {
@@ -7,12 +7,14 @@ function inicializarFechaApunte() {
         const mes = String(hoy.getMonth() + 1).padStart(2, "0");
         const anio = hoy.getFullYear();
 
-        inputFechaApunte.value = `${dia}-${mes}-${anio}`;
+        const fechaFormateada = `${dia}-${mes}-${anio}`;
+        inputFechaApunte.value = fechaFormateada;
+        inputFechaApunte.setAttribute("value", fechaFormateada); // Fuerza el atributo HTML
         inputFechaApunte.readOnly = true;
     }
 }
 
-// Convierte DD-MM-AAAA a AAAA-MM-DD para el backend en Supabase
+// Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -21,12 +23,10 @@ function formatearFechaParaBackend(fechaDMY) {
 }
 
 function inicializarFormulario() {
-    // Validar sesión si existe la función
     if (typeof protegerPagina === "function") {
         protegerPagina();
     }
 
-    // Rellenar fecha de inmediato
     inicializarFechaApunte();
 
     const form = document.getElementById("formMovimiento");
@@ -45,7 +45,7 @@ function inicializarFormulario() {
 
     function limpiarFormulario() {
         if (form) form.reset();
-        inicializarFechaApunte(); // Mantiene la fecha tras resetear
+        inicializarFechaApunte();
         mostrarMensaje("");
     }
 
@@ -100,7 +100,6 @@ function inicializarFormulario() {
     }
 }
 
-// Ejecución
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", inicializarFormulario);
 } else {
