@@ -36,8 +36,8 @@ async function cargarSociosDirectiva() {
     try {
         const { data: socios, error } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellidos, rol")
-            .in("rol", ["administrador", "directiva"])
+            .select("id, nombre, apellido, rol") // Corregido: 'apellido' en singular
+            .or("rol.eq.administrador,rol.eq.directiva")
             .order("nombre", { ascending: true });
 
         if (error) throw error;
@@ -48,11 +48,11 @@ async function cargarSociosDirectiva() {
             socios.forEach(socio => {
                 const option = document.createElement("option");
                 option.value = socio.id;
-                option.textContent = `${socio.nombre} ${socio.apellidos || ""}`.trim();
+                option.textContent = `${socio.nombre} ${socio.apellido || ""}`.trim();
                 selectSocio.appendChild(option);
             });
         } else {
-            selectSocio.innerHTML = '<option value="">Sin socios disponibles</option>';
+            selectSocio.innerHTML = '<option value="">Sin socios directiva/admin encontrados</option>';
         }
 
     } catch (err) {
