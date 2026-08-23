@@ -30,6 +30,12 @@
             margin-top: 1rem;
         }
 
+        /* Indicador visual de campo solo lectura */
+        input[readonly] {
+            background-color: var(--color-bg-disabled, #f0f0f0);
+            cursor: not-allowed;
+        }
+
         @media (max-width: 900px) {
             .form-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
@@ -157,8 +163,10 @@
                                 Fecha apunte
                             </label>
                             <input class="input"
-                                   type="date"
-                                   id="fecha_apunte">
+                                   type="text"
+                                   id="fecha_apunte"
+                                   placeholder="dd-mm-aaaa"
+                                   readonly>
                         </div>
 
                         <div class="form-group">
@@ -244,69 +252,7 @@
     ======================================================= -->
 
     <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script>
-
-    <script type="module">
-        const form = document.getElementById("formMovimiento");
-        const mensaje = document.getElementById("mensajeMovimiento");
-        const btnLimpiar = document.getElementById("btnLimpiar");
-
-        // URL de tu Edge Function en Supabase para crear movimientos
-        const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
-
-        function mostrarMensaje(texto, esError = false) {
-            mensaje.textContent = texto;
-            mensaje.className = esError ? "status danger" : "status ok";
-        }
-
-        function limpiarFormulario() {
-            form.reset();
-            mostrarMensaje("");
-        }
-
-        async function guardarMovimiento(evento) {
-            evento.preventDefault();
-
-            const movimiento = {
-                temporada: document.getElementById("temporada").value,
-                fecha_contable: document.getElementById("fecha_contable").value,
-                fecha_apunte: document.getElementById("fecha_apunte").value || null,
-                concepto: document.getElementById("concepto").value,
-                importe: document.getElementById("importe").value,
-                tipo: document.getElementById("tipo").value || null,
-                saldo: document.getElementById("saldo").value || null,
-                codigo_cuenta: document.getElementById("codigo_cuenta").value
-            };
-
-            try {
-                mostrarMensaje("Guardando registro...");
-
-                const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(movimiento)
-                });
-
-                const resultado = await respuesta.json();
-
-                if (!respuesta.ok) {
-                    throw new Error(resultado.error || "Error al registrar el movimiento");
-                }
-
-                mostrarMensaje("Movimiento registrado correctamente.");
-                limpiarFormulario();
-
-            } catch (error) {
-                console.error(error);
-                mostrarMensaje(error.message, true);
-            }
-        }
-
-        form.addEventListener("submit", guardarMovimiento);
-        btnLimpiar.addEventListener("click", limpiarFormulario);
-    </script>
+    <script src="../assets/js/administracion.js" type="module"></script>
 
 </body>
 
