@@ -75,7 +75,7 @@ async function obtenerUltimoSaldoGlobal() {
         const { data: ultimosMovimientos, error } = await supabaseClient
             .from("movimientos")
             .select("saldo")
-            .order("created_at", { ascending: false }) // <-- Ordena por fecha/hora exacta de inserción
+            .order("create_at", { ascending: false }) // <-- Ordena por fecha/hora exacta de inserción
             .limit(1);
 
         if (error) throw error;
