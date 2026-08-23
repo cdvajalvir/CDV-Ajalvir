@@ -73,7 +73,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     if (socio.rol === "administrador") 
-      window.location.href = "directiva/socios.html";
+      window.location.href = "admin/administracion.html";
     else if (socio.rol === "directiva") 
       window.location.href = "directiva/index.html";
     else 
