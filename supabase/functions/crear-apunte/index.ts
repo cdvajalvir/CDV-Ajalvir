@@ -1,103 +1,54 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Cabeceras CORS obligatorias para que el navegador no bloquee la petición
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers":
-        "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-Deno.serve(async (req) => {
-    if (req.method === "OPTIONS") {
-        return new Response("ok", {
-            headers: {
-                ...corsHeaders,
-                "Access-Control-Allow-Methods": "POST, OPTIONS"
-            }
-        });
+serve(async (req) => {
+  // 1. Manejar la petición preliminar de CORS (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    // 2. Leer el cuerpo de la petición enviada desde JavaScript
+    const movimiento = await req.json();
+
+    // 3. Crear cliente de Supabase usando las variables de entorno internas
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // 4. Inserción directa en la tabla 'movimientos' sin validaciones
+    const { data, error } = await supabase
+      .from("movimientos")
+      .insert([movimiento])
+      .select();
+
+    if (error) {
+      console.error("Error PostgreSQL al insertar:", error);
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
-    try {
-        const {
-            temporada,
-            fecha_contable,
-            concepto,
-            importe,
-            tipo,
-            saldo,
-            codigo_cuenta
-        } = await req.json();
+    // 5. Devolver respuesta exitosa (HTTP 200)
+    return new Response(JSON.stringify({ ok: true, data }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
 
-        // 1. Validar campos obligatorios según la definición de la tabla
-        if (!temporada || !fecha_contable || !concepto || importe === undefined || !codigo_cuenta) {
-            return Response.json(
-                { error: "Faltan campos obligatorios (temporada, fecha_contable, concepto, importe, codigo_cuenta)" },
-                {
-                    status: 400,
-                    headers: corsHeaders
-                }
-            );
-        }
-
-        // 2. Inicializar cliente con Service Role Key
-        const supabase = createClient(
-            Deno.env.get("SUPABASE_URL") ?? "",
-            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-
-        // 3. Verificar que la cuenta de socio asociada existe
-        const { data: socioExistente, error: errorSocio } = await supabase
-            .from("socios")
-            .select("id")
-            .eq("id", codigo_cuenta)
-            .maybeSingle();
-
-        if (errorSocio || !socioExistente) {
-            return Response.json(
-                { error: "El código de cuenta (socio) especificado no existe" },
-                {
-                    status: 400,
-                    headers: corsHeaders
-                }
-            );
-        }
-
-        // 4. Insertar el movimiento
-        const { data: nuevoMovimiento, error: errorInsert } = await supabase
-            .from("movimientos")
-            .insert({
-                temporada: temporada.trim(),
-                fecha_contable,
-                concepto: concepto.trim(),
-                importe: Number(importe),
-                tipo: tipo || null,
-                saldo: saldo !== undefined && saldo !== null ? Number(saldo) : null,
-                codigo_cuenta
-            })
-            .select()
-            .single();
-
-        if (errorInsert) {
-            throw errorInsert;
-        }
-
-        return Response.json(
-            {
-                mensaje: "Movimiento registrado correctamente",
-                movimiento: nuevoMovimiento
-            },
-            {
-                status: 201,
-                headers: corsHeaders
-            }
-        );
-
-    } catch (error) {
-        return Response.json(
-            { error: error.message || "Error al crear el movimiento" },
-            {
-                status: 500,
-                headers: corsHeaders
-            }
-        );
-    }
+  } catch (err) {
+    console.error("Error en Edge Function:", err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 });
