@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 mostrarMensaje("Guardando registro...");
 
-                const { data, error } = await supabaseClient.functions.invoke("crear-movimiento", {
+                const { data, error } = await supabaseClient.functions.invoke("crear-apunte", {
                     body: movimiento
                 });
 
