@@ -72,11 +72,11 @@ async function obtenerUltimoSaldoGlobal() {
     const inputSaldo = document.getElementById("saldo");
 
     try {
-        // Pedimos el último movimiento según id/created_at descendente
+        // Ordenamos por 'id' en lugar de 'created_at'
         const { data: ultimosMovimientos, error } = await supabaseClient
-            .from("movimientos") // Asegúrate de que el nombre de la tabla sea 'movimientos'
+            .from("movimientos")
             .select("saldo")
-            .order("created_at", { ascending: false })
+            .order("id", { ascending: false })
             .limit(1);
 
         if (error) throw error;
@@ -84,7 +84,7 @@ async function obtenerUltimoSaldoGlobal() {
         if (ultimosMovimientos && ultimosMovimientos.length > 0 && ultimosMovimientos[0].saldo !== null) {
             saldoBaseGlobal = parseFloat(ultimosMovimientos[0].saldo);
         } else {
-            saldoBaseGlobal = 0; // Si no hay registros previos en la tabla
+            saldoBaseGlobal = 0;
         }
 
         if (inputSaldo) {
