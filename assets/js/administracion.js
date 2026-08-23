@@ -1,7 +1,10 @@
 import { supabaseClient } from "./supabase.js";
 
-// 1. Asignar la fecha de apunte INMEDIATAMENTE al cargar la página
-window.addEventListener("DOMContentLoaded", () => {
+// Variable global para guardar el saldo de la caja antes del nuevo movimiento
+let saldoBaseGlobal = 0;
+
+// 1. Asignar la fecha de apunte e inicializar datos al cargar la página
+window.addEventListener("DOMContentLoaded", async () => {
     if (typeof protegerPagina === "function") {
         try {
             protegerPagina();
@@ -26,6 +29,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Cargar la lista de socios directiva/admin
     cargarSociosDirectiva();
+
+    // Obtener el último saldo global registrado en la base de datos
+    await obtenerUltimoSaldoGlobal();
 });
 
 // 2. Cargar socios usando supabaseClient exportado
@@ -36,7 +42,7 @@ async function cargarSociosDirectiva() {
     try {
         const { data: socios, error } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellido, rol") // Corregido: 'apellido' en singular
+            .select("id, nombre, apellido, rol")
             .or("rol.eq.administrador,rol.eq.directiva")
             .order("nombre", { ascending: true });
 
@@ -61,7 +67,55 @@ async function cargarSociosDirectiva() {
     }
 }
 
-// 3. Formatear números a 2 decimales
+// 3. Obtener el último saldo global acumulado del club
+async function obtenerUltimoSaldoGlobal() {
+    const inputSaldo = document.getElementById("saldo");
+
+    try {
+        // Pedimos el último movimiento según id/created_at descendente
+        const { data: ultimosMovimientos, error } = await supabaseClient
+            .from("movimientos") // Asegúrate de que el nombre de la tabla sea 'movimientos'
+            .select("saldo")
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+        if (error) throw error;
+
+        if (ultimosMovimientos && ultimosMovimientos.length > 0 && ultimosMovimientos[0].saldo !== null) {
+            saldoBaseGlobal = parseFloat(ultimosMovimientos[0].saldo);
+        } else {
+            saldoBaseGlobal = 0; // Si no hay registros previos en la tabla
+        }
+
+        if (inputSaldo) {
+            inputSaldo.value = saldoBaseGlobal.toFixed(2);
+        }
+
+    } catch (err) {
+        console.error("Error al obtener el último saldo global:", err);
+        saldoBaseGlobal = 0;
+        if (inputSaldo) inputSaldo.value = "0.00";
+    }
+}
+
+// 4. Recalcular el saldo en tiempo real según el importe introducido
+function calcularNuevoSaldo() {
+    const inputImporte = document.getElementById("importe");
+    const inputSaldo = document.getElementById("saldo");
+
+    if (!inputSaldo) return;
+
+    const valorImporte = parseFloat(inputImporte ? inputImporte.value : 0);
+
+    if (!isNaN(valorImporte)) {
+        const nuevoSaldo = saldoBaseGlobal + valorImporte;
+        inputSaldo.value = nuevoSaldo.toFixed(2);
+    } else {
+        inputSaldo.value = saldoBaseGlobal.toFixed(2);
+    }
+}
+
+// 5. Formatear números a 2 decimales
 function formatearDecimales(input) {
     if (input && input.value !== "") {
         const valor = parseFloat(input.value);
@@ -71,7 +125,7 @@ function formatearDecimales(input) {
     }
 }
 
-// 4. Formatear fecha para enviar a backend (DD-MM-AAAA -> AAAA-MM-DD)
+// 6. Formatear fecha para enviar a backend (DD-MM-AAAA -> AAAA-MM-DD)
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -79,20 +133,21 @@ function formatearFechaParaBackend(fechaDMY) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
-// 5. Envío del formulario
+// 7. Envío del formulario y eventos
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formMovimiento");
     const mensaje = document.getElementById("mensajeMovimiento");
     const btnLimpiar = document.getElementById("btnLimpiar");
     const inputFechaApunte = document.getElementById("fecha_apunte");
     const inputImporte = document.getElementById("importe");
-    const inputSaldo = document.getElementById("saldo");
 
+    // Recalcular saldo dinámicamente al escribir o cambiar el importe
     if (inputImporte) {
-        inputImporte.addEventListener("blur", () => formatearDecimales(inputImporte));
-    }
-    if (inputSaldo) {
-        inputSaldo.addEventListener("blur", () => formatearDecimales(inputSaldo));
+        inputImporte.addEventListener("input", calcularNuevoSaldo);
+        inputImporte.addEventListener("blur", () => {
+            formatearDecimales(inputImporte);
+            calcularNuevoSaldo();
+        });
     }
 
     function mostrarMensaje(texto, esError = false) {
@@ -112,10 +167,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function limpiarFormulario() {
+    async function limpiarFormulario() {
         if (form) form.reset();
         reponerFecha();
         mostrarMensaje("");
+        // Al limpiar, volvemos a poner el saldo base original
+        await obtenerUltimoSaldoGlobal();
     }
 
     if (form) {
@@ -123,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             evento.preventDefault();
 
             formatearDecimales(inputImporte);
-            formatearDecimales(inputSaldo);
+            calcularNuevoSaldo(); // Asegurar saldo calculado justo antes de enviar
 
             const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
 
@@ -135,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 tipo: document.getElementById("tipo").value || null,
                 codigo_cuenta: document.getElementById("codigo_cuenta").value,
                 importe: parseFloat(document.getElementById("importe").value),
-                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null
+                saldo: parseFloat(document.getElementById("saldo").value)
             };
 
             try {
@@ -148,6 +205,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (error) throw error;
 
                 mostrarMensaje("Movimiento registrado correctamente.");
+                
+                // Actualizamos el saldo base con el nuevo saldo guardado
+                saldoBaseGlobal = movimiento.saldo;
                 limpiarFormulario();
 
             } catch (error) {
