@@ -44,6 +44,18 @@
             cursor: default;
         }
 
+        /* Ocultar las flechas de los campos numéricos (Chrome, Safari, Edge, Opera) */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Ocultar las flechas en Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         @media (max-width: 900px) {
             .form-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
@@ -60,150 +72,64 @@
 
 <body>
 
-    <!-- ======================================================
-         CABECERA
-    ======================================================= -->
-
     <header class="site-header">
-
         <nav class="navbar container">
-
             <a class="brand" href="../index.html">
-
                 <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
-                         alt="Escudo CD Veteranos Ajalvir">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
-
-                <span>
-                    CD Veteranos Ajalvir
-                </span>
-
+                <span>CD Veteranos Ajalvir</span>
             </a>
-
-            <button class="nav-toggle" data-nav-toggle>
-                ☰
-            </button>
-
+            <button class="nav-toggle" data-nav-toggle>☰</button>
             <div class="nav-links" data-nav-links>
-
-                <a href="../index.html">
-                    Inicio
-                </a>
-
-                <a href="index.html">
-                    Directiva
-                </a>
-
-                <a class="active" href="socios.html">
-                    Socios
-                </a>
-
-                <button class="btn-logout" onclick="cerrarSesion()">
-                    Cerrar sesión
-                </button>
-
+                <a href="../index.html">Inicio</a>
+                <a href="index.html">Directiva</a>
+                <a class="active" href="socios.html">Socios</a>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
             </div>
-
         </nav>
-
     </header>
-
-    <!-- ======================================================
-         CONTENIDO
-    ======================================================= -->
 
     <main class="container">
 
         <section class="page-hero">
-
-            <p class="eyebrow">
-                Administración
-            </p>
-
-            <h1>
-                Gestión de Movimientos
-            </h1>
-
-            <p class="lead">
-                Alta y registro de apuntes contables para el 
-                <strong>club</strong>.
-            </p>
-
+            <p class="eyebrow">Administración</p>
+            <h1>Gestión de Movimientos</h1>
+            <p class="lead">Alta y registro de apuntes contables para el <strong>club</strong>.</p>
         </section>
 
         <section class="app-layout-single">
-
             <div class="content-grid">
 
-                <!-- Formulario de Registro de Movimientos -->
-
                 <article class="card wide">
-
-                    <h3>
-                        Nuevo Movimiento Contable
-                    </h3>
+                    <h3>Nuevo Movimiento Contable</h3>
 
                     <form class="form form-grid-3" id="formMovimiento">
 
+                        <!-- FILA 1 -->
                         <div class="form-group">
-                            <label for="temporada">
-                                Temporada *
-                            </label>
-                            <input class="input"
-                                   id="temporada"
-                                   required
-                                   placeholder="2025/2026">
+                            <label for="temporada">Temporada *</label>
+                            <input class="input" id="temporada" required placeholder="2025/2026">
                         </div>
 
                         <div class="form-group">
-                            <label for="fecha_contable">
-                                Fecha contable *
-                            </label>
-                            <input class="input"
-                                   type="date"
-                                   id="fecha_contable"
-                                   required>
+                            <label for="fecha_contable">Fecha contable *</label>
+                            <input class="input" type="date" id="fecha_contable" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="fecha_apunte">
-                                Fecha apunte
-                            </label>
-                            <input class="input"
-                                   type="text"
-                                   id="fecha_apunte"
-                                   placeholder="dd-mm-aaaa"
-                                   readonly>
+                            <label for="fecha_apunte">Fecha apunte</label>
+                            <input class="input" type="text" id="fecha_apunte" placeholder="dd-mm-aaaa" readonly>
+                        </div>
+
+                        <!-- FILA 2 -->
+                        <div class="form-group">
+                            <label for="concepto">Concepto *</label>
+                            <input class="input" id="concepto" required placeholder="Cobro de cuota">
                         </div>
 
                         <div class="form-group">
-                            <label for="concepto">
-                                Concepto *
-                            </label>
-                            <input class="input"
-                                   id="concepto"
-                                   required
-                                   placeholder="Cobro de cuota">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="importe">
-                                Importe (€) *
-                            </label>
-                            <input class="input"
-                                   type="number"
-                                   step="0.01"
-                                   id="importe"
-                                   required
-                                   placeholder="0.00">
-                        </div>
-
-                        <!-- DESPLEGABLE: TIPO DE GASTO -->
-                        <div class="form-group">
-                            <label for="tipo">
-                                Tipo de gasto
-                            </label>
+                            <label for="tipo">Tipo de gasto</label>
                             <select class="input" id="tipo">
                                 <option value="">-- Seleccionar --</option>
                                 <option value="Arbitraje">Arbitraje</option>
@@ -213,38 +139,26 @@
                             </select>
                         </div>
 
-                        <!-- CAMPO DIRECTO: SALDO -->
                         <div class="form-group">
-                            <label for="saldo">
-                                Saldo (€)
-                            </label>
-                            <input class="input"
-                                   type="number"
-                                   step="0.01"
-                                   id="saldo"
-                                   placeholder="0.00">
+                            <label for="codigo_cuenta">Código de cuenta (ID Socio) *</label>
+                            <input class="input" id="codigo_cuenta" required placeholder="UUID del Socio">
+                        </div>
+
+                        <!-- FILA 3 -->
+                        <div class="form-group">
+                            <label for="importe">Importe (€) *</label>
+                            <input class="input" type="number" step="0.01" id="importe" required placeholder="0.00">
                         </div>
 
                         <div class="form-group">
-                            <label for="codigo_cuenta">
-                                Código de cuenta (ID Socio) *
-                            </label>
-                            <input class="input"
-                                   id="codigo_cuenta"
-                                   required
-                                   placeholder="UUID del Socio">
+                            <label for="saldo">Saldo (€)</label>
+                            <input class="input" type="number" step="0.01" id="saldo" placeholder="0.00">
                         </div>
 
+                        <!-- ACCIONES -->
                         <div class="form-actions">
-                            <button class="btn btn-primary" type="submit">
-                                Registrar Movimiento
-                            </button>
-
-                            <button class="btn btn-secondary"
-                                    type="button"
-                                    id="btnLimpiar">
-                                Limpiar
-                            </button>
+                            <button class="btn btn-primary" type="submit">Registrar Movimiento</button>
+                            <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
                         </div>
 
                         <div style="grid-column: 1 / -1;">
@@ -252,18 +166,12 @@
                         </div>
 
                     </form>
-
                 </article>
 
             </div>
-
         </section>
 
     </main>
-
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
 
     <script src="../assets/js/sesion.js"></script>
     <script src="../assets/js/administracion.js"></script>
