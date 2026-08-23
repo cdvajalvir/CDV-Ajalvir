@@ -1,5 +1,28 @@
 import { supabaseClient } from "./supabase.js";
 
+// Inicio de administracion.js
+async function verificarPermisoAdmin() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const { data: socio } = await supabaseClient
+        .from("socios")
+        .select("rol")
+        .eq("id", session.user.id)
+        .single();
+
+    if (!socio || (socio.rol !== "administrador" && socio.rol !== "admin")) {
+        alert("Acceso denegado: Se requieren permisos de administrador.");
+        window.location.href = "inicio.html";
+    }
+}
+
+verificarPermisoAdmin();
+
 // Variable global para guardar el saldo de la caja antes del nuevo movimiento
 let saldoBaseGlobal = 0;
 
