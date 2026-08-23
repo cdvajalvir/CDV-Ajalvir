@@ -72,11 +72,10 @@ async function obtenerUltimoSaldoGlobal() {
     const inputSaldo = document.getElementById("saldo");
 
     try {
-        // Ordenamos por 'id' en lugar de 'created_at'
         const { data: ultimosMovimientos, error } = await supabaseClient
             .from("movimientos")
             .select("saldo")
-            .order("id", { ascending: false })
+            .order("created_at", { ascending: false }) // <-- Ordena por fecha/hora exacta de inserción
             .limit(1);
 
         if (error) throw error;
