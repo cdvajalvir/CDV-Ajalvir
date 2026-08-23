@@ -1,1 +1,253 @@
+<!doctype html>
+<html lang="es">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Panel directiva · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+
+            <a class="brand" href="../index.html">
+
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+
+                <span>CD Veteranos Ajalvir</span>
+
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>
+                ☰
+            </button>
+
+            <div class="nav-links" data-nav-links>
+
+                <a href="../index.html">
+                    Inicio
+                </a>
+
+                <a class="active" href="index.html">
+                    Directiva
+                </a>
+
+                <a href="socios.html">
+                    Socios
+                </a>
+
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Panel de directiva
+            </h1>
+
+            <p class="lead">
+                Panel de trabajo para la gestión interna del club.
+            </p>
+
+        </section>
+
+        <!-- Aplicación -->
+
+        <section class="app-layout">
+
+            <!-- Menú lateral -->
+
+            <aside class="app-sidebar">
+
+                <div class="app-sidebar-title">
+
+                    <span class="brand-mark">
+                        CDV
+                    </span>
+
+                    <span>
+                        Menú
+                    </span>
+
+                </div>
+
+                <nav class="app-menu">
+
+                    <a class="active" href="index.html">
+                        Resumen
+                    </a>
+
+                    <a href="socios.html">
+                        Socios
+                    </a>
+
+                    <a href="equipos.html">
+                        Equipos
+                    </a>
+
+                    <a href="cuotas.html">
+                        Cuotas
+                    </a>
+
+                    <a href="noticias.html">
+                        Noticias
+                    </a>
+
+                    <a href="documentos.html">
+                        Documentos
+                    </a>
+
+                </nav>
+
+            </aside>
+
+            <!-- Panel principal -->
+
+            <div class="app-main">
+
+                <div class="content-grid">
+
+                    <article class="card">
+
+                        <h3>
+                            Socios activos
+                        </h3>
+
+                        <p class="metric" id="sociosActivos">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Directiva
+                        </h3>
+
+                        <p class="metric" id="totalDirectiva">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Administradores
+                        </h3>
+
+                        <p class="metric" id="totalAdmin">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card">
+
+                        <h3>
+                            Cuotas con importe
+                        </h3>
+
+                        <p class="metric" id="totalCuotas">
+                            -
+                        </p>
+
+                    </article>
+
+                    <article class="card wide">
+
+                        <h3>
+                            Acceso a gestión
+                        </h3>
+
+                        <p>
+                            La gestión de fichas se realiza desde
+                            <a href="socios.html">
+                                Gestión de socios
+                            </a>.
+
+                            Solo los administradores pueden guardar
+                            modificaciones.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+
+    <script type="module">
+
+        /* ======================================================
+         * 1. IMPORTACIONES LOCALES
+         * ==================================================== */
+        import {
+            comprobarAcceso,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+
+        /* ======================================================
+         * 2. EXPOSICIÓN GLOBAL PARA EL ONCLICK DEL HTML
+         * ==================================================== */
+        window.cerrarSesion = cerrarSesion;
+
+
+        /* ======================================================
+         * 3. CONTROL DE ACCESO
+         * ==================================================== */
+        comprobarAcceso([
+            "administrador",
+            "directiva"
+        ], (usuario) => {
+
+            // Se ejecuta solo cuando Supabase/Edge Function confirman el perfil y el rol
+            console.log("Acceso concedido a Directiva para el usuario:", usuario);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
