@@ -1,313 +1,108 @@
-<!doctype html>
-<html lang="es">
+// Función principal para inicializar la fecha apunte (DD-MM-AAAA)
+function inicializarFechaApunte() {
+    const inputFechaApunte = document.getElementById("fecha_apunte");
+    if (inputFechaApunte) {
+        const hoy = new Date();
+        const dia = String(hoy.getDate()).padStart(2, "0");
+        const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+        const anio = hoy.getFullYear();
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        inputFechaApunte.value = `${dia}-${mes}-${anio}`;
+        inputFechaApunte.readOnly = true;
+    }
+}
 
-    <title>Gestión de Movimientos · CD Veteranos Ajalvir</title>
+// Convierte DD-MM-AAAA a AAAA-MM-DD para el backend en Supabase
+function formatearFechaParaBackend(fechaDMY) {
+    if (!fechaDMY) return null;
+    const partes = fechaDMY.split("-");
+    if (partes.length !== 3) return fechaDMY;
+    return `${partes[2]}-${partes[1]}-${partes[0]}`;
+}
 
-    <link rel="stylesheet" href="../assets/css/styles.css">
-    <style>
-        /* Cuadrícula de 3 columnas para los campos del formulario */
-        .form-grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.25rem;
-            align-items: start;
-        }
+function inicializarFormulario() {
+    // Validar sesión si existe la función
+    if (typeof protegerPagina === "function") {
+        protegerPagina();
+    }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.35rem;
-        }
+    // Rellenar fecha de inmediato
+    inicializarFechaApunte();
 
-        .form-actions {
-            grid-column: 1 / -1;
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+    const form = document.getElementById("formMovimiento");
+    const mensaje = document.getElementById("mensajeMovimiento");
+    const btnLimpiar = document.getElementById("btnLimpiar");
+    const inputFechaApunte = document.getElementById("fecha_apunte");
 
-        @media (max-width: 900px) {
-            .form-grid-3 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+    const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
 
-        @media (max-width: 600px) {
-            .form-grid-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- ======================================================
-         CABECERA
-    ======================================================= -->
-
-    <header class="site-header">
-
-        <nav class="navbar container">
-
-            <a class="brand" href="../index.html">
-
-                <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg"
-                         alt="Escudo CD Veteranos Ajalvir">
-                </span>
-
-                <span>
-                    CD Veteranos Ajalvir
-                </span>
-
-            </a>
-
-            <button class="nav-toggle" data-nav-toggle>
-                ☰
-            </button>
-
-            <div class="nav-links" data-nav-links>
-
-                <a href="../index.html">
-                    Inicio
-                </a>
-
-                <a href="index.html">
-                    Directiva
-                </a>
-
-                <a class="active" href="socios.html">
-                    Socios
-                </a>
-
-                <button class="btn-logout" onclick="cerrarSesion()">
-                    Cerrar sesión
-                </button>
-
-            </div>
-
-        </nav>
-
-    </header>
-
-    <!-- ======================================================
-         CONTENIDO
-    ======================================================= -->
-
-    <main class="container">
-
-        <section class="page-hero">
-
-            <p class="eyebrow">
-                Administración
-            </p>
-
-            <h1>
-                Gestión de Movimientos
-            </h1>
-
-            <p class="lead">
-                Alta y registro de apuntes contables para el 
-                <strong>club</strong>.
-            </p>
-
-        </section>
-
-        <section class="app-layout-single">
-
-            <div class="content-grid">
-
-                <!-- Formulario de Registro de Movimientos -->
-
-                <article class="card wide">
-
-                    <h3>
-                        Nuevo Movimiento Contable
-                    </h3>
-
-                    <form class="form form-grid-3" id="formMovimiento">
-
-                        <div class="form-group">
-                            <label for="temporada">
-                                Temporada *
-                            </label>
-                            <input class="input"
-                                   id="temporada"
-                                   required
-                                   placeholder="2025/2026">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="fecha_contable">
-                                Fecha contable *
-                            </label>
-                            <input class="input"
-                                   type="date"
-                                   id="fecha_contable"
-                                   required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="fecha_apunte">
-                                Fecha apunte
-                            </label>
-                            <input class="input"
-                                   type="date"
-                                   id="fecha_apunte">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="concepto">
-                                Concepto *
-                            </label>
-                            <input class="input"
-                                   id="concepto"
-                                   required
-                                   placeholder="Cobro de cuota">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="importe">
-                                Importe (€) *
-                            </label>
-                            <input class="input"
-                                   type="number"
-                                   step="0.01"
-                                   id="importe"
-                                   required
-                                   placeholder="0.00">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tipo">
-                                Tipo de gasto
-                            </label>
-                            <input class="input"
-                                   id="tipo"
-                                   placeholder="Ej: Material, Licencia...">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="saldo">
-                                Saldo (€)
-                            </label>
-                            <input class="input"
-                                   type="number"
-                                   step="0.01"
-                                   id="saldo"
-                                   placeholder="0.00">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="codigo_cuenta">
-                                Código de cuenta (ID Socio) *
-                            </label>
-                            <input class="input"
-                                   id="codigo_cuenta"
-                                   required
-                                   placeholder="UUID del Socio">
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-primary" type="submit">
-                                Registrar Movimiento
-                            </button>
-
-                            <button class="btn btn-secondary"
-                                    type="button"
-                                    id="btnLimpiar">
-                                Limpiar
-                            </button>
-                        </div>
-
-                        <div style="grid-column: 1 / -1;">
-                            <p id="mensajeMovimiento"></p>
-                        </div>
-
-                    </form>
-
-                </article>
-
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
-
-    <script src="../assets/js/sesion.js"></script>
-    <script> protegerPagina() </script>
-
-    <script type="module">
-        const form = document.getElementById("formMovimiento");
-        const mensaje = document.getElementById("mensajeMovimiento");
-        const btnLimpiar = document.getElementById("btnLimpiar");
-
-        // URL de tu Edge Function en Supabase para crear movimientos
-        const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
-
-        function mostrarMensaje(texto, esError = false) {
+    function mostrarMensaje(texto, esError = false) {
+        if (mensaje) {
             mensaje.textContent = texto;
             mensaje.className = esError ? "status danger" : "status ok";
         }
+    }
 
-        function limpiarFormulario() {
-            form.reset();
-            mostrarMensaje("");
-        }
+    function limpiarFormulario() {
+        if (form) form.reset();
+        inicializarFechaApunte(); // Mantiene la fecha tras resetear
+        mostrarMensaje("");
+    }
 
-        async function guardarMovimiento(evento) {
-            evento.preventDefault();
+    async function guardarMovimiento(evento) {
+        evento.preventDefault();
 
-            const movimiento = {
-                temporada: document.getElementById("temporada").value,
-                fecha_contable: document.getElementById("fecha_contable").value,
-                fecha_apunte: document.getElementById("fecha_apunte").value || null,
-                concepto: document.getElementById("concepto").value,
-                importe: document.getElementById("importe").value,
-                tipo: document.getElementById("tipo").value || null,
-                saldo: document.getElementById("saldo").value || null,
-                codigo_cuenta: document.getElementById("codigo_cuenta").value
-            };
+        const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
 
-            try {
-                mostrarMensaje("Guardando registro...");
+        const movimiento = {
+            temporada: document.getElementById("temporada").value,
+            fecha_contable: document.getElementById("fecha_contable").value,
+            fecha_apunte: fechaApunteFormateada,
+            concepto: document.getElementById("concepto").value,
+            importe: parseFloat(document.getElementById("importe").value),
+            tipo: document.getElementById("tipo").value || null,
+            saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null,
+            codigo_cuenta: document.getElementById("codigo_cuenta").value
+        };
 
-                const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(movimiento)
-                });
+        try {
+            mostrarMensaje("Guardando registro...");
 
-                const resultado = await respuesta.json();
+            const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(movimiento)
+            });
 
-                if (!respuesta.ok) {
-                    throw new Error(resultado.error || "Error al registrar el movimiento");
-                }
+            const resultado = await respuesta.json();
 
-                mostrarMensaje("Movimiento registrado correctamente.");
-                limpiarFormulario();
-
-            } catch (error) {
-                console.error(error);
-                mostrarMensaje(error.message, true);
+            if (!respuesta.ok) {
+                throw new Error(resultado.error || "Error al registrar el movimiento");
             }
+
+            mostrarMensaje("Movimiento registrado correctamente.");
+            limpiarFormulario();
+
+        } catch (error) {
+            console.error(error);
+            mostrarMensaje(error.message, true);
         }
+    }
 
+    if (form) {
         form.addEventListener("submit", guardarMovimiento);
+    }
+
+    if (btnLimpiar) {
         btnLimpiar.addEventListener("click", limpiarFormulario);
-    </script>
+    }
+}
 
-</body>
-
-</html>
+// Ejecución
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarFormulario);
+} else {
+    inicializarFormulario();
+}
