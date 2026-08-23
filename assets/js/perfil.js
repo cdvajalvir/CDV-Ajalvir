@@ -101,6 +101,8 @@ if (btnGuardar) {
 function mostrarPerfil() {
     if (!grid) return;
 
+    grid.classList.remove("editing"); // Vuelve al diseño normal de lectura
+    
     btnEditar.hidden = false;
     btnGuardar.hidden = true;
     btnCancelar.hidden = true;
@@ -127,6 +129,8 @@ function mostrarPerfil() {
 function editarPerfil() {
     if (!grid) return;
 
+    grid.classList.add("editing"); // Activa las 3 columnas en edición
+    
     btnEditar.hidden = true;
     btnGuardar.hidden = false;
     btnCancelar.hidden = false;
