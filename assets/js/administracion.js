@@ -23,7 +23,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// 2. Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
+// 2. Formatear números a 2 decimales automáticamente al salir del input
+function formatearDecimales(input) {
+    if (input && input.value !== "") {
+        const valor = parseFloat(input.value);
+        if (!isNaN(valor)) {
+            input.value = valor.toFixed(2);
+        }
+    }
+}
+
+// 3. Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -31,14 +41,24 @@ function formatearFechaParaBackend(fechaDMY) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
-// 3. Manejo del formulario
+// 4. Manejo del formulario
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formMovimiento");
     const mensaje = document.getElementById("mensajeMovimiento");
     const btnLimpiar = document.getElementById("btnLimpiar");
     const inputFechaApunte = document.getElementById("fecha_apunte");
+    const inputImporte = document.getElementById("importe");
+    const inputSaldo = document.getElementById("saldo");
 
     const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
+
+    // Eventos para forzar formato de 2 decimales al perder el foco (blur)
+    if (inputImporte) {
+        inputImporte.addEventListener("blur", () => formatearDecimales(inputImporte));
+    }
+    if (inputSaldo) {
+        inputSaldo.addEventListener("blur", () => formatearDecimales(inputSaldo));
+    }
 
     function mostrarMensaje(texto, esError = false) {
         if (mensaje) {
@@ -67,6 +87,10 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", async (evento) => {
             evento.preventDefault();
 
+            // Asegurar decimales antes de enviar
+            formatearDecimales(inputImporte);
+            formatearDecimales(inputSaldo);
+
             const fechaApunteFormateada = formatearFechaParaBackend(inputFechaApunte ? inputFechaApunte.value : "");
 
             const movimiento = {
@@ -74,10 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 fecha_contable: document.getElementById("fecha_contable").value,
                 fecha_apunte: fechaApunteFormateada,
                 concepto: document.getElementById("concepto").value,
+                tipo: document.getElementById("tipo").value || null,
+                codigo_cuenta: document.getElementById("codigo_cuenta").value,
                 importe: parseFloat(document.getElementById("importe").value),
-                tipo: document.getElementById("tipo").value || null, // Valor seleccionado del desplegable
-                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null, // Cantidad directa
-                codigo_cuenta: document.getElementById("codigo_cuenta").value
+                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null
             };
 
             try {
