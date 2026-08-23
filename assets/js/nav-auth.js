@@ -5,14 +5,12 @@ export async function cargarNavegacionDinamica() {
     const contenedorNav = document.querySelector("[data-nav-links]");
     if (!contenedorNav) return;
 
-    // Calculamos el prefijo relativo según si estamos en una subcarpeta (ej. /socios/) o en la raíz
-    const isInSubfolder = window.location.pathname.includes("/socios/") || 
-                          window.location.pathname.includes("/general/") ||
+    // Detectar si estamos en una subcarpeta (ej: general/) para ajustar rutas relativas
+    const isInSubfolder = window.location.pathname.includes("/general/") || 
                           window.location.pathname.includes("/admin/");
     const basePath = isInSubfolder ? "../" : "./";
 
     try {
-        // 1. Obtener la sesión actual de Supabase
         const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (!session) {
@@ -22,16 +20,15 @@ export async function cargarNavegacionDinamica() {
 
         const user = session.user;
 
-        // 2. Consultar el rol en la tabla 'socios'
+        // Consultar el rol del socio
         const { data: socio } = await supabaseClient
             .from("socios")
             .select("rol")
             .eq("id", user.id)
             .single();
 
-        const rol = socio ? socio.rol : "socio";
+        const rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
 
-        // 3. Renderizar opciones según el rol
         renderizarMenuSegunRol(contenedorNav, rol, basePath);
 
     } catch (err) {
@@ -41,47 +38,37 @@ export async function cargarNavegacionDinamica() {
 }
 
 function renderizarMenuSegunRol(contenedor, rol, basePath) {
-    let html = "";
+    contenedor.innerHTML = "";
 
     if (rol === "socio") {
-        // Menú exacto para el rol Socio
-        html = `
+        // Menú en la web pública cuando el usuario está logueado como Socio
+        contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
-            <a href="${basePath}socios/index.html">Área socio</a>
+            <a href="${basePath}socios/socios.html">Área socio</a>
         `;
     } else if (rol === "administrador" || rol === "admin") {
         // Menú para Administrador
-        html = `
+        contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
-            <a href="${basePath}admin/index.html">Administración</a>
-            <a href="${basePath}admin/gestion-socios.html">Gestión Socios</a>
-            <a href="#" id="btn-logout" class="btn-logout">Cerrar sesión</a>
+            <a href="${basePath}admin/administracion.html">Administración</a>
+            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
         `;
-    } else {
-        // Menú genérico de respaldo para otros roles autenticados
-        html = `
-            <a href="${basePath}index.html">Inicio</a>
-            <a href="${basePath}general/calendario.html">Calendario</a>
-            <a href="#" id="btn-logout" class="btn-logout">Cerrar sesión</a>
-        `;
-    }
 
-    contenedor.innerHTML = html;
-
-    // Listener para cerrar sesión
-    const btnLogout = document.getElementById("btn-logout");
-    if (btnLogout) {
-        btnLogout.addEventListener("click", async (e) => {
-            e.preventDefault();
-            await supabaseClient.auth.signOut();
-            window.location.href = `${basePath}index.html`;
-        });
+        const btnLogout = document.getElementById("btn-logout");
+        if (btnLogout) {
+            btnLogout.addEventListener("click", async (e) => {
+                e.preventDefault();
+                await supabaseClient.auth.signOut();
+                window.location.href = `${basePath}index.html`;
+            });
+        }
     }
 }
 
 function renderizarMenuPublico(contenedor, basePath) {
+    // Menú sin loguear (Acceso público)
     contenedor.innerHTML = `
         <a href="${basePath}index.html">Inicio</a>
         <a href="${basePath}general/calendario.html">Calendario</a>
@@ -89,5 +76,4 @@ function renderizarMenuPublico(contenedor, basePath) {
     `;
 }
 
-// Ejecutar automáticamente al cargar el DOM
 document.addEventListener("DOMContentLoaded", cargarNavegacionDinamica);
