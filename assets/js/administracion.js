@@ -1,3 +1,5 @@
+import { supabaseClient } from "./supabase.js";
+
 // 1. Asignar la fecha de apunte INMEDIATAMENTE al cargar la página
 window.addEventListener("DOMContentLoaded", () => {
     if (typeof protegerPagina === "function") {
@@ -22,18 +24,17 @@ window.addEventListener("DOMContentLoaded", () => {
         inputFechaApunte.readOnly = true;
     }
 
-    // Cargar socios al iniciar
+    // Cargar la lista de socios directiva/admin
     cargarSociosDirectiva();
 });
 
-// 2. Función para obtener socios con rol administrador o directiva desde Supabase
+// 2. Cargar socios usando supabaseClient exportado
 async function cargarSociosDirectiva() {
     const selectSocio = document.getElementById("codigo_cuenta");
     if (!selectSocio) return;
 
     try {
-        // Asegúrate de que 'supabase' está inicializado globalmente en tu proyecto
-        const { data: socios, error } = await supabase
+        const { data: socios, error } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellidos, rol")
             .in("rol", ["administrador", "directiva"])
@@ -46,7 +47,7 @@ async function cargarSociosDirectiva() {
         if (socios && socios.length > 0) {
             socios.forEach(socio => {
                 const option = document.createElement("option");
-                option.value = socio.id; // Asigna el UUID como valor para la base de datos
+                option.value = socio.id;
                 option.textContent = `${socio.nombre} ${socio.apellidos || ""}`.trim();
                 selectSocio.appendChild(option);
             });
@@ -60,7 +61,7 @@ async function cargarSociosDirectiva() {
     }
 }
 
-// 3. Formatear números a 2 decimales automáticamente al salir del input
+// 3. Formatear números a 2 decimales
 function formatearDecimales(input) {
     if (input && input.value !== "") {
         const valor = parseFloat(input.value);
@@ -70,7 +71,7 @@ function formatearDecimales(input) {
     }
 }
 
-// 4. Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
+// 4. Formatear fecha para enviar a backend (DD-MM-AAAA -> AAAA-MM-DD)
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -78,7 +79,7 @@ function formatearFechaParaBackend(fechaDMY) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
-// 5. Manejo del formulario
+// 5. Envío del formulario
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formMovimiento");
     const mensaje = document.getElementById("mensajeMovimiento");
@@ -86,8 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputFechaApunte = document.getElementById("fecha_apunte");
     const inputImporte = document.getElementById("importe");
     const inputSaldo = document.getElementById("saldo");
-
-    const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
 
     if (inputImporte) {
         inputImporte.addEventListener("blur", () => formatearDecimales(inputImporte));
@@ -134,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 fecha_apunte: fechaApunteFormateada,
                 concepto: document.getElementById("concepto").value,
                 tipo: document.getElementById("tipo").value || null,
-                codigo_cuenta: document.getElementById("codigo_cuenta").value, // Envía el UUID seleccionado
+                codigo_cuenta: document.getElementById("codigo_cuenta").value,
                 importe: parseFloat(document.getElementById("importe").value),
                 saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null
             };
@@ -142,26 +141,18 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 mostrarMensaje("Guardando registro...");
 
-                const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(movimiento)
+                const { data, error } = await supabaseClient.functions.invoke("crear-movimiento", {
+                    body: movimiento
                 });
 
-                const resultado = await respuesta.json();
-
-                if (!respuesta.ok) {
-                    throw new Error(resultado.error || "Error al registrar el movimiento");
-                }
+                if (error) throw error;
 
                 mostrarMensaje("Movimiento registrado correctamente.");
                 limpiarFormulario();
 
             } catch (error) {
-                console.error(error);
-                mostrarMensaje(error.message, true);
+                console.error("Error al guardar movimiento:", error);
+                mostrarMensaje(error.message || "Error al registrar el movimiento", true);
             }
         });
     }
