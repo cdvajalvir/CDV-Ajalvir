@@ -215,3 +215,17 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 .social-link.mail:hover { background: #EA4335; color: #ffffff; }
 .social-link.facebook { color: #1877F2; }
 .social-link.facebook:hover { background: #1877F2; color: #ffffff; }
+
+/* Modo edición a 3 columnas para reducir la altura */
+.profile-grid.editing {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+/* En pantallas pequeñas (móviles) vuelve a 1 columna para que no se comprima */
+@media (max-width: 768px) {
+    .profile-grid.editing {
+        grid-template-columns: 1fr;
+    }
+}
