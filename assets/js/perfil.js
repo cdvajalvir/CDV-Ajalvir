@@ -57,7 +57,7 @@ const campos = [
         tipo: "text"
     },
     {
-        titulo: "Cuota",
+        titulo: "Cantidad Abonada al Club",
         campo: "cantidad_pagada",
         editable: false,
         tipo: "number"
