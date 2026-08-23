@@ -1,6 +1,5 @@
 // 1. Asignar la fecha de apunte INMEDIATAMENTE al cargar la página
 window.addEventListener("DOMContentLoaded", () => {
-    // Validar sesión si existe
     if (typeof protegerPagina === "function") {
         try {
             protegerPagina();
@@ -9,7 +8,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Insertar fecha del día de hoy en formato DD-MM-YYYY
     const inputFechaApunte = document.getElementById("fecha_apunte");
     if (inputFechaApunte) {
         const hoy = new Date();
@@ -25,7 +23,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// 2. Función auxiliar para formatear la fecha a YYYY-MM-DD para Supabase
+// 2. Convierte DD-MM-AAAA a AAAA-MM-DD para Supabase
 function formatearFechaParaBackend(fechaDMY) {
     if (!fechaDMY) return null;
     const partes = fechaDMY.split("-");
@@ -33,7 +31,7 @@ function formatearFechaParaBackend(fechaDMY) {
     return `${partes[2]}-${partes[1]}-${partes[0]}`;
 }
 
-// 3. Manejo del formulario de movimientos
+// 3. Manejo del formulario
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formMovimiento");
     const mensaje = document.getElementById("mensajeMovimiento");
@@ -77,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 fecha_apunte: fechaApunteFormateada,
                 concepto: document.getElementById("concepto").value,
                 importe: parseFloat(document.getElementById("importe").value),
-                tipo: document.getElementById("tipo").value || null,
-                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null,
+                tipo: document.getElementById("tipo").value || null, // Valor seleccionado del desplegable
+                saldo: document.getElementById("saldo").value ? parseFloat(document.getElementById("saldo").value) : null, // Cantidad directa
                 codigo_cuenta: document.getElementById("codigo_cuenta").value
             };
 
