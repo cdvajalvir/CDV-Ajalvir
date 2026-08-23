@@ -36,6 +36,14 @@
             cursor: not-allowed;
         }
 
+        /* Visibilidad y contraste del campo de fecha automática */
+        #fecha_apunte[readonly] {
+            color: #ffffff !important;
+            opacity: 1 !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            cursor: default;
+        }
+
         @media (max-width: 900px) {
             .form-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
@@ -46,12 +54,6 @@
             .form-grid-3 {
                 grid-template-columns: 1fr;
             }
-        }
-        #fecha_apunte[readonly] {
-            color: #ffffff !important;
-            opacity: 1 !important;
-            background-color: rgba(255, 255, 255, 0.05) !important;
-            cursor: default;
         }
     </style>
 </head>
@@ -197,15 +199,21 @@
                                    placeholder="0.00">
                         </div>
 
+                        <!-- DESPLEGABLE: TIPO DE GASTO -->
                         <div class="form-group">
                             <label for="tipo">
                                 Tipo de gasto
                             </label>
-                            <input class="input"
-                                   id="tipo"
-                                   placeholder="Ej: Material, Licencia...">
+                            <select class="input" id="tipo">
+                                <option value="">-- Seleccionar --</option>
+                                <option value="Arbitraje">Arbitraje</option>
+                                <option value="Otros">Otros</option>
+                                <option value="Invitación visitante">Invitacion visitante</option>
+                                <option value="Invitación local">Invitacion local</option>
+                            </select>
                         </div>
 
+                        <!-- CAMPO DIRECTO: SALDO -->
                         <div class="form-group">
                             <label for="saldo">
                                 Saldo (€)
