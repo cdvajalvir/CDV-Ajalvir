@@ -1,62 +1,66 @@
 // assets/js/nav-auth.js
+import { supabaseClient } from "./supabase.js";
 
-async function inicializarHeaderNavegacion() {
-    const headerNav = document.getElementById("header-nav");
-    if (!headerNav) return;
+export async function cargarNavegacionDinamica() {
+    const contenedorNav = document.querySelector("[data-nav-links]");
+    if (!contenedorNav) return;
 
     try {
-        // 1. Obtener la sesión actual
-        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        // 1. Obtener la sesión actual de Supabase
+        const { data: { session } } = await supabaseClient.auth.getSession();
 
-        if (!session || sessionError) {
-            renderizarMenuPublico(headerNav);
+        if (!session) {
+            renderizarMenuPublico(contenedorNav);
             return;
         }
 
         const user = session.user;
 
-        // 2. Consultar el rol en la tabla 'socios' usando el ID o el Email
-        const { data: socio, error: socioError } = await supabaseClient
+        // 2. Consultar el rol en la tabla 'socios' usando el ID del usuario autenticado
+        const { data: socio, error } = await supabaseClient
             .from("socios")
             .select("rol")
-            .eq("id", user.id) // O .eq("email", user.email) si usas el correo como enlace
+            .eq("id", user.id)
             .single();
 
         const rol = socio ? socio.rol : "socio";
 
-        // 3. Renderizar opciones del menú
-        renderizarMenuSegunRol(headerNav, rol);
+        // 3. Renderizar opciones del menú según el rol
+        renderizarMenuSegunRol(contenedorNav, rol);
 
     } catch (err) {
-        console.error("Error al verificar navegación por rol:", err);
-        renderizarMenuPublico(headerNav);
+        console.error("Error al cargar la navegación:", err);
+        renderizarMenuPublico(contenedorNav);
     }
 }
 
 function renderizarMenuSegunRol(contenedor, rol) {
-    let html = '';
+    let html = `
+        <a href="index.html">Inicio</a>
+        <a href="general/calendario.html">Calendario</a>
+    `;
 
-    // Enlaces visibles para todos los usuarios logueados
-    html += `<li><a href="inicio.html">Inicio</a></li>`;
-    html += `<li><a href="mi-cuenta.html">Mi Cuenta</a></li>`;
-
-    // 🔴 ACCESOS EXCLUSIVOS SI EL ROL ES ADMINISTRADOR
+    // 🔴 ACCESOS EXCLUSIVOS PARA ROL ADMINISTRADOR
     if (rol === "administrador" || rol === "admin") {
         html += `
-            <li class="item-admin"><a href="administracion.html">Administración</a></li>
-            <li class="item-admin"><a href="gestion-socios.html">Gestión de Socios</a></li>
+            <a href="administracion.html">Administración</a>
+            <a href="gestion-socios.html">Gestión Socios</a>
         `;
     }
 
-    // Botón de salir
-    html += `<li><button id="btn-logout" class="btn-logout">Cerrar Sesión</button></li>`;
+    // Enlace para área personal / cerrar sesión
+    html += `
+        <a href="mi-cuenta.html">Mi Cuenta</a>
+        <a href="#" id="btn-logout" class="btn-logout">Cerrar sesión</a>
+    `;
 
     contenedor.innerHTML = html;
 
     // Listener para cerrar sesión
     const btnLogout = document.getElementById("btn-logout");
     if (btnLogout) {
-        btnLogout.addEventListener("click", async () => {
+        btnLogout.addEventListener("click", async (e) => {
+            e.preventDefault();
             await supabaseClient.auth.signOut();
             window.location.href = "login.html";
         });
@@ -65,18 +69,11 @@ function renderizarMenuSegunRol(contenedor, rol) {
 
 function renderizarMenuPublico(contenedor) {
     contenedor.innerHTML = `
-        <li><a href="inicio.html">Inicio</a></li>
-        <li><a href="login.html">Acceso Socios</a></li>
+        <a href="index.html">Inicio</a>
+        <a href="general/calendario.html">Calendario</a>
+        <a href="login.html">Acceso privado</a>
     `;
 }
 
-// Escuchar cambios de estado de autenticación (Login / Logout)
-if (typeof supabaseClient !== "undefined") {
-    supabaseClient.auth.onAuthStateChange((event) => {
-        if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
-            inicializarHeaderNavegacion();
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", inicializarHeaderNavegacion);
+// Ejecutar automáticamente al cargar la página
+document.addEventListener("DOMContentLoaded", cargarNavegacionDinamica);
