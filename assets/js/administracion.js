@@ -182,31 +182,30 @@ document.addEventListener("DOMContentLoaded", () => {
             formatearDecimales(inputImporte);
             calcularNuevoSaldo(); // Asegurar saldo calculado justo antes de enviar
 
-            // Preparamos la fecha en formato ISO YYYY-MM-DD
+            // 1. Preparamos la fecha de apunte en formato ISO YYYY-MM-DD
             let fechaApunteVal = inputFechaApunte ? inputFechaApunte.value : "";
             let fechaApunteFormateada = fechaApunteVal;
 
             if (fechaApunteVal.includes("-")) {
                 const partes = fechaApunteVal.split("-");
                 if (partes[0].length === 2) {
-                    // Si venía como DD-MM-YYYY, la invertimos a YYYY-MM-DD
                     fechaApunteFormateada = `${partes[2]}-${partes[1]}-${partes[0]}`;
                 }
             }
 
-            // Parsear socio/código de cuenta a número si aplica
-            const valCodigoCuenta = document.getElementById("codigo_cuenta").value;
-            const codigoCuentaParsed = !isNaN(valCodigoCuenta) && valCodigoCuenta !== "" 
-                ? parseInt(valCodigoCuenta, 10) 
-                : valCodigoCuenta;
+            // 2. Gestionar el tipo de gasto (ENUM)
+            const valorTipo = document.getElementById("tipo").value;
+            // Si está vacío o queremos prevenir fallos de ENUM, enviamos null
+            const tipoGastoFormateado = valorTipo && valorTipo.trim() !== "" ? valorTipo : null;
 
+            // 3. Construcción del objeto coincidiendo exactamente con el esquema PostgreSQL
             const movimiento = {
                 temporada: document.getElementById("temporada").value,
-                fecha_contable: document.getElementById("fecha_contable").value,
-                fecha_apunte: fechaApunteFormateada,
+                fecha_contable: document.getElementById("fecha_contable").value, // YYYY-MM-DD
+                fecha_apunte: fechaApunteFormateada,                            // YYYY-MM-DD
                 concepto: document.getElementById("concepto").value,
-                tipo: document.getElementById("tipo").value || null,
-                codigo_cuenta: codigoCuentaParsed,
+                tipo: tipoGastoFormateado,
+                codigo_cuenta: document.getElementById("codigo_cuenta").value,  // UUID como String
                 importe: parseFloat(document.getElementById("importe").value),
                 saldo: parseFloat(document.getElementById("saldo").value)
             };
@@ -214,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 mostrarMensaje("Guardando registro...");
 
-                // Invocamos la Edge Function correcta
+                // Invocamos la Edge Function
                 const { data, error } = await supabaseClient.functions.invoke("crear-apunte", {
                     body: movimiento
                 });
