@@ -16,29 +16,24 @@
          CABECERA
     ======================================================= -->
 
-    <header class="site-header">
+<header class="site-header">
+    <nav class="navbar container">
+        <a class="brand" href="../index.html">
+            <span class="brand-logo">
+                <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+            </span>
+            <span>CD Veteranos Ajalvir</span>
+        </a>
 
-        <nav class="navbar container">
-            <!-- Logotipo que lleva al Inicio público (raíz) -->
-            <a class="brand" href="../index.html">
-                <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
-                </span>
-                <span>CD Veteranos Ajalvir</span>
-            </a>
+        <button class="nav-toggle" data-nav-toggle>☰</button>
 
-            <button class="nav-toggle" data-nav-toggle>☰</button>
-
-            <!-- Menú específico para socios: Inicio + Cerrar sesión -->
-            <div class="nav-links" data-nav-links>
-                <a href="../index.html">Inicio</a>
-                <button class="btn-logout" onclick="cerrarSesion()">
-                    Cerrar sesión
-                </button>
-            </div>
-        </nav>
-
-    </header>
+        <!-- Menú estático exclusivo para el panel de socios -->
+        <div class="nav-links">
+            <a href="../index.html">Inicio</a>
+            <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+    </nav>
+</header>
 
     <!-- ======================================================
          CONTENIDO
