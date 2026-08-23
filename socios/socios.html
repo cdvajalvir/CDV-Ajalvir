@@ -1,1 +1,228 @@
+<!doctype html>
+<html lang="es">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Área de socios · CD Veteranos Ajalvir</title>
+
+    <!-- Ruta a la hoja de estilos subiendo un nivel a la raíz -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+
+        <nav class="navbar container">
+            <!-- Logotipo que lleva al Inicio público (raíz) -->
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+
+            <!-- Menú específico para socios: Inicio + Cerrar sesión -->
+            <div class="nav-links" data-nav-links>
+                <a href="../index.html">Inicio</a>
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    Cerrar sesión
+                </button>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <!-- Cabecera de la página -->
+
+        <section class="page-hero">
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Portal de socios
+            </h1>
+
+            <p class="lead">
+                Bienvenido/a,
+                <strong id="nombreSocio">
+                    socio
+                </strong>.
+            </p>
+
+        </section>
+
+        <!-- Panel principal -->
+
+        <section class="dashboard">
+
+            <!-- Menú lateral -->
+
+            <aside class="side-panel">
+
+                <a href="perfil.html">
+                    Mi perfil
+                </a>
+
+            </aside>
+
+            <!-- Tarjetas -->
+
+            <div class="content-grid">
+
+                <article class="card" id="cuotas">
+
+                    <h3>
+                        Estado de Cuota
+                    </h3>
+
+                    <!-- Métrica principal con el texto de pendiente a la derecha -->
+                    <p class="metric" id="estadoCuota" style="display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;">
+                        <span>- €</span>
+                        <small id="cuotaPendiente" style="font-size: 0.85rem; font-weight: normal; opacity: 0.8; color: #666;">
+                            (- € pendiente)
+                        </small>
+                    </p>
+
+                    <p>
+                        Estado de cuota registrado en la ficha del club.
+                    </p>
+
+                </article>
+
+                <!-- Tarjeta Dorsal + Foto de Socio -->
+                <article class="card" style="position: relative;">
+
+                    <!-- Foto por defecto -->
+                    <div style="position: absolute; top: 1rem; right: 1.25rem;">
+                        <img id="fotoSocio" src="../assets/img/default-avatar.png" alt="Foto del socio" style="width: 80px; height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc;">
+                    </div>
+
+                    <h3>
+                        Dorsal
+                    </h3>
+
+                    <div style="margin-top: 1rem; padding-right: 90px;">
+                        <p class="metric" id="dorsalSocio" style="margin: 0;">
+                            -
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="card wide">
+
+                    <h3>
+                        Comunicados
+                    </h3>
+
+                    <p class="notice">
+                        Revisa periódicamente esta área para consultar
+                        las comunicaciones internas del club.
+                    </p>
+
+                </article>
+
+                <article class="card wide" id="documentos">
+
+                    <h3>
+                        Documentación
+                    </h3>
+
+                    <p>
+                        Normativa interna, autorizaciones y documentos
+                        del club aparecerán en esta sección.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+    <script type="module" src="../assets/js/app.js"></script>
+    <script type="module">
+
+        import {
+            comprobarAcceso,
+            cerrarSesion
+        } from "../assets/js/auth.js";
+
+        window.cerrarSesion = cerrarSesion;
+
+        const cuota = 100; // total a pagar, se deberia guardar en algun sitio
+
+        comprobarAcceso([
+            "administrador",
+            "directiva",
+            "socio"
+        ], (socio) => {
+
+            document.getElementById("nombreSocio").textContent =
+                socio.nombre ||
+                socio.alias ||
+                socio.idSocio ||
+                "socio";
+
+            // 1. Obtener la cantidad pagada real desde la tabla
+            const pagado = socio.cantidad_pagada ?? 0;
+            
+            // 2. Obtener la cantidad pendiente calculada por la Edge Function
+            const pendiente = socio.cantidad_pendiente ?? 0;
+
+            // 3. Pintar en el DOM
+            const estadoCuotaElem = document.getElementById("estadoCuota");
+            const cuotaPendienteElem = document.getElementById("cuotaPendiente");
+
+            if (estadoCuotaElem && cuotaPendienteElem) {
+                // Muestra la cantidad realmente pagada
+                estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
+                
+                // Muestra el texto a la derecha según si debe dinero o no
+                if (pendiente > 0) {
+                    cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
+                    cuotaPendienteElem.style.color = "#d9534f"; // Rojo
+                } else {
+                    cuotaPendienteElem.textContent = `(al día)`;
+                    cuotaPendienteElem.style.color = "#2e7d32"; // Verde
+                }
+            }
+
+            // Dorsal
+            const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
+            document.getElementById("dorsalSocio").textContent =
+                dorsalTexto !== "" ? dorsalTexto : "-";
+
+            // Foto personalizada del socio
+            const imgElement = document.getElementById("fotoSocio");
+            if (socio.foto) {
+                imgElement.src = `../assets/img/${socio.foto}`;
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
