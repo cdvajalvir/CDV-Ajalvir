@@ -5,9 +5,43 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gestión de Cuentas · CD Veteranos Ajalvir</title>
+    <title>Gestión de Movimientos · CD Veteranos Ajalvir</title>
 
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        /* Cuadrícula de 3 columnas para los campos del formulario */
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            align-items: start;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -74,193 +108,114 @@
             </p>
 
             <h1>
-                Gestión de Cuentas
+                Gestión de Movimientos
             </h1>
 
             <p class="lead">
-                Gestión de cuentas del 
-                <strong>club</strong>
-                para todos los apuntes contables.
+                Alta y registro de apuntes contables para el 
+                <strong>club</strong>.
             </p>
 
         </section>
 
-        <section class="app-layout">
+        <section class="app-layout-single">
 
-            <!-- Menú lateral -->
+            <div class="content-grid">
 
-            <aside class="app-sidebar">
+                <!-- Formulario de Registro de Movimientos -->
 
-                <div class="app-sidebar-title">
+                <article class="card wide">
 
-                    <span class="brand-mark">
-                        CDV
-                    </span>
+                    <h3>
+                        Nuevo Movimiento Contable
+                    </h3>
 
-                    <span>
-                        Administración
-                    </span>
+                    <form class="form form-grid-3" id="formMovimiento">
 
-                </div>
-
-                <nav class="app-menu">
-
-                    <a href="index.html">
-                        Resumen
-                    </a>
-
-                    <a class="active" href="socios.html">
-                        Socios
-                    </a>
-
-                    <a href="cuotas.html">
-                        Cuotas
-                    </a>
-
-                    <a href="equipos.html">
-                        Equipos
-                    </a>
-
-                    <a href="noticias.html">
-                        Noticias
-                    </a>
-
-                    <a href="documentos.html">
-                        Documentos
-                    </a>
-
-                </nav>
-
-            </aside>
-
-            <!-- Área principal -->
-
-            <div class="app-main">
-
-                <div class="content-grid">
-
-                    <!-- Ficha -->
-
-                    <article class="card wide">
-
-                        <h3>
-                            Ficha de socio
-                        </h3>
-
-                        <p class="notice">
-                            En el plan Spark, el alta en Authentication se
-                            realiza manualmente con
-                            <strong>cdvxxxx@cdv-ajalvir.local</strong>
-                            y contraseña inicial el DNI. Esta pantalla edita
-                            la ficha del socio en Firestore y sus roles.
-                        </p>
-
-                        <form class="form" id="formSocio">
-
-                            <input type="hidden" id="docId">
-
-                            <label for="idSocio">
-                                ID socio
+                        <div class="form-group">
+                            <label for="temporada">
+                                Temporada *
                             </label>
-
                             <input class="input"
-                                   id="idSocio"
+                                   id="temporada"
                                    required
-                                   placeholder="CDV0001">
+                                   placeholder="2025/2026">
+                        </div>
 
-                            <label for="nombre">
-                                Nombre
+                        <div class="form-group">
+                            <label for="fecha_contable">
+                                Fecha contable *
                             </label>
-
                             <input class="input"
-                                   id="nombre"
+                                   type="date"
+                                   id="fecha_contable"
                                    required>
+                        </div>
 
-                            <label for="dni">
-                                DNI
+                        <div class="form-group">
+                            <label for="fecha_apunte">
+                                Fecha apunte
                             </label>
-
                             <input class="input"
-                                   id="dni">
+                                   type="date"
+                                   id="fecha_apunte">
+                        </div>
 
-                            <label for="telefono">
-                                Teléfono
+                        <div class="form-group">
+                            <label for="concepto">
+                                Concepto *
                             </label>
-
                             <input class="input"
-                                   id="telefono">
+                                   id="concepto"
+                                   required
+                                   placeholder="Cobro de cuota">
+                        </div>
 
-                            <label for="email">
-                                Email
+                        <div class="form-group">
+                            <label for="importe">
+                                Importe (€) *
                             </label>
-
                             <input class="input"
-                                   id="email"
-                                   type="email">
-
-                            <label for="fecNacimiento">
-                                Fecha nacimiento
-                            </label>
-
-                            <input class="input"
-                                   id="fecNacimiento"
-                                   placeholder="dd/mm/aaaa">
-
-                            <label for="dorsal">
-                                Dorsal
-                            </label>
-
-                            <input class="input"
-                                   id="dorsal"
-                                   type="number">
-
-                            <label for="alias">
-                                Alias
-                            </label>
-
-                            <input class="input"
-                                   id="alias">
-
-                            <label for="rol">
-                                Rol
-                            </label>
-
-                            <select class="input" id="rol">
-                                <option value="socio">
-                                    Socio
-                                </option>
-
-                                <option value="directiva">
-                                    Directiva
-                                </option>
-
-                                <option value="administrador">
-                                    Administrador
-                                </option>
-                            </select>
-
-                            <label for="cuota">
-                                Cuota
-                            </label>
-
-                            <input class="input"
-                                   id="cuota"
                                    type="number"
-                                   step="0.01">
+                                   step="0.01"
+                                   id="importe"
+                                   required
+                                   placeholder="0.00">
+                        </div>
 
-                            <label>
-                                <input type="checkbox" id="activo" checked>
-                                Socio activo
+                        <div class="form-group">
+                            <label for="tipo">
+                                Tipo de gasto
                             </label>
+                            <input class="input"
+                                   id="tipo"
+                                   placeholder="Ej: Material, Licencia...">
+                        </div>
 
-                            <label for="observaciones">
-                                Observaciones
+                        <div class="form-group">
+                            <label for="saldo">
+                                Saldo (€)
                             </label>
+                            <input class="input"
+                                   type="number"
+                                   step="0.01"
+                                   id="saldo"
+                                   placeholder="0.00">
+                        </div>
 
-                            <textarea id="observaciones"></textarea>
+                        <div class="form-group">
+                            <label for="codigo_cuenta">
+                                Código de cuenta (ID Socio) *
+                            </label>
+                            <input class="input"
+                                   id="codigo_cuenta"
+                                   required
+                                   placeholder="UUID del Socio">
+                        </div>
 
+                        <div class="form-actions">
                             <button class="btn btn-primary" type="submit">
-                                Guardar cambios
+                                Registrar Movimiento
                             </button>
 
                             <button class="btn btn-secondary"
@@ -268,58 +223,15 @@
                                     id="btnLimpiar">
                                 Limpiar
                             </button>
-
-                            <p id="mensajeSocio"></p>
-
-                        </form>
-
-                    </article>
-
-                    <!-- Listado -->
-
-                    <article class="card wide">
-
-                        <h3>
-                            Listado de socios
-                        </h3>
-
-                        <input class="input"
-                               id="buscador"
-                               type="search"
-                               placeholder="Buscar por ID, nombre, DNI, alias o teléfono">
-
-                        <div class="table-wrapper">
-
-                            <table class="table">
-
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>DNI</th>
-                                        <th>Dorsal</th>
-                                        <th>Rol</th>
-                                        <th>Cuota</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="tablaSocios">
-                                    <tr>
-                                        <td colspan="8">
-                                            Cargando...
-                                        </td>
-                                    </tr>
-                                </tbody>
-
-                            </table>
-
                         </div>
 
-                    </article>
+                        <div style="grid-column: 1 / -1;">
+                            <p id="mensajeMovimiento"></p>
+                        </div>
 
-                </div>
+                    </form>
+
+                </article>
 
             </div>
 
@@ -334,311 +246,67 @@
     <script src="../assets/js/sesion.js"></script>
     <script> protegerPagina() </script>
 
-    <!--<script src="../assets/js/app.js"></script>
-
     <script type="module">
-
-        /* ======================================================
-         * IMPORTACIONES
-         * ==================================================== */
-
-        import {
-            protegerPagina,
-            cerrarSesion
-        } from "../assets/js/auth.js";
-
-        import {
-            db
-        } from "../assets/js/firebase-config.js";
-
-        import {
-            collection,
-            doc,
-            setDoc,
-            getDocs,
-            orderBy,
-            query
-        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-        /* ======================================================
-         * ELEMENTOS DOM
-         * ==================================================== */
-
-        const form = document.getElementById("formSocio");
-        const tabla = document.getElementById("tablaSocios");
-        const mensaje = document.getElementById("mensajeSocio");
-        const buscador = document.getElementById("buscador");
+        const form = document.getElementById("formMovimiento");
+        const mensaje = document.getElementById("mensajeMovimiento");
         const btnLimpiar = document.getElementById("btnLimpiar");
 
-        /* ======================================================
-         * ESTADO
-         * ==================================================== */
+        // URL de tu Edge Function en Supabase para crear movimientos
+        const SUPABASE_FUNCTION_URL = "https://<TU_PROYECTO>.supabase.co/functions/v1/crear-movimiento";
 
-        let cacheSocios = [];
-
-        /* ======================================================
-         * FUNCIONES AUXILIARES
-         * ==================================================== */
-
-        function normalizar(valor) {
-            return String(valor ?? "")
-                .trim()
-                .toUpperCase();
-        }
-
-        function mostrarMensaje(texto, clase = "") {
+        function mostrarMensaje(texto, esError = false) {
             mensaje.textContent = texto;
-            mensaje.className = clase;
+            mensaje.className = esError ? "status danger" : "status ok";
         }
 
         function limpiarFormulario() {
             form.reset();
-
-            document.getElementById("docId").value = "";
-            document.getElementById("activo").checked = true;
-
             mostrarMensaje("");
         }
 
-        function obtenerDatosFormulario() {
-            return {
-                activo: document.getElementById("activo").checked,
-                alias: document.getElementById("alias").value.trim(),
-                cuota: Number(document.getElementById("cuota").value || 0),
-                dni: normalizar(document.getElementById("dni").value),
-                dorsal: document.getElementById("dorsal").value
-                    ? Number(document.getElementById("dorsal").value)
-                    : "",
-                email: document.getElementById("email").value.trim(),
-                fecNacimiento: document.getElementById("fecNacimiento").value.trim(),
-                idSocio: normalizar(document.getElementById("idSocio").value),
-                nombre: document.getElementById("nombre").value.trim(),
-                observaciones: document.getElementById("observaciones").value.trim(),
-                rol: document.getElementById("rol").value,
-                telefono: document.getElementById("telefono").value.trim()
-            };
-        }
-
-        /* ======================================================
-         * TABLA
-         * ==================================================== */
-
-        function pintarTabla(lista) {
-            if (!lista.length) {
-                tabla.innerHTML = `
-                    <tr>
-                        <td colspan="8">
-                            No hay socios.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tabla.innerHTML = "";
-
-            lista.forEach((item) => {
-                const socio = item.data;
-                const fila = document.createElement("tr");
-
-                const cuotaHtml = Number(socio.cuota || 0) === 0
-                    ? `<span class="status ok">0 €</span>`
-                    : `<span class="status warn">${socio.cuota} €</span>`;
-
-                const estadoHtml = socio.activo
-                    ? `<span class="status ok">Activo</span>`
-                    : `<span class="status danger">Baja</span>`;
-
-                fila.innerHTML = `
-                    <td>${socio.idSocio || ""}</td>
-                    <td>${socio.nombre || ""}</td>
-                    <td>${socio.dni || ""}</td>
-                    <td>${socio.dorsal || ""}</td>
-                    <td>
-                        <span class="status">
-                            ${socio.rol || "socio"}
-                        </span>
-                    </td>
-                    <td>${cuotaHtml}</td>
-                    <td>${estadoHtml}</td>
-                    <td>
-                        <button class="btn btn-secondary btn-small"
-                                data-doc="${item.id}">
-                            Editar
-                        </button>
-                    </td>
-                `;
-
-                tabla.appendChild(fila);
-            });
-
-            document.querySelectorAll("[data-doc]").forEach((boton) => {
-                boton.addEventListener("click", () => {
-                    editarSocio(boton.dataset.doc);
-                });
-            });
-        }
-
-        /* ======================================================
-         * SOCIOS
-         * ==================================================== */
-
-        async function cargarSocios() {
-            const consulta = query(
-                collection(db, "socios"),
-                orderBy("idSocio")
-            );
-
-            const resultado = await getDocs(consulta);
-
-            cacheSocios = [];
-
-            resultado.forEach((documento) => {
-                cacheSocios.push({
-                    id: documento.id,
-                    data: documento.data()
-                });
-            });
-
-            pintarTabla(cacheSocios);
-        }
-
-        function editarSocio(idDocumento) {
-            const item = cacheSocios.find((socio) => socio.id === idDocumento);
-
-            if (!item) {
-                return;
-            }
-
-            limpiarFormulario();
-
-            document.getElementById("docId").value = idDocumento;
-
-            const campos = [
-                "idSocio",
-                "nombre",
-                "dni",
-                "telefono",
-                "email",
-                "fecNacimiento",
-                "dorsal",
-                "alias",
-                "rol",
-                "cuota",
-                "observaciones"
-            ];
-
-            campos.forEach((campo) => {
-                const elemento = document.getElementById(campo);
-
-                if (elemento) {
-                    elemento.value = item.data[campo] ?? "";
-                }
-            });
-
-            document.getElementById("activo").checked =
-                Boolean(item.data.activo);
-
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-            mostrarMensaje(
-                "Editando " + (item.data.idSocio || idDocumento),
-                "success"
-            );
-        }
-
-        async function guardarSocio(evento) {
+        async function guardarMovimiento(evento) {
             evento.preventDefault();
 
-            const datos = obtenerDatosFormulario();
-
-            if (!datos.idSocio || !datos.nombre) {
-                mostrarMensaje(
-                    "ID socio y nombre son obligatorios.",
-                    "error"
-                );
-                return;
-            }
-
-            const idDocumento =
-                document.getElementById("docId").value || datos.idSocio;
+            const movimiento = {
+                temporada: document.getElementById("temporada").value,
+                fecha_contable: document.getElementById("fecha_contable").value,
+                fecha_apunte: document.getElementById("fecha_apunte").value || null,
+                concepto: document.getElementById("concepto").value,
+                importe: document.getElementById("importe").value,
+                tipo: document.getElementById("tipo").value || null,
+                saldo: document.getElementById("saldo").value || null,
+                codigo_cuenta: document.getElementById("codigo_cuenta").value
+            };
 
             try {
-                await setDoc(
-                    doc(db, "socios", idDocumento),
-                    datos,
-                    {
-                        merge: true
-                    }
-                );
+                mostrarMensaje("Guardando registro...");
 
-                mostrarMensaje(
-                    "Ficha guardada correctamente.",
-                    "success"
-                );
+                const respuesta = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(movimiento)
+                });
 
+                const resultado = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    throw new Error(resultado.error || "Error al registrar el movimiento");
+                }
+
+                mostrarMensaje("Movimiento registrado correctamente.");
                 limpiarFormulario();
-
-                await cargarSocios();
 
             } catch (error) {
                 console.error(error);
-
-                mostrarMensaje(
-                    "No se pudo guardar. Revisa reglas y permisos.",
-                    "error"
-                );
+                mostrarMensaje(error.message, true);
             }
         }
 
-        /* ======================================================
-         * BÚSQUEDA
-         * ==================================================== */
-
-        function filtrarSocios() {
-            const texto = normalizar(buscador.value);
-
-            const filtrados = cacheSocios.filter((item) => {
-                const socio = item.data;
-
-                const combinado = normalizar(`
-                    ${socio.idSocio}
-                    ${socio.nombre}
-                    ${socio.dni}
-                    ${socio.alias}
-                    ${socio.telefono}
-                    ${socio.email}
-                    ${socio.rol}
-                `);
-
-                return combinado.includes(texto);
-            });
-
-            pintarTabla(filtrados);
-        }
-
-        /* ======================================================
-         * EVENTOS
-         * ==================================================== */
-
-        window.cerrarSesion = cerrarSesion;
-
-        form.addEventListener("submit", guardarSocio);
-        buscador.addEventListener("input", filtrarSocios);
+        form.addEventListener("submit", guardarMovimiento);
         btnLimpiar.addEventListener("click", limpiarFormulario);
-
-        /* ======================================================
-         * INICIALIZACIÓN
-         * ==================================================== */
-
-        protegerPagina("administrador", async () => {
-            await cargarSocios();
-        });
-
-    </script>-->
+    </script>
 
 </body>
 
