@@ -7,15 +7,24 @@ async function cargarDatos() {
     const tbody = document.getElementById("tbodyMovimientos");
     
     try {
-        // 1. Cargar primero el diccionario de socios (id -> nombre + apellidos)
+        // 1. Cargar la tabla de socios usando id, nombre y apellido
         const { data: sociosData, error: errorSocios } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellidos");
+            .select("id, nombre, apellido");
 
-        if (!errorSocios && sociosData) {
+        if (errorSocios) {
+            console.error("Error al cargar la tabla socios:", errorSocios);
+        } else if (sociosData) {
             sociosData.forEach(socio => {
-                const nombreCompleto = `${socio.nombre || ""} ${socio.apellidos || ""}`.trim();
-                mapaSocios[socio.id] = nombreCompleto || socio.id;
+                const idSocio = socio.id ? String(socio.id).trim() : "";
+                const nombre = socio.nombre || "";
+                const apellido = socio.apellido || "";
+                
+                const nombreCompleto = `${nombre} ${apellido}`.trim();
+                
+                if (idSocio) {
+                    mapaSocios[idSocio] = nombreCompleto || idSocio;
+                }
             });
         }
 
@@ -48,8 +57,7 @@ function renderizarTabla(registros) {
     registros.forEach(item => {
         const tr = document.createElement("tr");
         
-        // Obtener el nombre del socio a partir del UUID de codigo_cuenta, si existe en el mapa
-        const uuidSocio = item.codigo_cuenta;
+        const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
         const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
 
         tr.innerHTML = `
@@ -66,7 +74,7 @@ function renderizarTabla(registros) {
     });
 }
 
-// Lógica de filtrado en tiempo real por columnas (busca también sobre el nombre traducido del socio)
+// Lógica de filtrado en tiempo real por columnas
 function aplicarFiltros() {
     const inputsFiltro = document.querySelectorAll(".filter-input");
     const filtros = Array.from(inputsFiltro).map(input => ({
@@ -75,7 +83,7 @@ function aplicarFiltros() {
     }));
 
     const filtrados = todosLosRegistros.filter(item => {
-        const uuidSocio = item.codigo_cuenta;
+        const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
         const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
 
         const valoresItem = [
