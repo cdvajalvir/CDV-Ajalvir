@@ -26,10 +26,9 @@
         .data-table td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--color-border, #e2e8f0);
-            color: #ffffff; /* Texto general de celdas en blanco para buen contraste con el fondo oscuro */
+            color: #ffffff;
         }
 
-        /* Estilos específicos para la cabecera de la tabla */
         .data-table thead th {
             background-color: rgba(255, 255, 255, 0.08);
             color: #ffffff !important;
@@ -37,14 +36,13 @@
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Fila de filtros en la cabecera */
         .filter-row th {
             background-color: rgba(0, 0, 0, 0.2) !important;
             padding: 0.5rem 0.75rem;
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        .filter-input {
+        .filter-select {
             width: 100%;
             padding: 0.4rem 0.6rem;
             font-size: 0.85rem;
@@ -54,11 +52,12 @@
             color: #ffffff;
         }
 
-        .filter-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        .filter-select option {
+            background-color: #1e293b;
+            color: #ffffff;
         }
 
-        .filter-input:focus {
+        .filter-select:focus {
             outline: none;
             border-color: var(--color-primary, #2563eb);
             background-color: rgba(255, 255, 255, 0.1);
@@ -110,15 +109,16 @@
                                     <th>Importe (€)</th>
                                     <th>Saldo (€)</th>
                                 </tr>
+                                <!-- Fila de Selectores de Filtro -->
                                 <tr class="filter-row">
-                                    <th><input type="text" class="filter-input" data-column="0" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="1" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="2" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="3" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="4" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="5" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="6" placeholder="Filtrar..."></th>
-                                    <th><input type="text" class="filter-input" data-column="7" placeholder="Filtrar..."></th>
+                                    <th><select class="filter-select" data-column="0"><option value="">Todos</option></select></th>
+                                    <th></th> <!-- Fecha Contable sin filtro -->
+                                    <th><select class="filter-select" data-column="2"><option value="">Todos</option></select></th>
+                                    <th></th> <!-- Concepto sin filtro -->
+                                    <th><select class="filter-select" data-column="4"><option value="">Todos</option></select></th>
+                                    <th><select class="filter-select" data-column="5"><option value="">Todos</option></select></th>
+                                    <th></th> <!-- Importe sin filtro -->
+                                    <th></th> <!-- Saldo sin filtro -->
                                 </tr>
                             </thead>
                             <tbody id="tbodyMovimientos">
