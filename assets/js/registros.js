@@ -27,7 +27,7 @@ async function cargarDatos() {
             });
         }
 
-        // 2. Cargar los movimientos ordenados por create_at ascendente
+        // 2. Cargar los movimientos
         const { data, error } = await supabaseClient
             .from("movimientos")
             .select("*")
@@ -36,8 +36,9 @@ async function cargarDatos() {
         if (error) throw error;
 
         todosLosRegistros = data || [];
-        
-        // 3. Renderizar la tabla primero y luego rellenar los selectores
+        console.log("Registros cargados para los filtros:", todosLosRegistros);
+
+        // 3. Renderizar y poblar
         renderizarTabla(todosLosRegistros);
         poblarFiltros();
 
@@ -49,6 +50,7 @@ async function cargarDatos() {
 
 function renderizarTabla(registros) {
     const tbody = document.getElementById("tbodyMovimientos");
+    if (!tbody) return;
     tbody.innerHTML = "";
 
     if (registros.length === 0) {
@@ -75,9 +77,9 @@ function renderizarTabla(registros) {
     });
 }
 
-// Extraer valores únicos y rellenar los selectores de filtro
 function poblarFiltros() {
     const selects = document.querySelectorAll(".filter-select");
+    console.log("Selects de filtro encontrados:", selects.length);
 
     selects.forEach(select => {
         const colIndex = parseInt(select.getAttribute("data-column"));
@@ -86,20 +88,15 @@ function poblarFiltros() {
         todosLosRegistros.forEach(item => {
             let val = "";
             
-            switch (colIndex) {
-                case 0:
-                    val = item.temporada;
-                    break;
-                case 2:
-                    val = item.fecha_apunte;
-                    break;
-                case 4:
-                    val = item.tipo;
-                    break;
-                case 5:
-                    const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
-                    val = mapaSocios[uuidSocio] || uuidSocio;
-                    break;
+            if (colIndex === 0) {
+                val = item.temporada;
+            } else if (colIndex === 2) {
+                val = item.fecha_apunte;
+            } else if (colIndex === 4) {
+                val = item.tipo;
+            } else if (colIndex === 5) {
+                const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
+                val = mapaSocios[uuidSocio] || uuidSocio;
             }
 
             if (val !== null && val !== undefined && String(val).trim() !== "") {
@@ -107,13 +104,9 @@ function poblarFiltros() {
             }
         });
 
-        // Ordenar alfabéticamente
         const valoresOrdenados = Array.from(valoresUnicos).sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
 
-        // Guardar la selección actual si la hubiera
-        const valorPrevio = select.value;
-
-        // Limpiar y añadir la opción por defecto
+        // Limpiar opciones previas manteniendo "Todos"
         select.innerHTML = `<option value="">Todos</option>`;
 
         valoresOrdenados.forEach(valor => {
@@ -122,13 +115,9 @@ function poblarFiltros() {
             option.textContent = valor;
             select.appendChild(option);
         });
-
-        // Restaurar valor previo si sigue existiendo
-        select.value = valorPrevio;
     });
 }
 
-// Lógica de filtrado combinada
 function aplicarFiltros() {
     const selectsFiltro = document.querySelectorAll(".filter-select");
     
@@ -137,7 +126,7 @@ function aplicarFiltros() {
             columna: parseInt(select.getAttribute("data-column")),
             valor: select.value.toLowerCase().trim()
         }))
-        .filter(f => f.valor !== ""); // Solo considerar los filtros que tengan un valor seleccionado
+        .filter(f => f.valor !== "");
 
     const filtrados = todosLosRegistros.filter(item => {
         const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
@@ -159,7 +148,6 @@ function aplicarFiltros() {
 document.addEventListener("DOMContentLoaded", () => {
     cargarDatos();
 
-    // Escuchar eventos en los selectores
     document.querySelectorAll(".filter-select").forEach(select => {
         select.addEventListener("change", aplicarFiltros);
     });
