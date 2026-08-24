@@ -1,1 +1,146 @@
+<!doctype html>
+<html lang="es">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Consulta de Registros · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        /* Estilos específicos para la tabla de registros y filtros */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+        }
+
+        .data-table th {
+            background-color: var(--color-bg-alt, #f8fafc);
+            font-weight: 600;
+        }
+
+        /* Fila de filtros en la cabecera de la tabla */
+        .filter-row th {
+            background-color: var(--color-bg, #ffffff);
+            padding: 0.5rem 0.75rem;
+            border-bottom: 2px solid var(--color-border, #cbd5e1);
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--color-border, #cbd5e1);
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--color-primary, #2563eb);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links>
+                <a href="administracion.html">Volver a Administración</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <main class="container">
+
+        <section class="page-hero">
+            <p class="eyebrow">Administración</p>
+            <h1>Consulta de Registros</h1>
+            <p class="lead">Histórico completo de movimientos contables registrados en el <strong>club</strong>.</p>
+        </section>
+
+        <section class="app-layout-single">
+            <div class="content-grid">
+
+                <article class="card wide">
+                    <h3>Listado de Movimientos</h3>
+
+                    <div class="table-responsive">
+                        <table class="data-table" id="tablaMovimientos">
+                            <thead>
+                                <tr>
+                                    <th>Temporada</th>
+                                    <th>Fecha Contable</th>
+                                    <th>Fecha Apunte</th>
+                                    <th>Concepto</th>
+                                    <th>Tipo</th>
+                                    <th>Código Cuenta</th>
+                                    <th>Importe (€)</th>
+                                    <th>Saldo (€)</th>
+                                </tr>
+                                <!-- Fila de Filtros -->
+                                <tr class="filter-row">
+                                    <th><input type="text" class="filter-input" data-column="0" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="1" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="2" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="3" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="4" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="5" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="6" placeholder="Filtrar..."></th>
+                                    <th><input type="text" class="filter-input" data-column="7" placeholder="Filtrar..."></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyMovimientos">
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 2rem;">Cargando registros...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+    <script type="module" src="../assets/js/registros.js"></script>
+
+</body>
+
+</html>
