@@ -7,7 +7,7 @@ async function cargarDatos() {
     const tbody = document.getElementById("tbodyMovimientos");
     
     try {
-        // 1. Cargar la tabla de socios usando id, nombre y apellido
+        // 1. Cargar la tabla de socios
         const { data: sociosData, error: errorSocios } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellido");
@@ -19,7 +19,6 @@ async function cargarDatos() {
                 const idSocio = socio.id ? String(socio.id).trim() : "";
                 const nombre = socio.nombre || "";
                 const apellido = socio.apellido || "";
-                
                 const nombreCompleto = `${nombre} ${apellido}`.trim();
                 
                 if (idSocio) {
@@ -37,6 +36,11 @@ async function cargarDatos() {
         if (error) throw error;
 
         todosLosRegistros = data || [];
+        
+        // Poblar los desplegables de filtros con los valores disponibles
+        poblarFiltros();
+        
+        // Renderizar la tabla completa inicialmente
         renderizarTabla(todosLosRegistros);
 
     } catch (err) {
@@ -56,7 +60,6 @@ function renderizarTabla(registros) {
 
     registros.forEach(item => {
         const tr = document.createElement("tr");
-        
         const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
         const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
 
@@ -74,32 +77,67 @@ function renderizarTabla(registros) {
     });
 }
 
-// Lógica de filtrado en tiempo real por columnas
+// Extraer valores únicos y rellenar los selectores de filtro
+function poblarFiltros() {
+    const selects = document.querySelectorAll(".filter-select");
+
+    selects.forEach(select => {
+        const colIndex = parseInt(select.getAttribute("data-column"));
+        
+        // Recopilar todos los valores para esta columna de los registros cargados
+        const valoresUnicos = new Set();
+
+        todosLosRegistros.forEach(item => {
+            let val = "";
+            if (colIndex === 0) val = item.temporada;
+            else if (colIndex === 2) val = item.fecha_apunte;
+            else if (colIndex === 4) val = item.tipo;
+            else if (colIndex === 5) {
+                const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
+                val = mapaSocios[uuidSocio] || uuidSocio;
+            }
+
+            if (val !== null && val !== undefined && String(val).trim() !== "") {
+                valoresUnicos.add(String(val).trim());
+            }
+        });
+
+        // Ordenar los valores alfabéticamente/cronológicamente
+        const valoresOrdenados = Array.from(valoresUnicos).sort();
+
+        // Rellenar el select manteniendo la opción "Todos"
+        select.innerHTML = `<option value="">Todos</option>`;
+        valoresOrdenados.forEach(valor => {
+            const option = document.createElement("option");
+            option.value = valor;
+            option.textContent = valor;
+            select.appendChild(option);
+        });
+    });
+}
+
+// Lógica de filtrado combinada al cambiar cualquier selector
 function aplicarFiltros() {
-    const inputsFiltro = document.querySelectorAll(".filter-input");
-    const filtros = Array.from(inputsFiltro).map(input => ({
-        columna: parseInt(input.getAttribute("data-column")),
-        valor: input.value.toLowerCase().trim()
+    const selectsFiltro = document.querySelectorAll(".filter-select");
+    const filtros = Array.from(selectsFiltro).map(select => ({
+        columna: parseInt(select.getAttribute("data-column")),
+        valor: select.value.toLowerCase().trim()
     }));
 
     const filtrados = todosLosRegistros.filter(item => {
         const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
         const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
 
-        const valoresItem = [
-            String(item.temporada || "").toLowerCase(),
-            String(item.fecha_contable || "").toLowerCase(),
-            String(item.fecha_apunte || "").toLowerCase(),
-            String(item.concepto || "").toLowerCase(),
-            String(item.tipo || "").toLowerCase(),
-            String(nombreSocio).toLowerCase(),
-            String(item.importe || "").toLowerCase(),
-            String(item.saldo || "").toLowerCase()
-        ];
+        const valoresItem = {
+            0: String(item.temporada || "").toLowerCase().trim(),
+            2: String(item.fecha_apunte || "").toLowerCase().trim(),
+            4: String(item.tipo || "").toLowerCase().trim(),
+            5: String(nombreSocio).toLowerCase().trim()
+        };
 
         return filtros.every(f => {
             if (!f.valor) return true;
-            return valoresItem[f.columna].includes(f.valor);
+            return valoresItem[f.columna] === f.valor;
         });
     });
 
@@ -109,7 +147,8 @@ function aplicarFiltros() {
 document.addEventListener("DOMContentLoaded", () => {
     cargarDatos();
 
-    document.querySelectorAll(".filter-input").forEach(input => {
-        input.addEventListener("input", aplicarFiltros);
+    // Escuchar cambios en los selectores de filtro
+    document.querySelectorAll(".filter-select").forEach(select => {
+        select.addEventListener("change", aplicarFiltros);
     });
 });
