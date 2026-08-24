@@ -37,11 +37,9 @@ async function cargarDatos() {
 
         todosLosRegistros = data || [];
         
-        // Poblar los desplegables de filtros con los valores disponibles
-        poblarFiltros();
-        
-        // Renderizar la tabla completa inicialmente
+        // 3. Renderizar la tabla primero y luego rellenar los selectores
         renderizarTabla(todosLosRegistros);
+        poblarFiltros();
 
     } catch (err) {
         console.error("Error al cargar los registros:", err);
@@ -83,18 +81,25 @@ function poblarFiltros() {
 
     selects.forEach(select => {
         const colIndex = parseInt(select.getAttribute("data-column"));
-        
-        // Recopilar todos los valores para esta columna de los registros cargados
         const valoresUnicos = new Set();
 
         todosLosRegistros.forEach(item => {
             let val = "";
-            if (colIndex === 0) val = item.temporada;
-            else if (colIndex === 2) val = item.fecha_apunte;
-            else if (colIndex === 4) val = item.tipo;
-            else if (colIndex === 5) {
-                const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
-                val = mapaSocios[uuidSocio] || uuidSocio;
+            
+            switch (colIndex) {
+                case 0:
+                    val = item.temporada;
+                    break;
+                case 2:
+                    val = item.fecha_apunte;
+                    break;
+                case 4:
+                    val = item.tipo;
+                    break;
+                case 5:
+                    const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
+                    val = mapaSocios[uuidSocio] || uuidSocio;
+                    break;
             }
 
             if (val !== null && val !== undefined && String(val).trim() !== "") {
@@ -102,27 +107,37 @@ function poblarFiltros() {
             }
         });
 
-        // Ordenar los valores alfabéticamente/cronológicamente
-        const valoresOrdenados = Array.from(valoresUnicos).sort();
+        // Ordenar alfabéticamente
+        const valoresOrdenados = Array.from(valoresUnicos).sort((a, b) => a.localeCompare(b, 'es', { numeric: true }));
 
-        // Rellenar el select manteniendo la opción "Todos"
+        // Guardar la selección actual si la hubiera
+        const valorPrevio = select.value;
+
+        // Limpiar y añadir la opción por defecto
         select.innerHTML = `<option value="">Todos</option>`;
+
         valoresOrdenados.forEach(valor => {
             const option = document.createElement("option");
             option.value = valor;
             option.textContent = valor;
             select.appendChild(option);
         });
+
+        // Restaurar valor previo si sigue existiendo
+        select.value = valorPrevio;
     });
 }
 
-// Lógica de filtrado combinada al cambiar cualquier selector
+// Lógica de filtrado combinada
 function aplicarFiltros() {
     const selectsFiltro = document.querySelectorAll(".filter-select");
-    const filtros = Array.from(selectsFiltro).map(select => ({
-        columna: parseInt(select.getAttribute("data-column")),
-        valor: select.value.toLowerCase().trim()
-    }));
+    
+    const filtrosActivos = Array.from(selectsFiltro)
+        .map(select => ({
+            columna: parseInt(select.getAttribute("data-column")),
+            valor: select.value.toLowerCase().trim()
+        }))
+        .filter(f => f.valor !== ""); // Solo considerar los filtros que tengan un valor seleccionado
 
     const filtrados = todosLosRegistros.filter(item => {
         const uuidSocio = item.codigo_cuenta ? String(item.codigo_cuenta).trim() : "";
@@ -135,10 +150,7 @@ function aplicarFiltros() {
             5: String(nombreSocio).toLowerCase().trim()
         };
 
-        return filtros.every(f => {
-            if (!f.valor) return true;
-            return valoresItem[f.columna] === f.valor;
-        });
+        return filtrosActivos.every(f => valoresItem[f.columna] === f.valor);
     });
 
     renderizarTabla(filtrados);
@@ -147,7 +159,7 @@ function aplicarFiltros() {
 document.addEventListener("DOMContentLoaded", () => {
     cargarDatos();
 
-    // Escuchar cambios en los selectores de filtro
+    // Escuchar eventos en los selectores
     document.querySelectorAll(".filter-select").forEach(select => {
         select.addEventListener("change", aplicarFiltros);
     });
