@@ -1,12 +1,25 @@
 import { supabaseClient } from "./supabase.js";
 
 let todosLosRegistros = [];
+let mapaSocios = {};
 
-async function cargarRegistros() {
+async function cargarDatos() {
     const tbody = document.getElementById("tbodyMovimientos");
     
     try {
-        // Consulta a Supabase ordenada por created_at de forma ascendente (más antiguo primero)
+        // 1. Cargar primero el diccionario de socios (id -> nombre + apellidos)
+        const { data: sociosData, error: errorSocios } = await supabaseClient
+            .from("socios")
+            .select("id, nombre, apellidos");
+
+        if (!errorSocios && sociosData) {
+            sociosData.forEach(socio => {
+                const nombreCompleto = `${socio.nombre || ""} ${socio.apellidos || ""}`.trim();
+                mapaSocios[socio.id] = nombreCompleto || socio.id;
+            });
+        }
+
+        // 2. Cargar los movimientos ordenados por create_at ascendente
         const { data, error } = await supabaseClient
             .from("movimientos")
             .select("*")
@@ -28,19 +41,24 @@ function renderizarTabla(registros) {
     tbody.innerHTML = "";
 
     if (registros.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #64748b;">No se encontraron registros.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8;">No se encontraron registros.</td></tr>`;
         return;
     }
 
     registros.forEach(item => {
         const tr = document.createElement("tr");
+        
+        // Obtener el nombre del socio a partir del UUID de codigo_cuenta, si existe en el mapa
+        const uuidSocio = item.codigo_cuenta;
+        const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
+
         tr.innerHTML = `
             <td>${item.temporada || ""}</td>
             <td>${item.fecha_contable || ""}</td>
             <td>${item.fecha_apunte || ""}</td>
             <td>${item.concepto || ""}</td>
             <td>${item.tipo || ""}</td>
-            <td>${item.codigo_cuenta || ""}</td>
+            <td>${nombreSocio}</td>
             <td>${item.importe !== null && item.importe !== undefined ? Number(item.importe).toFixed(2) : ""}</td>
             <td>${item.saldo !== null && item.saldo !== undefined ? Number(item.saldo).toFixed(2) : ""}</td>
         `;
@@ -48,7 +66,7 @@ function renderizarTabla(registros) {
     });
 }
 
-// Lógica de filtrado en tiempo real por columnas
+// Lógica de filtrado en tiempo real por columnas (busca también sobre el nombre traducido del socio)
 function aplicarFiltros() {
     const inputsFiltro = document.querySelectorAll(".filter-input");
     const filtros = Array.from(inputsFiltro).map(input => ({
@@ -57,13 +75,16 @@ function aplicarFiltros() {
     }));
 
     const filtrados = todosLosRegistros.filter(item => {
+        const uuidSocio = item.codigo_cuenta;
+        const nombreSocio = mapaSocios[uuidSocio] || uuidSocio || "";
+
         const valoresItem = [
             String(item.temporada || "").toLowerCase(),
             String(item.fecha_contable || "").toLowerCase(),
             String(item.fecha_apunte || "").toLowerCase(),
             String(item.concepto || "").toLowerCase(),
             String(item.tipo || "").toLowerCase(),
-            String(item.codigo_cuenta || "").toLowerCase(),
+            String(nombreSocio).toLowerCase(),
             String(item.importe || "").toLowerCase(),
             String(item.saldo || "").toLowerCase()
         ];
@@ -78,9 +99,8 @@ function aplicarFiltros() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    cargarRegistros();
+    cargarDatos();
 
-    // Escuchar eventos en los inputs de filtro
     document.querySelectorAll(".filter-input").forEach(input => {
         input.addEventListener("input", aplicarFiltros);
     });
