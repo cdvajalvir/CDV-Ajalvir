@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        /* Estilos específicos para la tabla de registros y filtros */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -27,41 +26,47 @@
         .data-table td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--color-border, #e2e8f0);
+            color: #ffffff; /* Texto general de celdas en blanco para buen contraste con el fondo oscuro */
         }
 
-        .data-table th {
-            background-color: var(--color-bg-alt, #f8fafc);
+        /* Estilos específicos para la cabecera de la tabla */
+        .data-table thead th {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
             font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Fila de filtros en la cabecera de la tabla */
+        /* Fila de filtros en la cabecera */
         .filter-row th {
-            background-color: var(--color-bg, #ffffff);
+            background-color: rgba(0, 0, 0, 0.2) !important;
             padding: 0.5rem 0.75rem;
-            border-bottom: 2px solid var(--color-border, #cbd5e1);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
 
         .filter-input {
             width: 100%;
             padding: 0.4rem 0.6rem;
             font-size: 0.85rem;
-            border: 1px solid var(--color-border, #cbd5e1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 4px;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .filter-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .filter-input:focus {
             outline: none;
             border-color: var(--color-primary, #2563eb);
+            background-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- ======================================================
-         CABECERA
-    ======================================================= -->
 
     <header class="site-header">
         <nav class="navbar container">
@@ -77,10 +82,6 @@
             </div>
         </nav>
     </header>
-
-    <!-- ======================================================
-         CONTENIDO
-    ======================================================= -->
 
     <main class="container">
 
@@ -105,11 +106,10 @@
                                     <th>Fecha Apunte</th>
                                     <th>Concepto</th>
                                     <th>Tipo</th>
-                                    <th>Código Cuenta</th>
+                                    <th>Socio</th>
                                     <th>Importe (€)</th>
                                     <th>Saldo (€)</th>
                                 </tr>
-                                <!-- Fila de Filtros -->
                                 <tr class="filter-row">
                                     <th><input type="text" class="filter-input" data-column="0" placeholder="Filtrar..."></th>
                                     <th><input type="text" class="filter-input" data-column="1" placeholder="Filtrar..."></th>
@@ -136,9 +136,6 @@
 
     </main>
 
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
     <script type="module" src="../assets/js/registros.js"></script>
 
 </body>
