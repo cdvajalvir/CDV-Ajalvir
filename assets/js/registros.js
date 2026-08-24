@@ -10,7 +10,7 @@ async function cargarRegistros() {
         const { data, error } = await supabaseClient
             .from("movimientos")
             .select("*")
-            .order("created_at", { ascending: true });
+            .order("create_at", { ascending: true });
 
         if (error) throw error;
 
