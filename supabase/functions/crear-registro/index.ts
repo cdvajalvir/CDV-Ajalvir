@@ -24,7 +24,8 @@ Deno.serve(async (req) => {
             dni,
             email,
             telefono,
-            password
+            password,
+            temporada
         } = await req.json();
 
         // Validar campos
@@ -37,6 +38,8 @@ Deno.serve(async (req) => {
                 }
             );
         }
+        const temporadanorm = (temporada) ? temporada : "XXXX/XXXX";
+        
 
         // Normalizar DNI/NIE
         const documento = dni.trim().toUpperCase();
@@ -132,6 +135,35 @@ Deno.serve(async (req) => {
                 rol:"socio",
                 activo:false
             });
+        const { data: insertData, error: insertError } = await supabase
+            .from("temporada")
+            .insert({
+                temporada : temporadanorm,
+                users : [authData.user.id]
+            });
+        if(insertError && insertError.code === '23505') {
+             const { data: registroActual } = await supabase
+                .from("temporada")
+                .select("users")
+                .eq("temporada", temporadanorm)
+                .single();
+
+             if(registroActual) {
+                 const arrayActualizado = [...registroActual.users, authData.user.id];
+                const { error: updateError } = await supabase
+                .from("temporada")
+                .update({users: arrayActualizado})
+                .eq("temporada", temporadanorm);
+
+            if(updateError) {
+                console.error("Error al actualizar el array:", updateError);
+            }
+            else console.log("Registro existente: Elemento añadido al array con exito.");
+        }
+        } else if (insertError) {
+            console.error("Error inesperado en la insercion:", insertError);
+        } else { console.log("Registro nuevo creado con exito.");
+               }
 
         if(error){
             await supabase.auth.admin.deleteUser(authData.user.id).catch(console.error);
