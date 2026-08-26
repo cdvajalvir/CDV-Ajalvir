@@ -86,12 +86,16 @@
 
                 <nav class="app-menu">
 
-                    <a class="active" href="index.html">
+                    <a class="active" href="directiva.html">
                         Resumen
                     </a>
 
                     <a href="socios.html">
                         Socios
+                    </a>
+
+                    <a href="registros.html">
+                        Registros
                     </a>
 
                     <a href="equipos.html">
@@ -168,21 +172,32 @@
 
                     </article>
 
+                    <!-- Resumen de saldos de Directiva y Administradores -->
                     <article class="card wide">
 
                         <h3>
-                            Acceso a gestión
+                            Resumen de saldos (Directiva y Administradores)
                         </h3>
 
                         <p>
-                            La gestión de fichas se realiza desde
-                            <a href="socios.html">
-                                Gestión de socios
-                            </a>.
-
-                            Solo los administradores pueden guardar
-                            modificaciones.
+                            Listado de saldos calculados a partir de los movimientos asociados a cada miembro.
                         </p>
+
+                        <div class="table-responsive">
+                            <table class="table" id="tablaSaldosDirectiva">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre y Apellidos</th>
+                                        <th style="text-align: right;">Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2" style="text-align: center;">Cargando saldos...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
                     </article>
 
@@ -198,45 +213,8 @@
          JAVASCRIPT
     ======================================================= -->
 
-    <script type="module">
-
-        /* ======================================================
-         * 1. IMPORTACIONES LOCALES
-         * ==================================================== */
-        import {
-            comprobarAcceso,
-            cerrarSesion
-        } from "../assets/js/auth.js";
-
-
-        /* ======================================================
-         * 2. EXPOSICIÓN GLOBAL PARA EL ONCLICK DEL HTML
-         * ==================================================== */
-        window.cerrarSesion = cerrarSesion;
-
-
-        /* ======================================================
-         * 3. CONTROL DE ACCESO
-         * ==================================================== */
-        comprobarAcceso([
-            "administrador",
-            "directiva"
-        ], (usuario) => {
-
-            // Se ejecuta solo cuando Supabase/Edge Function confirman el perfil y el rol
-            console.log("Acceso concedido a Directiva para el usuario:", usuario);
-
-        });
-
-    </script>
     <script type="module" src="../assets/js/nav-auth.js"></script>
-    <script type="module">
-        import { comprobarAcceso, cerrarSesion } from "../assets/js/auth.js";
-        window.cerrarSesion = cerrarSesion;
-        comprobarAcceso(["administrador", "directiva"], (usuario) => {
-            console.log("Acceso concedido a Directiva para el usuario:", usuario);
-        });
-    </script>
+    <script type="module" src="../assets/js/directiva.js"></script>
 
 </body>
 
