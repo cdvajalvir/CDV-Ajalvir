@@ -39,7 +39,6 @@ Deno.serve(async (req) => {
             );
         }
         const temporadanorm = (temporada) ? temporada : "XXXX/XXXX";
-        
 
         // Normalizar DNI/NIE
         const documento = dni.trim().toUpperCase();
@@ -62,58 +61,56 @@ Deno.serve(async (req) => {
             Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
         );
 
-        // comprobar DNI existente
-        const { data: existente } = await supabase
-            .from("socios")
-            .select("id")
-            .eq("dni", documento)
-            .maybeSingle();
-
-        if(existente){
-            return Response.json(
-                {
-                    error:"El DNI ya está registrado"
-                },
-                {
-                    status:400,
-                    headers:corsHeaders
-                }
-            );
-        }
-
         // Normalizar email
         const emailNorm = email.trim().toLowerCase();
 
-        // comprobar email existente
+        // 1. Comprobar si el DNI ya existe en la tabla socios
+        const { data: socioExistente } = await supabase
+            .from("socios")
+            .select("id, email")
+            .eq("dni", documento)
+            .maybeSingle();
+
+        let userId = "";
+        let esRenovacion = false;
+
+        if (socioExistente) {
+            userId = socioExistente.id;
+
+            // Verificar si este UUID ya está en el array de la temporada actual
+            const { data: temporadaData } = await supabase
+                .from("temporada")
+                .select("users")
+                .eq("temporada", temporadanorm)
+                .maybeSingle();
+
+            if (temporadaData && temporadaData.users && temporadaData.users.includes(userId)) {
+                return Response.json(
+                    {
+                        error: "El DNI ya está registrado para esta temporada"
+                    },
+                    {
+                        status: 400,
+                        headers: corsHeaders
+                    }
+                );
+            }
+
+            esRenovacion = true;
+        }
+
+        // Comprobar si el email ya está en uso por otro socio distinto (si no es el mismo socio renovando)
         const { data: emailExistente } = await supabase
             .from("socios")
             .select("id")
             .eq("email", emailNorm)
             .maybeSingle();
 
-        if(emailExistente){
+        if (emailExistente && emailExistente.id !== userId) {
             return Response.json(
                 {
-                    error:"El email ya está registrado"
+                    error: "El email ya está registrado"
                 },
-                {
-                    status:400,
-                    headers:corsHeaders
-                }
-            );
-        }
-
-        // Crear el usuario en Auth
-        const { data: authData, error: authError } =
-            await supabase.auth.admin.createUser({
-                email: emailNorm,
-                password,
-                email_confirm: true
-            });
-
-        if (authError) {
-            return Response.json(
-                { error: authError.message },
                 {
                     status: 400,
                     headers: corsHeaders
@@ -121,73 +118,129 @@ Deno.serve(async (req) => {
             );
         }
 
-
-        // crear socio
-        const { error } = await supabase
-            .from("socios")
-            .insert({
-                id : authData.user.id,
-                nombre,
-                apellido,
-                dni: documento,
+        if (esRenovacion) {
+            // CASO B: Renovación -> Actualizar credenciales de Auth y datos permitidos en socios
+            const { error: authUpdateError } = await supabase.auth.admin.updateUserById(userId, {
                 email: emailNorm,
-                telefono,
-                rol:"socio",
-                activo:false
+                password: password,
+                email_confirm: true
             });
+
+            if (authUpdateError) {
+                return Response.json(
+                    { error: authUpdateError.message },
+                    { status: 400, headers: corsHeaders }
+                );
+            }
+
+            // Actualizar campos permitidos (email y teléfono, sin tocar nombre, apellido ni dni)
+            const { error: updateSocioError } = await supabase
+                .from("socios")
+                .update({
+                    email: emailNorm,
+                    telefono: telefono
+                })
+                .eq("id", userId);
+
+            if (updateSocioError) {
+                throw updateSocioError;
+            }
+
+        } else {
+            // CASO A: Nuevo socio -> Crear usuario en Auth y registrar en socios
+            const { data: authData, error: authError } =
+                await supabase.auth.admin.createUser({
+                    email: emailNorm,
+                    password,
+                    email_confirm: true
+                });
+
+            if (authError) {
+                return Response.json(
+                    { error: authError.message },
+                    {
+                        status: 400,
+                        headers: corsHeaders
+                    }
+                );
+            }
+
+            userId = authData.user.id;
+
+            // Crear registro en la tabla socios
+            const { error: insertSocioError } = await supabase
+                .from("socios")
+                .insert({
+                    id: userId,
+                    nombre,
+                    apellido,
+                    dni: documento,
+                    email: emailNorm,
+                    telefono,
+                    rol: "socio",
+                    activo: false
+                });
+
+            if (insertSocioError) {
+                await supabase.auth.admin.deleteUser(userId).catch(console.error);
+                throw insertSocioError;
+            }
+        }
+
+        // 2. Gestionar la inserción o actualización del UUID en la tabla temporada
         const { data: insertData, error: insertError } = await supabase
             .from("temporada")
             .insert({
-                temporada : temporadanorm,
-                users : [authData.user.id]
+                temporada: temporadanorm,
+                users: [userId]
             });
-        if(insertError && insertError.code === '23505') {
-             const { data: registroActual } = await supabase
+
+        if (insertError && insertError.code === '23505') {
+            // La temporada ya existe, recuperamos el array actual
+            const { data: registroActual } = await supabase
                 .from("temporada")
                 .select("users")
                 .eq("temporada", temporadanorm)
                 .single();
 
-             if(registroActual) {
-                 const arrayActualizado = [...registroActual.users, authData.user.id];
-                const { error: updateError } = await supabase
-                .from("temporada")
-                .update({users: arrayActualizado})
-                .eq("temporada", temporadanorm);
+            if (registroActual) {
+                const arrayActualusers = registroActual.users || [];
+                // Asegurar que no se duplique el UUID en el array
+                if (!arrayActualusers.includes(userId)) {
+                    const arrayActualizado = [...arrayActualusers, userId];
+                    const { error: updateError } = await supabase
+                        .from("temporada")
+                        .update({ users: arrayActualizado })
+                        .eq("temporada", temporadanorm);
 
-            if(updateError) {
-                console.error("Error al actualizar el array:", updateError);
+                    if (updateError) {
+                        console.error("Error al actualizar el array:", updateError);
+                        throw updateError;
+                    }
+                }
             }
-            else console.log("Registro existente: Elemento añadido al array con exito.");
-        }
         } else if (insertError) {
             console.error("Error inesperado en la insercion:", insertError);
-        } else { console.log("Registro nuevo creado con exito.");
-               }
-
-        if(error){
-            await supabase.auth.admin.deleteUser(authData.user.id).catch(console.error);
-            throw error;
+            throw insertError;
         }
 
         return Response.json(
             {
-                mensaje:
-                "Solicitud enviada correctamente"
+                mensaje: "Solicitud enviada correctamente"
             },
             {
-                headers:corsHeaders
+                headers: corsHeaders
             }
         );
 
     } catch(error){
         return Response.json(
             {
-                error:error.message
+                error: error.message
             },
             {
-                status:500,
-                headers:corsHeaders
+                status: 500,
+                headers: corsHeaders
             }
         );
     }
