@@ -5,7 +5,7 @@ async function verificarPermisoAdmin() {
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
-        window.location.href = "login.html";
+        window.location.href = "../index.html";
         return;
     }
 
@@ -17,7 +17,7 @@ async function verificarPermisoAdmin() {
 
     if (!socio || (socio.rol !== "administrador" && socio.rol !== "admin")) {
         alert("Acceso denegado: Se requieren permisos de administrador.");
-        window.location.href = "inicio.html";
+        window.location.href = "../index.html";
     }
 }
 
