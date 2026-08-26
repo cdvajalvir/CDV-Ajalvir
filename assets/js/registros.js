@@ -3,7 +3,45 @@ import { supabaseClient } from "./supabase.js";
 let todosLosRegistros = [];
 let mapaSocios = {};
 
+// 1. Función para proteger la ruta de administrador
+async function verificarAccesoAdmin() {
+    try {
+        // Obtener la sesión actual de Supabase Auth
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+
+        if (sessionError || !session) {
+            // Si no hay sesión, redirigir al login o index
+            window.location.href = "../index.html"; // Ajusta la ruta si tu login está en otra carpeta
+            return false;
+        }
+
+        // Consultar el rol del usuario en la tabla socios usando su ID (UUID)
+        const { data: socioData, error: socioError } = await supabaseClient
+            .from("socios")
+            .select("rol")
+            .eq("id", session.user.id)
+            .maybeSingle();
+
+        if (socioError || !socioData || socioData.rol !== "administrador") {
+            // Si no existe o no tiene el rol de administrador, bloquear acceso y redirigir
+            alert("Acceso no autorizado. Se requiere rol de administrador.");
+            window.location.href = "../index.html";
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Error al verificar permisos de administrador:", err);
+        window.location.href = "../index.html";
+        return false;
+    }
+}
+
 async function cargarDatos() {
+    // Primero validamos el acceso antes de cargar los datos sensibles
+    const esAdmin = await verificarAccesoAdmin();
+    if (!esAdmin) return;
+
     const tbody = document.getElementById("tbodyMovimientos");
     
     try {
