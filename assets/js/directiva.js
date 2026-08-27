@@ -32,6 +32,12 @@ async function inicializarPanelDirectiva() {
             supabaseClient.from("temporada").select("temporada")
         ]);
 
+        // --- AÑADE ESTO PARA DEPURAR ---
+        console.log("Resultado bruto de resTemps:", resTemps);
+        console.log("¿Hay error en resTemps?", resTemps.error);
+        console.log("Datos recibidos de temporadas:", resTemps.data);
+        // ---------------------------------
+
         if (resSocios.error) throw resSocios.error;
         globalDirectivos = resSocios.data || [];
         globalMovimientos = resMovs.data || [];
