@@ -25,18 +25,12 @@ function calcularTemporadaActual() {
 
 async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener socios, movimientos y las temporadas desde Supabase
+        // 1. Obtener socios, movimientos y las temporadas desde la tabla 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
             supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
             supabaseClient.from("temporada").select("temporada")
         ]);
-
-        // --- AÑADE ESTO PARA DEPURAR ---
-        console.log("Resultado bruto de resTemps:", resTemps);
-        console.log("¿Hay error en resTemps?", resTemps.error);
-        console.log("Datos recibidos de temporadas:", resTemps.data);
-        // ---------------------------------
 
         if (resSocios.error) throw resSocios.error;
         globalDirectivos = resSocios.data || [];
@@ -47,10 +41,9 @@ async function inicializarPanelDirectiva() {
         if (selectTemp) {
             let temporadasSet = new Set();
             
-            // Recorrer los resultados de la tabla temporadas de forma segura
+            // Recorrer los resultados de la tabla temporada de forma segura
             if (resTemps.data && Array.isArray(resTemps.data)) {
                 resTemps.data.forEach(t => {
-                    // Extraemos la propiedad temporada y evitamos nulos
                     const valorTemp = t.temporada;
                     if (valorTemp) {
                         temporadasSet.add(String(valorTemp).trim());
@@ -109,31 +102,34 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     if (elemTotalDirectiva) elemTotalDirectiva.textContent = globalDirectivos.filter(s => s.rol === "directiva").length;
     if (elemTotalAdmin) elemTotalAdmin.textContent = globalDirectivos.filter(s => s.rol === "administrador").length;
 
-    // --- CÁLCULO DEL GRÁFICO DE TARTA LEYENDO EL ARRAY JSONB 'cantidad_pagada' ---
-    let totalPagados = 0;
-    let totalPendientes = 0;
+    // --- CÁLCULO DEL GRÁFICO DE TARTA (3 ESTADOS Y FILTRADO POR TEMPORADA) ---
+    let totalSociosTemporada = 0;
+    let pagadasTotalidad = 0;
+    let pagadasParciales = 0;
+    let noPagadas = 0;
 
     globalDirectivos.forEach(socio => {
-        let pagadoCantidad = 0;
-
-        // Comprobamos que cantidad_pagada es un array y lo recorremos
         if (socio.cantidad_pagada && Array.isArray(socio.cantidad_pagada)) {
-            // Buscamos el objeto de la temporada seleccionada dentro del array
             const datosTemporada = socio.cantidad_pagada.find(item => item.temporada === temporadaSeleccionada);
+            
             if (datosTemporada) {
-                pagadoCantidad = parseFloat(datosTemporada.pagado || datosTemporada.cuota || 0);
-            }
-        }
+                totalSociosTemporada++;
+                
+                const cuota = parseFloat(datosTemporada.cuota || 0);
+                const pagado = parseFloat(datosTemporada.pagado || 0);
 
-        // Si pagado es mayor que 0 cuenta como pagado, de lo contrario pendiente
-        if (pagadoCantidad > 0) {
-            totalPagados++;
-        } else {
-            totalPendientes++;
+                if (pagado >= cuota && cuota > 0) {
+                    pagadasTotalidad++;
+                } else if (pagado > 0 && pagado < cuota) {
+                    pagadasParciales++;
+                } else {
+                    noPagadas++;
+                }
+            }
         }
     });
 
-    renderizarGraficoCuotas(totalPagados, totalPendientes, temporadaSeleccionada);
+    renderizarGraficoCuotasTresEstados(pagadasTotalidad, pagadasParciales, noPagadas, temporadaSeleccionada, totalSociosTemporada);
     // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DE LA TABLA DE SALDOS ---
@@ -188,8 +184,8 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     }
 }
 
-// Función encargada de pintar o actualizar el gráfico de tarta con Chart.js
-function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
+// Función encargada de pintar o actualizar el gráfico de tarta con 3 estados en Chart.js
+function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temporadaLabel, totalSocios) {
     const canvasElement = document.getElementById("graficoCuotas");
     if (!canvasElement) return;
 
@@ -199,17 +195,16 @@ function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
         chartCuotasInstance.destroy();
     }
 
-    const totalSocios = pagados + pendientes;
-
     chartCuotasInstance = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Pagados', 'Pendientes'],
+            labels: ['Pagadas (Totalidad)', 'Pagadas (Parciales)', 'Pendientes (No pagadas)'],
             datasets: [{
-                data: [pagados, pendientes],
+                data: [totales, parciales, pendientes],
                 backgroundColor: [
-                    '#3b82f6', // Azul para los pagados
-                    '#f97316'  // Naranja para los pendientes
+                    '#10b981', // Verde para total pagado
+                    '#f59e0b', // Amarillo/Ámbar para pago parcial
+                    '#ef4444'  // Rojo para pendientes / sin pagar
                 ],
                 borderWidth: 1
             }]
@@ -220,7 +215,7 @@ function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
             plugins: {
                 title: {
                     display: true,
-                    text: `Temporada ${temporadaLabel}`,
+                    text: `Temporada ${temporadaLabel} (${totalSocios} socios)`,
                     color: '#ffffff',
                     font: { size: 14 }
                 },
@@ -228,14 +223,14 @@ function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
                     position: 'bottom',
                     labels: {
                         color: '#ffffff',
-                        font: { size: 13 }
+                        font: { size: 12 }
                     }
                 },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
                             const valor = context.raw || 0;
-                            const porcentaje = totalSocios >0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
+                            const porcentaje = totalSocios > 0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
                             return ` ${context.label}: ${porcentaje}% (${valor} socios)`;
                         }
                     }
