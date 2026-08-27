@@ -132,6 +132,8 @@ function renderizarGraficoCuotas(pagados, pendientes) {
         chartCuotasInstance.destroy();
     }
 
+    const totalSocios = pagados + pendientes;
+
     chartCuotasInstance = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -155,6 +157,15 @@ function renderizarGraficoCuotas(pagados, pendientes) {
                         color: '#ffffff',
                         font: {
                             size: 13
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const valor = context.raw || 0;
+                            const porcentaje = totalSocios > 0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
+                            return ` ${context.label}: ${porcentaje}% (${valor} socios)`;
                         }
                     }
                 }
