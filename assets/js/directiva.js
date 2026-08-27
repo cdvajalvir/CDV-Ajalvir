@@ -3,6 +3,8 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
 
+let chartCuotasInstance = null; // Variable para controlar la instancia del gráfico y evitar duplicados
+
 document.addEventListener("DOMContentLoaded", () => {
     // Protección estricta de la página de directiva
     comprobarAcceso(["administrador", "directiva"], async (usuario) => {
@@ -13,14 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function cargarDatosDirectiva() {
     try {
-        // 1. Obtener todos los socios que tengan rol 'directiva' o 'administrador'
+        // 1. Obtener todos los socios (para métricas, listados y gráfico de cuotas)
         const { data: directivos, error: errorSocios } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellido, rol, activo");
+            .select("id, nombre, apellido, rol, activo, cantidad_pagada"); // Aseguramos traer cantidad_pagada
 
         if (errorSocios) throw errorSocios;
 
-        // Filtrar perfiles de directiva o administradores
+        // Filtrar perfiles de directiva o administradores para la tabla de saldos
         const miembrosGestion = directivos.filter(s => s.rol === "directiva" || s.rol === "administrador");
 
         // Rellenar métricas rápidas del panel superior si existen los elementos
@@ -32,8 +34,24 @@ async function cargarDatosDirectiva() {
         if (elemTotalDirectiva) elemTotalDirectiva.textContent = directivos.filter(s => s.rol === "directiva").length;
         if (elemTotalAdmin) elemTotalAdmin.textContent = directivos.filter(s => s.rol === "administrador").length;
 
+        // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE TARTA (CUOTAS) ---
+        // Socios con cantidad pagada diferente de 0 vs cantidad pagada igual a 0 (o nula)
+        let totalPagados = 0;
+        let totalPendientes = 0;
+
+        directivos.forEach(socio => {
+            const pagado = parseFloat(socio.cantidad_pagada) || 0;
+            if (pagado !== 0) {
+                totalPagados++;
+            } else {
+                totalPendientes++;
+            }
+        });
+
+        renderizarGraficoCuotas(totalPagados, totalPendientes);
+        // -----------------------------------------------------------
+
         // 2. Obtener todos los movimientos financieros para calcular saldos
-        // Nota: Asegúrate de que el campo que vincula el movimiento con el socio en tu tabla se llama 'codigo_cuenta' o 'id_socio' (aquí usaremos 'codigo_cuenta' que es el estándar habitual en tu proyecto)
         const { data: movimientos, error: errorMovs } = await supabaseClient
             .from("movimientos")
             .select("codigo_cuenta, importe");
@@ -78,9 +96,11 @@ async function cargarDatosDirectiva() {
                 const tdSaldo = document.createElement("td");
                 tdSaldo.style.textAlign = "right";
                 tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
-                // Opcional: Dar color según si debe o tiene saldo a favor
-                tdSaldo.style.color = saldoTotal < 0 ? "#f87171" : "#86efac";
+                
+                // Color con alta visibilidad y !important para evitar conflictos
+                tdSaldo.style.setProperty("color", saldoTotal < 0 ? "#f87171" : "#86efac", "important");
                 tdSaldo.style.whiteSpace = "nowrap";
+                
                 tr.appendChild(tdNombre);
                 tr.appendChild(tdSaldo);
                 tbody.appendChild(tr);
@@ -98,4 +118,47 @@ async function cargarDatosDirectiva() {
             tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: red;">Error al cargar los saldos.</td></tr>`;
         }
     }
+}
+
+// Función encargada de pintar o actualizar el gráfico de tarta con Chart.js
+function renderizarGraficoCuotas(pagados, pendientes) {
+    const canvasElement = document.getElementById("graficoCuotas");
+    if (!canvasElement) return;
+
+    const ctx = canvasElement.getContext("2d");
+
+    // Si ya existía una instancia previa, la destruimos para evitar solapamientos al recargar
+    if (chartCuotasInstance) {
+        chartCuotasInstance.destroy();
+    }
+
+    chartCuotasInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Pagados', 'Pendientes'],
+            datasets: [{
+                data: [pagados, pendientes],
+                backgroundColor: [
+                    '#3b82f6', // Azul para los pagados
+                    '#f97316'  // Naranja para los pendientes
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff',
+                        font: {
+                            size: 13
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
