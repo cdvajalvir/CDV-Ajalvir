@@ -3,131 +3,190 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
 
-let chartCuotasInstance = null; // Variable para controlar la instancia del gráfico y evitar duplicados
+let chartCuotasInstance = null; // Control de instancia del gráfico
+let globalDirectivos = [];
+let globalMovimientos = [];
 
 document.addEventListener("DOMContentLoaded", () => {
     // Protección estricta de la página de directiva
     comprobarAcceso(["administrador", "directiva"], async (usuario) => {
         console.log("Acceso concedido a Directiva:", usuario);
-        await cargarDatosDirectiva();
+        await inicializarPanelDirectiva();
     });
 });
 
-async function cargarDatosDirectiva() {
+// Función para calcular la temporada actual en formato xxxx/xxxx según el mes actual (Septiembre -> Agosto)
+function calcularTemporadaActual() {
+    const ahora = new Date();
+    const anio = ahora.getFullYear();
+    const mes = ahora.getMonth(); // 0 = Enero, 8 = Septiembre
+    return mes >= 8 ? `${anio}/${anio + 1}` : `${anio - 1}/${anio}`;
+}
+
+async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener todos los socios (para métricas, listados y gráfico de cuotas)
-        const { data: directivos, error: errorSocios } = await supabaseClient
-            .from("socios")
-            .select("id, nombre, apellido, rol, activo, cantidad_pagada"); // Aseguramos traer cantidad_pagada
+        // 1. Obtener socios y movimientos desde Supabase en paralelo
+        const [resSocios, resMovs, resTemps] = await Promise.all([
+            supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
+            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
+            supabaseClient.from("temporadas").select("nombre").order("nombre", { ascending: false })
+        ]);
 
-        if (errorSocios) throw errorSocios;
+        if (resSocios.error) throw resSocios.error;
+        globalDirectivos = resSocios.data || [];
+        globalMovimientos = resMovs.data || [];
 
-        // Filtrar perfiles de directiva o administradores para la tabla de saldos
-        const miembrosGestion = directivos.filter(s => s.rol === "directiva" || s.rol === "administrador");
-
-        // Rellenar métricas rápidas del panel superior si existen los elementos
-        const elemSociosActivos = document.getElementById("sociosActivos");
-        const elemTotalDirectiva = document.getElementById("totalDirectiva");
-        const elemTotalAdmin = document.getElementById("totalAdmin");
-
-        if (elemSociosActivos) elemSociosActivos.textContent = directivos.filter(s => s.activo).length;
-        if (elemTotalDirectiva) elemTotalDirectiva.textContent = directivos.filter(s => s.rol === "directiva").length;
-        if (elemTotalAdmin) elemTotalAdmin.textContent = directivos.filter(s => s.rol === "administrador").length;
-
-        // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE TARTA (CUOTAS) ---
-        // Socios con cantidad pagada diferente de 0 vs cantidad pagada igual a 0 (o nula)
-        let totalPagados = 0;
-        let totalPendientes = 0;
-
-        directivos.forEach(socio => {
-            const pagado = parseFloat(socio.cantidad_pagada) || 0;
-            if (pagado !== 0) {
-                totalPagados++;
-            } else {
-                totalPendientes++;
+        // 2. Poblar el selector de temporadas en el menú lateral (<select id="selectTemporada">)
+        const selectTemp = document.getElementById("selectTemporada");
+        if (selectTemp) {
+            let temporadasSet = new Set();
+            
+            // Añadir temporadas de la tabla 'temporadas' si existen
+            if (resTemps.data) {
+                resTemps.data.forEach(t => temporadasSet.add(t.nombre));
             }
-        });
 
-        renderizarGraficoCuotas(totalPagados, totalPendientes);
-        // -----------------------------------------------------------
-
-        // 2. Obtener todos los movimientos financieros para calcular saldos
-        const { data: movimientos, error: errorMovs } = await supabaseClient
-            .from("movimientos")
-            .select("codigo_cuenta, importe");
-
-        if (errorMovs) {
-            console.warn("No se pudo cargar la tabla de movimientos o está vacía:", errorMovs.message);
-        }
-
-        // Agrupar y sumar los importes por UUID
-        const saldosPorUuid = {};
-        if (movimientos) {
-            movimientos.forEach(mov => {
-                const uuid = mov.codigo_cuenta;
-                const importe = parseFloat(mov.importe) || 0;
-                if (!saldosPorUuid[uuid]) {
-                    saldosPorUuid[uuid] = 0;
+            // Extraer también las temporadas que aparezcan dentro del objeto JSONB de cantidad_pagada de los socios
+            globalDirectivos.forEach(socio => {
+                if (socio.cantidad_pagada && typeof socio.cantidad_pagada === 'object') {
+                    Object.keys(socio.cantidad_pagada).forEach(temp => temporadasSet.add(temp));
                 }
-                saldosPorUuid[uuid] += importe;
+            });
+
+            const temporadaActualCalculada = calcularTemporadaActual();
+            temporadasSet.add(temporadaActualCalculada); // Asegurar que la temporada actual esté siempre presente
+
+            const listaOrdenada = Array.from(temporadasSet).sort().reverse();
+
+            selectTemp.innerHTML = "";
+            listaOrdenada.forEach(temp => {
+                const opt = document.createElement("option");
+                opt.value = temp;
+                opt.textContent = temp;
+                if (temp === temporadaActualCalculada) {
+                    opt.selected = true;
+                }
+                selectTemp.appendChild(opt);
+            });
+
+            // Escuchar cambios en el selector para actualizar dinámicamente todo el panel
+            selectTemp.addEventListener("change", () => {
+                actualizarVistaPorTemporada(selectTemp.value);
             });
         }
 
-        // 3. Cruzar los datos de los miembros con sus saldos calculados
-        const tbody = document.querySelector("#tablaSaldosDirectiva tbody");
-        if (!tbody) return;
-
-        tbody.innerHTML = "";
-
-        let filasRenderizadas = 0;
-
-        miembrosGestion.forEach(miembro => {
-            const saldoTotal = saldosPorUuid[miembro.id] || 0;
-
-            // Filtro: Si el saldo es 0, no se muestra
-            if (saldoTotal !== 0) {
-                filasRenderizadas++;
-                const tr = document.createElement("tr");
-
-                const tdNombre = document.createElement("td");
-                tdNombre.textContent = `${miembro.nombre} ${miembro.apellido}`;
-                tdNombre.style.whiteSpace = "nowrap";
-
-                const tdSaldo = document.createElement("td");
-                tdSaldo.style.textAlign = "right";
-                tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
-                
-                // Color con alta visibilidad y !important para evitar conflictos
-                tdSaldo.style.setProperty("color", saldoTotal < 0 ? "#f87171" : "#86efac", "important");
-                tdSaldo.style.whiteSpace = "nowrap";
-                
-                tr.appendChild(tdNombre);
-                tr.appendChild(tdSaldo);
-                tbody.appendChild(tr);
-            }
-        });
-
-        if (filasRenderizadas === 0) {
-            tbody.innerHTML = `<tr><td colspan="2" style="text-align: center;">No hay miembros de directiva o administración con saldo pendiente o a favor.</td></tr>`;
-        }
+        // Carga inicial del panel usando la temporada seleccionada por defecto (la actual)
+        const temporadaInicial = selectTemp ? selectTemp.value : calcularTemporadaActual();
+        actualizarVistaPorTemporada(temporadaInicial);
 
     } catch (err) {
-        console.error("Error al cargar los datos del panel de directiva:", err);
-        const tbody = document.querySelector("#tablaSaldosDirectiva tbody");
-        if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: red;">Error al cargar los saldos.</td></tr>`;
+        console.error("Error al inicializar el panel de directiva:", err);
+    }
+}
+
+// Función que actualiza métricas, gráfico y tabla según la temporada elegida
+function actualizarVistaPorTemporada(temporadaSeleccionada) {
+    console.log("Actualizando panel para la temporada:", temporadaSeleccionada);
+
+    // Filtrar perfiles de directiva o administradores
+    const miembrosGestion = globalDirectivos.filter(s => s.rol === "directiva" || s.rol === "administrador");
+
+    // Rellenar métricas rápidas del panel superior si existen los elementos
+    const elemSociosActivos = document.getElementById("sociosActivos");
+    const elemTotalDirectiva = document.getElementById("totalDirectiva");
+    const elemTotalAdmin = document.getElementById("totalAdmin");
+
+    if (elemSociosActivos) elemSociosActivos.textContent = globalDirectivos.filter(s => s.activo).length;
+    if (elemTotalDirectiva) elemTotalDirectiva.textContent = globalDirectivos.filter(s => s.rol === "directiva").length;
+    if (elemTotalAdmin) elemTotalAdmin.textContent = globalDirectivos.filter(s => s.rol === "administrador").length;
+
+    // --- CÁLCULO DEL GRÁFICO DE TARTA LEYENDO EL JSONB 'cantidad_pagada' ---
+    let totalPagados = 0;
+    let totalPendientes = 0;
+
+    globalDirectivos.forEach(socio => {
+        let pagadoCantidad = 0;
+
+        // Comprobamos la estructura JSONB de cantidad_pagada para la temporada seleccionada
+        if (socio.cantidad_pagada && typeof socio.cantidad_pagada === 'object') {
+            const datosTemporada = socio.cantidad_pagada[temporadaSeleccionada];
+            if (datosTemporada) {
+                // Lee de las propiedades 'pagado' o 'cuota' dentro del objeto de esa temporada
+                pagadoCantidad = parseFloat(datosTemporada.pagado || datosTemporada.cuota || 0);
+            }
         }
+
+        if (pagadoCantidad !== 0) {
+            totalPagados++;
+        } else {
+            totalPendientes++;
+        }
+    });
+
+    renderizarGraficoCuotas(totalPagados, totalPendientes, temporadaSeleccionada);
+    // ---------------------------------------------------------------------
+
+    // --- CÁLCULO Y RENDERIZADO DE LA TABLA DE SALDOS ---
+    const tbody = document.querySelector("#tablaSaldosDirectiva tbody");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    // Filtrar movimientos de la temporada seleccionada (si la tabla de movimientos contiene un campo temporada)
+    const movimientosFiltrados = globalMovimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
+
+    // Agrupar y sumar los importes por UUID
+    const saldosPorUuid = {};
+    movimientosFiltrados.forEach(mov => {
+        const uuid = mov.codigo_cuenta;
+        const importe = parseFloat(mov.importe) || 0;
+        if (!saldosPorUuid[uuid]) {
+            saldosPorUuid[uuid] = 0;
+        }
+        saldosPorUuid[uuid] += importe;
+    });
+
+    let filasRenderizadas = 0;
+
+    miembrosGestion.forEach(miembro => {
+        const saldoTotal = saldosPorUuid[miembro.id] || 0;
+
+        // Filtro: Si el saldo es 0, no se muestra
+        if (saldoTotal !== 0) {
+            filasRenderizadas++;
+            const tr = document.createElement("tr");
+
+            const tdNombre = document.createElement("td");
+            tdNombre.textContent = `${miembro.nombre} ${miembro.apellido}`;
+            tdNombre.style.whiteSpace = "nowrap";
+
+            const tdSaldo = document.createElement("td");
+            tdSaldo.style.textAlign = "right";
+            tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
+            
+            // Color con alta visibilidad y !important
+            tdSaldo.style.setProperty("color", saldoTotal < 0 ? "#f87171" : "#86efac", "important");
+            tdSaldo.style.whiteSpace = "nowrap";
+            
+            tr.appendChild(tdNombre);
+            tr.appendChild(tdSaldo);
+            tbody.appendChild(tr);
+        }
+    });
+
+    if (filasRenderizadas === 0) {
+        tbody.innerHTML = `<tr><td colspan="2" style="text-align: center;">No hay miembros de directiva con saldo pendiente en la temporada ${temporadaSeleccionada}.</td></tr>`;
     }
 }
 
 // Función encargada de pintar o actualizar el gráfico de tarta con Chart.js
-function renderizarGraficoCuotas(pagados, pendientes) {
+function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
     const canvasElement = document.getElementById("graficoCuotas");
     if (!canvasElement) return;
 
     const ctx = canvasElement.getContext("2d");
 
-    // Si ya existía una instancia previa, la destruimos para evitar solapamientos al recargar
+    // Si ya existía una instancia previa, la destruimos para evitar solapamientos al cambiar de temporada
     if (chartCuotasInstance) {
         chartCuotasInstance.destroy();
     }
@@ -151,13 +210,17 @@ function renderizarGraficoCuotas(pagados, pendientes) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
+                title: {
+                    display: true,
+                    text: `Temporada ${temporadaLabel}`,
+                    color: '#ffffff',
+                    font: { size: 14 }
+                },
                 legend: {
                     position: 'bottom',
                     labels: {
                         color: '#ffffff',
-                        font: {
-                            size: 13
-                        }
+                        font: { size: 13 }
                     }
                 },
                 tooltip: {
