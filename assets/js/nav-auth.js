@@ -5,12 +5,16 @@ export async function cargarNavegacionDinamica() {
     const contenedorNav = document.querySelector("[data-nav-links]");
     if (!contenedorNav) return;
 
-    // Detectar si estamos en una subcarpeta para calcular rutas relativas
-    const isInSubfolder = window.location.pathname.includes("/general/") || 
-                          window.location.pathname.includes("/admin/") ||
-                          window.location.pathname.includes("/socios/authorization") || 
-                          window.location.pathname.includes("/socios/") ||
-                          window.location.pathname.includes("/directiva/"); // o la ruta que uses
+    // Detectar si estamos realmente en una subcarpeta (ignorando el index.html de la raíz)
+    const pathName = window.location.pathname;
+    const esRaiz = pathName.endsWith("/index.html") || pathName.endsWith("/");
+    
+    const isInSubfolder = !esRaiz && (
+        pathName.includes("/general/") || 
+        pathName.includes("/admin/") ||
+        pathName.includes("/socios/") || 
+        pathName.includes("/directiva/")
+    );
     const basePath = isInSubfolder ? "../" : "./";
 
     try {
