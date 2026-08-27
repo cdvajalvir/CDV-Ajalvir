@@ -33,7 +33,7 @@ form.addEventListener("submit", async(e)=>{
         email: document.getElementById("email").value,
         telefono: document.getElementById("telefono").value,
         password: document.getElementById("password").value,
-        temporada: document.getElementById("temporadaActualLabel").textContent
+        temporada: calcularTemporadaActual()
     };
 
     try{
