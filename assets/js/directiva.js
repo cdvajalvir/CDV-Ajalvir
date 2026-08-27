@@ -29,7 +29,7 @@ async function inicializarPanelDirectiva() {
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
             supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
-            supabaseClient.from("temporadas").select("temporada")
+            supabaseClient.from("temporada").select("temporada")
         ]);
 
         if (resSocios.error) throw resSocios.error;
