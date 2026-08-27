@@ -5,7 +5,7 @@ export async function cargarNavegacionDinamica() {
     const contenedorNav = document.querySelector("[data-nav-links]");
     if (!contenedorNav) return;
 
-    // Detectar si estamos realmente en una subcarpeta (ignorando el index.html de la raíz)
+    // 1. Detectar ruta base de forma segura
     const pathName = window.location.pathname;
     const esRaiz = pathName.endsWith("/index.html") || pathName.endsWith("/");
     
@@ -17,13 +17,19 @@ export async function cargarNavegacionDinamica() {
     );
     const basePath = isInSubfolder ? "../" : "./";
 
-    try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+    // 2. Pintar un menú básico por defecto INMEDIATAMENTE para que NUNCA aparezca en blanco
+    renderizarMenuPublico(contenedorNav, basePath);
 
-        if (!session) {
-            renderizarMenuPublico(contenedorNav, basePath);
-            return;
-        }
+    try {
+        // 3. Comprobar sesión de forma segura con un timeout por si Supabase no responde
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Timeout Supabase")), 4000)
+        );
+
+        const sessionPromise = supabaseClient.auth.getSession();
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+
+        if (!session) return; // Si no hay sesión, se queda con el menú público que ya pintamos
 
         const user = session.user;
 
@@ -32,26 +38,24 @@ export async function cargarNavegacionDinamica() {
             .from("socios")
             .select("rol")
             .eq("id", user.id)
-            .single();
+            .maybeSingle();
 
         const rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
 
-        const pathName = window.location.pathname;
-
-        // Comportamiento específico según la página en la que estemos
+        // Comportamiento específico según la página o el rol
         if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
-        } else if (pathName.includes("directiva") || pathName.endsWith("directiva/directiva.html")) {
+        } else if (pathName.includes("directiva")) {
             renderizarMenuPaginaDirectiva(contenedorNav, basePath);
         } else {
             renderizarMenuSegunRol(contenedorNav, rol, basePath);
         }
 
     } catch (err) {
-        console.error("Error al cargar la navegación:", err);
-        renderizarMenuPublico(contenedorNav, basePath);
+        console.warn("Aviso en navegación (usando menú público por defecto):", err.message);
+        // Si hay cualquier error de conexión o timeout, se queda el menú público y no rompe nada
     }
 }
 
@@ -64,7 +68,7 @@ function renderizarMenuSegunRol(contenedor, rol, basePath) {
             <a href="${basePath}general/calendario.html">Calendario</a>
             <a href="${basePath}socios/socios.html">Área socio</a>
         `;
-    } else if (rol === "administrador" || rol === "admin") {
+    } else if (rol === "administrador" || rol === "admin" || rol === "directiva") {
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
@@ -107,7 +111,6 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     if (btnLogout) {
         btnLogout.addEventListener("click", async (e) => {
             e.preventDefault();
-            const { supabaseClient } = await import("./supabase.js");
             await supabaseClient.auth.signOut();
             window.location.href = `${basePath}index.html`;
         });
@@ -125,7 +128,6 @@ function renderizarMenuPaginaDirectiva(contenedor, basePath) {
     if (btnLogout) {
         btnLogout.addEventListener("click", async (e) => {
             e.preventDefault();
-            const { supabaseClient } = await import("../assets/js/supabase.js");
             await supabaseClient.auth.signOut();
             window.location.href = `${basePath}index.html`;
         });
