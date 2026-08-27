@@ -25,11 +25,11 @@ function calcularTemporadaActual() {
 
 async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener socios, movimientos y las temporadas consultando la columna 'temporada'
+        // 1. Obtener socios, movimientos y las temporadas desde Supabase
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
             supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
-            supabaseClient.from("temporadas").select("temporada").order("temporada", { ascending: false })
+            supabaseClient.from("temporadas").select("temporada")
         ]);
 
         if (resSocios.error) throw resSocios.error;
@@ -41,16 +41,21 @@ async function inicializarPanelDirectiva() {
         if (selectTemp) {
             let temporadasSet = new Set();
             
-            // Añadir temporadas de la tabla 'temporadas' usando la propiedad .temporada
-            if (resTemps.data) {
+            // Recorrer los resultados de la tabla temporadas de forma segura
+            if (resTemps.data && Array.isArray(resTemps.data)) {
                 resTemps.data.forEach(t => {
-                    if (t.temporada) temporadasSet.add(String(t.temporada).trim());
+                    // Extraemos la propiedad temporada y evitamos nulos
+                    const valorTemp = t.temporada;
+                    if (valorTemp) {
+                        temporadasSet.add(String(valorTemp).trim());
+                    }
                 });
             }
 
             const temporadaActualCalculada = calcularTemporadaActual();
-            temporadasSet.add(temporadaActualCalculada); // Asegurar que la temporada actual esté siempre presente
+            temporadasSet.add(temporadaActualCalculada); // Asegurar que la temporada actual esté presente
 
+            // Ordenar de forma descendente (ej. 2025/2026, 2024/2025, 2023/2024)
             const listaOrdenada = Array.from(temporadasSet).sort().reverse();
 
             selectTemp.innerHTML = "";
@@ -109,7 +114,6 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
         if (socio.cantidad_pagada && typeof socio.cantidad_pagada === 'object') {
             const datosTemporada = socio.cantidad_pagada[temporadaSeleccionada];
             if (datosTemporada) {
-                // Lee de las propiedades 'pagado' o 'cuota' dentro del objeto de esa temporada
                 pagadoCantidad = parseFloat(datosTemporada.pagado || datosTemporada.cuota || 0);
             }
         }
@@ -130,7 +134,7 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
 
     tbody.innerHTML = "";
 
-    // Filtrar movimientos de la temporada seleccionada (si la tabla de movimientos contiene un campo temporada)
+    // Filtrar movimientos de la temporada seleccionada
     const movimientosFiltrados = globalMovimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
     // Agrupar y sumar los importes por UUID
@@ -162,7 +166,6 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
             tdSaldo.style.textAlign = "right";
             tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
             
-            // Color con alta visibilidad y !important
             tdSaldo.style.setProperty("color", saldoTotal < 0 ? "#f87171" : "#86efac", "important");
             tdSaldo.style.whiteSpace = "nowrap";
             
@@ -184,7 +187,6 @@ function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
 
     const ctx = canvasElement.getContext("2d");
 
-    // Si ya existía una instancia previa, la destruimos para evitar solapamientos al cambiar de temporada
     if (chartCuotasInstance) {
         chartCuotasInstance.destroy();
     }
@@ -225,7 +227,7 @@ function renderizarGraficoCuotas(pagados, pendientes, temporadaLabel) {
                     callbacks: {
                         label: function(context) {
                             const valor = context.raw || 0;
-                            const porcentaje = totalSocios > 0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
+                            const porcentaje = totalSocios >0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
                             return ` ${context.label}: ${porcentaje}% (${valor} socios)`;
                         }
                     }
