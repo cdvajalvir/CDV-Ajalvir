@@ -109,22 +109,24 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     if (elemTotalDirectiva) elemTotalDirectiva.textContent = globalDirectivos.filter(s => s.rol === "directiva").length;
     if (elemTotalAdmin) elemTotalAdmin.textContent = globalDirectivos.filter(s => s.rol === "administrador").length;
 
-    // --- CÁLCULO DEL GRÁFICO DE TARTA LEYENDO EL JSONB 'cantidad_pagada' ---
+    // --- CÁLCULO DEL GRÁFICO DE TARTA LEYENDO EL ARRAY JSONB 'cantidad_pagada' ---
     let totalPagados = 0;
     let totalPendientes = 0;
 
     globalDirectivos.forEach(socio => {
         let pagadoCantidad = 0;
 
-        // Comprobamos la estructura JSONB de cantidad_pagada para la temporada seleccionada
-        if (socio.cantidad_pagada && typeof socio.cantidad_pagada === 'object') {
-            const datosTemporada = socio.cantidad_pagada[temporadaSeleccionada];
+        // Comprobamos que cantidad_pagada es un array y lo recorremos
+        if (socio.cantidad_pagada && Array.isArray(socio.cantidad_pagada)) {
+            // Buscamos el objeto de la temporada seleccionada dentro del array
+            const datosTemporada = socio.cantidad_pagada.find(item => item.temporada === temporadaSeleccionada);
             if (datosTemporada) {
                 pagadoCantidad = parseFloat(datosTemporada.pagado || datosTemporada.cuota || 0);
             }
         }
 
-        if (pagadoCantidad !== 0) {
+        // Si pagado es mayor que 0 cuenta como pagado, de lo contrario pendiente
+        if (pagadoCantidad > 0) {
             totalPagados++;
         } else {
             totalPendientes++;
