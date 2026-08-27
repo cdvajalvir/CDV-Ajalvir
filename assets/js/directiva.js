@@ -78,7 +78,7 @@ async function cargarDatosDirectiva() {
                 tdSaldo.style.textAlign = "right";
                 tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
                 // Opcional: Dar color según si debe o tiene saldo a favor
-                tdSaldo.style.color = saldoTotal < 0 ? "#d9534f" : "#7bc67b";
+                tdSaldo.style.color = saldoTotal < 0 ? "#f87171" : "#86efac";
                 tr.appendChild(tdNombre);
                 tr.appendChild(tdSaldo);
                 tbody.appendChild(tr);
