@@ -3,7 +3,8 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
 
-let chartCuotasInstance = null; // Control de instancia del gráfico
+let chartCuotasInstance = null; // Control de instancia del gráfico de tarta
+let chartIngresosGastosInstance = null; // Control de instancia del gráfico de barras
 let globalDirectivos = [];
 let globalMovimientos = [];
 
@@ -25,10 +26,10 @@ function calcularTemporadaActual() {
 
 async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener socios, movimientos y las temporadas desde la tabla 'temporada'
+        // 1. Obtener socios, movimientos (con fecha_contable y tipo) y las temporadas desde la tabla 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
-            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
+            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_contable, tipo"),
             supabaseClient.from("temporada").select("temporada")
         ]);
 
@@ -130,6 +131,10 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     });
 
     renderizarGraficoCuotasTresEstados(pagadasTotalidad, pagadasParciales, noPagadas, temporadaSeleccionada, totalSociosTemporada);
+    // ---------------------------------------------------------------------
+
+    // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE BARRAS DE INGRESOS Y GASTOS ---
+    procesarYRenderizarGraficoBarras(globalMovimientos, temporadaSeleccionada);
     // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DE LA TABLA DE SALDOS ---
@@ -234,6 +239,112 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
                             return ` ${context.label}: ${porcentaje}% (${valor} socios)`;
                         }
                     }
+                }
+            }
+        }
+    });
+}
+
+// Función para procesar movimientos por mes y renderizar el gráfico de barras de ingresos y gastos
+function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
+    const canvasElement = document.getElementById("graficoIngresosGastos");
+    if (!canvasElement) return;
+
+    // 1. Extraer los años de la temporada (ej. "2025/2026" -> anioInicio = 2025, anioFin = 2026)
+    const partes = temporadaSeleccionada.split("/");
+    if (partes.length !== 2) return;
+    const anioInicio = parseInt(partes[0]);
+    const anioFin = parseInt(partes[1]);
+
+    // 2. Definir los meses oficiales de la temporada (Septiembre a Junio)
+    const mesesDefinicion = [
+        { mesIndex: 8, nombre: `sep ${String(anioInicio).slice(-2)}`, anio: anioInicio },
+        { mesIndex: 9, nombre: `oct ${String(anioInicio).slice(-2)}`, anio: anioInicio },
+        { mesIndex: 10, nombre: `nov ${String(anioInicio).slice(-2)}`, anio: anioInicio },
+        { mesIndex: 11, nombre: `dic ${String(anioInicio).slice(-2)}`, anio: anioInicio },
+        { mesIndex: 0, nombre: `ene ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 1, nombre: `feb ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 2, nombre: `mar ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 3, nombre: `abr ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 4, nombre: `may ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 5, nombre: `jun ${String(anioFin).slice(-2)}`, anio: anioFin }
+    ];
+
+    const ingresosPorMes = new Array(10).fill(0);
+    const gastosPorMes = new Array(10).fill(0);
+    const labelsMeses = mesesDefinicion.map(m => m.nombre);
+
+    // 3. Filtrar movimientos de la temporada seleccionada
+    const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
+
+    movimientosTemporada.forEach(mov => {
+        if (!mov.fecha_contable) return;
+        const fecha = new Date(mov.fecha_contable);
+        if (isNaN(fecha)) return;
+
+        const mIndex = fecha.getMonth();
+        const fAnio = fecha.getFullYear();
+
+        const indexEnTemporada = mesesDefinicion.findIndex(item => item.mesIndex === mIndex && item.anio === fAnio);
+        
+        if (indexEnTemporada !== -1) {
+            const importe = parseFloat(mov.importe) || 0;
+            
+            // Determinar si es ingreso o gasto (según la columna tipo o el signo del importe)
+            const esIngreso = mov.tipo ? (mov.tipo.toLowerCase() === 'ingreso' || mov.tipo.toLowerCase() === 'ingresos') : (importe > 0);
+
+            if (esIngreso) {
+                ingresosPorMes[indexEnTemporada] += Math.abs(importe);
+            } else {
+                gastosPorMes[indexEnTemporada] += Math.abs(importe);
+            }
+        }
+    });
+
+    // 4. Renderizar con Chart.js
+    const ctx = canvasElement.getContext("2d");
+
+    if (chartIngresosGastosInstance) {
+        chartIngresosGastosInstance.destroy();
+    }
+
+    chartIngresosGastosInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labelsMeses,
+            datasets: [
+                {
+                    label: 'Suma de INGRESOS',
+                    data: ingresosPorMes,
+                    backgroundColor: '#f97316', // Naranja
+                    borderWidth: 1
+                },
+                {
+                    label: 'Suma de GASTOS',
+                    data: gastosPorMes,
+                    backgroundColor: '#fbbf24', // Amarillo/Ámbar
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { color: '#ffffff', font: { size: 12 } }
                 }
             }
         }
