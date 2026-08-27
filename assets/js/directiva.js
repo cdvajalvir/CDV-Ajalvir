@@ -73,12 +73,14 @@ async function cargarDatosDirectiva() {
 
                 const tdNombre = document.createElement("td");
                 tdNombre.textContent = `${miembro.nombre} ${miembro.apellido}`;
+                tdNombre.style.whiteSpace = "nowrap";
 
                 const tdSaldo = document.createElement("td");
                 tdSaldo.style.textAlign = "right";
                 tdSaldo.textContent = `${saldoTotal.toFixed(2)} €`;
                 // Opcional: Dar color según si debe o tiene saldo a favor
                 tdSaldo.style.color = saldoTotal < 0 ? "#f87171" : "#86efac";
+                tdSaldo.style.whiteSpace = "nowrap";
                 tr.appendChild(tdNombre);
                 tr.appendChild(tdSaldo);
                 tbody.appendChild(tr);
