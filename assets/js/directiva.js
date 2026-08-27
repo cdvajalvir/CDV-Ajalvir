@@ -25,11 +25,11 @@ function calcularTemporadaActual() {
 
 async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener socios y movimientos desde Supabase en paralelo
+        // 1. Obtener socios, movimientos y las temporadas consultando la columna 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
             supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada"),
-            supabaseClient.from("temporadas").select("nombre").order("nombre", { ascending: false })
+            supabaseClient.from("temporadas").select("temporada").order("temporada", { ascending: false })
         ]);
 
         if (resSocios.error) throw resSocios.error;
@@ -41,17 +41,12 @@ async function inicializarPanelDirectiva() {
         if (selectTemp) {
             let temporadasSet = new Set();
             
-            // Añadir temporadas de la tabla 'temporadas' si existen
+            // Añadir temporadas de la tabla 'temporadas' usando la propiedad .temporada
             if (resTemps.data) {
-                resTemps.data.forEach(t => temporadasSet.add(t.nombre));
+                resTemps.data.forEach(t => {
+                    if (t.temporada) temporadasSet.add(String(t.temporada).trim());
+                });
             }
-
-            // Extraer también las temporadas que aparezcan dentro del objeto JSONB de cantidad_pagada de los socios
-            globalDirectivos.forEach(socio => {
-                if (socio.cantidad_pagada && typeof socio.cantidad_pagada === 'object') {
-                    Object.keys(socio.cantidad_pagada).forEach(temp => temporadasSet.add(temp));
-                }
-            });
 
             const temporadaActualCalculada = calcularTemporadaActual();
             temporadasSet.add(temporadaActualCalculada); // Asegurar que la temporada actual esté siempre presente
@@ -70,9 +65,8 @@ async function inicializarPanelDirectiva() {
             });
 
             // Escuchar cambios en el selector para actualizar dinámicamente todo el panel
-            selectTemp.addEventListener("change", () => {
-                actualizarVistaPorTemporada(selectTemp.value);
-            });
+            selectTemp.removeEventListener("change", manejadorCambioTemporada);
+            selectTemp.addEventListener("change", manejadorCambioTemporada);
         }
 
         // Carga inicial del panel usando la temporada seleccionada por defecto (la actual)
@@ -82,6 +76,10 @@ async function inicializarPanelDirectiva() {
     } catch (err) {
         console.error("Error al inicializar el panel de directiva:", err);
     }
+}
+
+function manejadorCambioTemporada(e) {
+    actualizarVistaPorTemporada(e.target.value);
 }
 
 // Función que actualiza métricas, gráfico y tabla según la temporada elegida
