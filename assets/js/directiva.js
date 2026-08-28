@@ -245,7 +245,7 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
     });
 }
 
-// Función para procesar movimientos por mes usando 'fecha_apunte' y renderizar el gráfico de barras
+// Función para procesar movimientos por mes (12 meses completos de la temporada) y renderizar el gráfico
 function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoIngresosGastos");
     if (!canvasElement) return;
@@ -256,7 +256,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const anioInicio = parseInt(partes[0]);
     const anioFin = parseInt(partes[1]);
 
-    // 2. Definir los meses oficiales de la temporada (Septiembre a Junio)
+    // 2. Definir los 12 meses de la temporada (Septiembre a Agosto)
     const mesesDefinicion = [
         { mesIndex: 8, nombre: `sep ${String(anioInicio).slice(-2)}`, anio: anioInicio },
         { mesIndex: 9, nombre: `oct ${String(anioInicio).slice(-2)}`, anio: anioInicio },
@@ -267,18 +267,19 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         { mesIndex: 2, nombre: `mar ${String(anioFin).slice(-2)}`, anio: anioFin },
         { mesIndex: 3, nombre: `abr ${String(anioFin).slice(-2)}`, anio: anioFin },
         { mesIndex: 4, nombre: `may ${String(anioFin).slice(-2)}`, anio: anioFin },
-        { mesIndex: 5, nombre: `jun ${String(anioFin).slice(-2)}`, anio: anioFin }
+        { mesIndex: 5, nombre: `jun ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 6, nombre: `jul ${String(anioFin).slice(-2)}`, anio: anioFin }, // <-- Añadido Julio
+        { mesIndex: 7, nombre: `ago ${String(anioFin).slice(-2)}`, anio: anioFin }  // <-- Añadido Agosto
     ];
 
-    const ingresosPorMes = new Array(10).fill(0);
-    const gastosPorMes = new Array(10).fill(0);
+    const ingresosPorMes = new Array(12).fill(0);
+    const gastosPorMes = new Array(12).fill(0);
     const labelsMeses = mesesDefinicion.map(m => m.nombre);
 
     // 3. Filtrar movimientos de la temporada seleccionada
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
     movimientosTemporada.forEach(mov => {
-        // Usamos fecha_apunte tal como indicaste
         if (!mov.fecha_apunte) return;
         const fecha = new Date(mov.fecha_apunte);
         if (isNaN(fecha)) return;
@@ -290,8 +291,6 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         
         if (indexEnTemporada !== -1) {
             const importe = parseFloat(mov.importe) || 0;
-            
-            // Determinar si es ingreso o gasto (según la columna tipo o el signo del importe)
             const esIngreso = mov.tipo ? (mov.tipo.toLowerCase() === 'ingreso' || mov.tipo.toLowerCase() === 'ingresos') : (importe > 0);
 
             if (esIngreso) {
@@ -317,13 +316,13 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                 {
                     label: 'Suma de INGRESOS',
                     data: ingresosPorMes,
-                    backgroundColor: '#f97316', // Naranja
+                    backgroundColor: '#f97316',
                     borderWidth: 1
                 },
                 {
                     label: 'Suma de GASTOS',
                     data: gastosPorMes,
-                    backgroundColor: '#fbbf24', // Amarillo/Ámbar
+                    backgroundColor: '#fbbf24',
                     borderWidth: 1
                 }
             ]
