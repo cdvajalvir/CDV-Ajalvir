@@ -29,7 +29,7 @@ async function inicializarPanelDirectiva() {
         // 1. Obtener socios, movimientos (con fecha_contable y tipo) y las temporadas desde la tabla 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
-            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_contable, tipo"),
+            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_apunte, tipo"),
             supabaseClient.from("temporada").select("temporada")
         ]);
 
@@ -245,7 +245,7 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
     });
 }
 
-// Función para procesar movimientos por mes y renderizar el gráfico de barras de ingresos y gastos
+// Función para procesar movimientos por mes usando 'fecha_apunte' y renderizar el gráfico de barras
 function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoIngresosGastos");
     if (!canvasElement) return;
@@ -278,8 +278,9 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
     movimientosTemporada.forEach(mov => {
-        if (!mov.fecha_contable) return;
-        const fecha = new Date(mov.fecha_contable);
+        // Usamos fecha_apunte tal como indicaste
+        if (!mov.fecha_apunte) return;
+        const fecha = new Date(mov.fecha_apunte);
         if (isNaN(fecha)) return;
 
         const mIndex = fecha.getMonth();
