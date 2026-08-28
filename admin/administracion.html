@@ -27,7 +27,13 @@
             grid-column: 1 / -1;
             display: flex;
             gap: 1rem;
+            align-items: center;
             margin-top: 1rem;
+        }
+
+        /* Empuja el botón de Gest.Cuotas completamente a la derecha */
+        .btn-gest-cuotas {
+            margin-left: auto;
         }
 
         /* Indicador visual de campo solo lectura */
@@ -66,6 +72,14 @@
         @media (max-width: 600px) {
             .form-grid-3 {
                 grid-template-columns: 1fr;
+            }
+            
+            /* En pantallas muy estrechas permitimos que el botón baje si es necesario */
+            .form-actions {
+                flex-wrap: wrap;
+            }
+            .btn-gest-cuotas {
+                margin-left: 0;
             }
         }
     </style>
@@ -158,6 +172,9 @@
                             <button class="btn btn-primary" type="submit">Registrar Movimiento</button>
                             <a class="btn btn-secondary" href="registros.html">Ver Registros</a>
                             <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
+                            
+                            <!-- Botón Gest.Cuotas alineado a la derecha -->
+                            <a class="btn btn-secondary btn-gest-cuotas" href="cuotas.html">Gest.Cuotas</a>
                         </div>
 
                         <div style="grid-column: 1 / -1;">
