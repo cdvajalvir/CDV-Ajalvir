@@ -41,7 +41,7 @@ export async function cargarNavegacionDinamica() {
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.includes("directiva")) {
-            renderizarMenuPaginaDirectiva(contenedorNav, basePath);
+            renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
         } else {
             renderizarMenuSegunRol(contenedorNav, rol, basePath);
         }
@@ -77,10 +77,16 @@ function renderizarMenuSegunRol(contenedor, rol, basePath) {
 
 function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
     contenedor.innerHTML = "";
-    if (rol === "administrador" || rol === "admin" || rol === "directiva") {
+    if (rol === "administrador" || rol === "admin") {
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+        `;
+    } else if (rol === "directiva") {
+        // En Área de socios con rol directiva: Inicio y Directiva
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}directiva/directiva.html">Directiva</a>
         `;
     } else {
@@ -102,13 +108,23 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-function renderizarMenuPaginaDirectiva(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="${basePath}index.html">Inicio</a>
-        <a href="${basePath}admin/administracion.html">Administración</a>
-        <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
-    `;
-    configurarBotonLogout(basePath);
+function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
+    if (rol === "directiva") {
+        // En directiva.html con rol directiva: Inicio, Área socios y Cerrar sesión
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}socios/socios.html">Área socios</a>
+            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+        `;
+        configurarBotonLogout(basePath);
+    } else {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}admin/administracion.html">Administración</a>
+            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+        `;
+        configurarBotonLogout(basePath);
+    }
 }
 
 function renderizarMenuPublico(contenedor, basePath) {
