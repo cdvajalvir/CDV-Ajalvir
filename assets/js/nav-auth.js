@@ -39,9 +39,9 @@ export async function cargarNavegacionDinamica() {
         if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
-            renderizarMenuUnicoRegistros(contenedorNav, rol, basePath); // <--- Exclusivo solo para registros.html
+            renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("administracion.html")) {
-            renderizarMenuPaginaAdmin(contenedorNav, rol, basePath);
+            renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.includes("directiva")) {
             renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
         } else {
@@ -86,7 +86,6 @@ function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
             <a href="${basePath}directiva/directiva.html">Directiva</a>
         `;
     } else if (rol === "directiva") {
-        // En Área de socios con rol directiva: Inicio y Directiva
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}directiva/directiva.html">Directiva</a>
@@ -110,7 +109,6 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-// NUEVA FUNCIÓN EXCLUSIVA PARA registros.html (Sin cerrar sesión y sin elementos extra)
 function renderizarMenuUnicoRegistros(contenedor, rol, basePath) {
     if (rol === "directiva") {
         contenedor.innerHTML = `
@@ -125,7 +123,6 @@ function renderizarMenuUnicoRegistros(contenedor, rol, basePath) {
 
 function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
     if (rol === "directiva") {
-        // En directiva.html con rol directiva: Inicio, Área socios y Cerrar sesión
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}socios/socios.html">Área socios</a>
