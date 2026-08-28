@@ -99,8 +99,8 @@ function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
 }
 
 function renderizarMenuPaginaAdmin(contenedor, rol, basePath) {
-    // Si el usuario es de directiva y está en registros.html, el menú superior debe ofrecerle volver a Directiva
     if (rol === "directiva") {
+        // Si es de directiva, el menú debe mostrar "Directiva" para poder volver atrás
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}socios/socios.html">Área socios</a>
@@ -108,7 +108,7 @@ function renderizarMenuPaginaAdmin(contenedor, rol, basePath) {
             <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
         `;
     } else {
-        // Menú por defecto para administradores en la zona admin
+        // Menú para administradores reales
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}socios/socios.html">Área socios</a>
