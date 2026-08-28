@@ -245,12 +245,12 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
     });
 }
 
-// Función para procesar movimientos por mes (12 meses completos de la temporada) y renderizar el gráfico
+// Función para procesar movimientos por mes, calcular saldo acumulado y renderizar gráfico mixto (barras + línea)
 function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoIngresosGastos");
     if (!canvasElement) return;
 
-    // 1. Extraer los años de la temporada (ej. "2025/2026" -> anioInicio = 2025, anioFin = 2026)
+    // 1. Extraer los años de la temporada
     const partes = temporadaSeleccionada.split("/");
     if (partes.length !== 2) return;
     const anioInicio = parseInt(partes[0]);
@@ -268,8 +268,8 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         { mesIndex: 3, nombre: `abr ${String(anioFin).slice(-2)}`, anio: anioFin },
         { mesIndex: 4, nombre: `may ${String(anioFin).slice(-2)}`, anio: anioFin },
         { mesIndex: 5, nombre: `jun ${String(anioFin).slice(-2)}`, anio: anioFin },
-        { mesIndex: 6, nombre: `jul ${String(anioFin).slice(-2)}`, anio: anioFin }, // <-- Añadido Julio
-        { mesIndex: 7, nombre: `ago ${String(anioFin).slice(-2)}`, anio: anioFin }  // <-- Añadido Agosto
+        { mesIndex: 6, nombre: `jul ${String(anioFin).slice(-2)}`, anio: anioFin },
+        { mesIndex: 7, nombre: `ago ${String(anioFin).slice(-2)}`, anio: anioFin }
     ];
 
     const ingresosPorMes = new Array(12).fill(0);
@@ -301,7 +301,16 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    // 4. Renderizar con Chart.js
+    // 4. Calcular el saldo acumulado mes a mes para la línea
+    let saldoAcumulado = 0;
+    const saldoEvolucionPorMes = mesesDefinicion.map((_, index) => {
+        const ingresoMes = ingresosPorMes[index];
+        const gastoMes = gastosPorMes[index];
+        saldoAcumulado += (ingresoMes - gastoMes);
+        return saldoAcumulado;
+    });
+
+    // 5. Renderizar con Chart.js (Gráfico Mixto: Bar + Line)
     const ctx = canvasElement.getContext("2d");
 
     if (chartIngresosGastosInstance) {
@@ -309,21 +318,36 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     }
 
     chartIngresosGastosInstance = new Chart(ctx, {
-        type: 'bar',
+        type: 'bar', // Tipo base por defecto
         data: {
             labels: labelsMeses,
             datasets: [
                 {
+                    type: 'bar',
                     label: 'Suma de INGRESOS',
                     data: ingresosPorMes,
                     backgroundColor: '#f97316',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    order: 2
                 },
                 {
+                    type: 'bar',
                     label: 'Suma de GASTOS',
                     data: gastosPorMes,
                     backgroundColor: '#fbbf24',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: 'Evolución Saldo Acumulado',
+                    data: saldoEvolucionPorMes,
+                    borderColor: '#38bdf8', // Azul claro brillante para la línea
+                    backgroundColor: '#38bdf8',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.1, // Línea ligeramente suavizada
+                    order: 1 // Se dibuja por encima de las barras
                 }
             ]
         },
