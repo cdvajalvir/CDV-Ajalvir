@@ -38,8 +38,8 @@ export async function cargarNavegacionDinamica() {
         // Comportamiento específico según la página o el rol
         if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
-        } else if (pathName.includes("administracion.html")) {
-            renderizarMenuPaginaAdmin(contenedorNav, basePath);
+        } else if (pathName.includes("administracion.html") || pathName.includes("registros.html")) {
+            renderizarMenuPaginaAdmin(contenedorNav, rol, basePath);
         } else if (pathName.includes("directiva")) {
             renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
         } else {
@@ -98,13 +98,24 @@ function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
     }
 }
 
-function renderizarMenuPaginaAdmin(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="${basePath}index.html">Inicio</a>
-        <a href="${basePath}socios/socios.html">Área socios</a>
-        <a href="${basePath}directiva/directiva.html">Directiva</a>
-        <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
-    `;
+function renderizarMenuPaginaAdmin(contenedor, rol, basePath) {
+    // Si el usuario es de directiva y está en registros.html, el menú superior debe ofrecerle volver a Directiva
+    if (rol === "directiva") {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}socios/socios.html">Área socios</a>
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+        `;
+    } else {
+        // Menú por defecto para administradores en la zona admin
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}socios/socios.html">Área socios</a>
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+        `;
+    }
     configurarBotonLogout(basePath);
 }
 
