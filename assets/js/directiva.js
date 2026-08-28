@@ -219,11 +219,11 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
                 },
                 legend: {
                     position: 'bottom',
-                    align: 'start', // <--- Alinea la caja entera de la leyenda a la izquierda
+                    align: 'start',
                     labels: {
                         color: '#ffffff',
                         font: { size: 12 },
-                        textAlign: 'left', // <--- Alinea el texto de cada línea a la izquierda
+                        textAlign: 'left',
                         boxWidth: 14,
                         padding: 12
                     }
@@ -254,10 +254,13 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
 
     movimientosTemporada.forEach(mov => {
         const importe = parseFloat(mov.importe) || 0;
-        const esGasto = mov.tipo ? (mov.tipo.toLowerCase() === 'gasto' || mov.tipo.toLowerCase() === 'gastos') : (importe < 0);
+        
+        // Consideramos gasto si el importe es negativo
+        const esGasto = importe < 0;
 
         if (esGasto) {
             const valorGasto = Math.abs(importe);
+            // Agrupamos por el campo tipo real de la base de datos; si viene null o vacío, va a 'Otros'
             const tipoGasto = mov.tipo && mov.tipo.trim() !== '' ? mov.tipo.trim() : 'Otros';
 
             if (!gastosPorTipo[tipoGasto]) {
@@ -310,9 +313,13 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
                 },
                 legend: {
                     position: 'bottom',
+                    align: 'start', // Leyenda alineada a la izquierda igual que el otro gráfico
                     labels: {
                         color: '#ffffff',
-                        font: { size: 11 }
+                        font: { size: 11 },
+                        textAlign: 'left',
+                        boxWidth: 14,
+                        padding: 12
                     }
                 },
                 tooltip: {
