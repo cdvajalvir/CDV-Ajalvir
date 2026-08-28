@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        /* Alinea el contenido a la izquierda manteniendo la limitación de ancho */
         .content-grid {
             display: flex;
             justify-content: flex-start;
@@ -17,7 +16,7 @@
 
         .card.wide {
             width: 100%;
-            max-width: 650px; /* Ancho reducido a la mitad/compacto */
+            max-width: 800px; /* Ampliado ligeramente para dar cabida a la columna de acciones */
         }
 
         .table-responsive {
@@ -38,6 +37,7 @@
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--color-border, #e2e8f0);
             color: #ffffff;
+            vertical-align: middle;
         }
 
         .data-table thead th {
@@ -45,6 +45,25 @@
             color: #ffffff !important;
             font-weight: 600;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-cuota-edit {
+            width: 90px;
+            padding: 0.35rem 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-radius: 4px;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        #mensajeCuotas {
+            margin-top: 1rem;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -60,8 +79,7 @@
                 <span>CD Veteranos Ajalvir</span>
             </a>
             <button class="nav-toggle" data-nav-toggle>☰</button>
-            <!-- Añadimos un atributo data especial para que nav-auth sepa que aquí no debe inyectar el menú completo -->
-            <div class="nav-links" data-nav-links data-menu-restringido="true">
+            <div class="nav-links" data-nav-links>
                 <a href="administracion.html" class="nav-link">Administración</a>
             </div>
         </nav>
@@ -72,7 +90,7 @@
         <section class="page-hero">
             <p class="eyebrow">Administración</p>
             <h1>Gestion de valores de cuota</h1>
-            <p class="lead">Configuración y visualización de los valores de cuota establecidos por temporada.</p>
+            <p class="lead">Configuración y actualización masiva de los valores de cuota por temporada.</p>
         </section>
 
         <section class="app-layout-single">
@@ -87,15 +105,18 @@
                                 <tr>
                                     <th>Temporada</th>
                                     <th>Valor de la Cuota (€)</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyValoresCuota">
                                 <tr>
-                                    <td colspan="2" style="text-align: center; padding: 2rem;">Cargando valores de cuota...</td>
+                                    <td colspan="3" style="text-align: center; padding: 2rem;">Cargando valores de cuota...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <p id="mensajeCuotas"></p>
 
                 </article>
 
@@ -107,16 +128,6 @@
     <!-- JAVASCRIPT -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/cuotas.js"></script>
-    
-    <!-- Script auxiliar en línea para asegurar que nav-auth.js no sobreescriba los enlaces si estuviera programado para ello -->
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const navLinks = document.querySelector('[data-nav-links]');
-            if (navLinks) {
-                navLinks.innerHTML = '<a href="administracion.html" class="nav-link">Administración</a>';
-            }
-        });
-    </script>
 
 </body>
 
