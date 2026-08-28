@@ -18,12 +18,12 @@
             margin-left: auto;
         }
 
-        /* Distribución en 4 columnas equilibradas para evitar que la columna 4 se expanda de más */
+        /* Distribución en 4 columnas con altura estirada para que todas midan lo mismo en la fila */
         .hero-grid-4cols {
             display: grid;
-            grid-template-columns: 1fr 1.8fr 1fr 1fr; /* Columna 2 (textos) un poco más ancha, el resto equilibradas */
+            grid-template-columns: 1fr 1.8fr 1fr 1fr;
             gap: 2rem;
-            align-items: center; /* Alinea los contenidos verticalmente al centro */
+            align-items: stretch; /* Fuerza a todas las columnas a tener la misma altura */
             width: 100%;
         }
 
@@ -34,6 +34,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            height: 100%;
             min-height: 260px;
         }
 
@@ -103,28 +104,29 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
-            padding: 1.25rem 0.75rem;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            justify-content: space-between; /* Distribuye elementos de arriba a abajo ocupando toda la altura */
             align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 100%; /* Evita que rebase su celda asignada */
+            height: 100%;
             box-sizing: border-box;
             overflow: hidden;
         }
 
-        /* Logo superior ajustado al ancho de la columna */
+        /* Logo superior que ocupa el 100% del ancho disponible */
         .inmo-logo-container {
             width: 100%;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .inmo-logo-img {
             width: 100%;
+            max-width: 100%;
             height: auto;
-            max-height: 60px;
             object-fit: contain;
             display: block;
             transition: transform 0.3s ease;
@@ -142,6 +144,7 @@
             display: flex;
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            margin-top: auto;
         }
 
         .carrusel-inmo-track {
@@ -189,6 +192,7 @@
         @media (max-width: 1200px) {
             .hero-grid-4cols {
                 grid-template-columns: repeat(2, 1fr);
+                align-items: center;
             }
         }
         @media (max-width: 640px) {
@@ -229,26 +233,26 @@
                 </div>
 
                 <!-- COLUMNA 2: Textos del club de veteranos -->
-                <div>
+                <div style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
                 <!-- COLUMNA 3: Próximo evento -->
-                <div class="hero-card" style="margin:0; width:100%;">
-                    <div class="match-card">
+                <div class="hero-card" style="margin:0; width:100%; display: flex; align-items: center; height: 100%;">
+                    <div class="match-card" style="width: 100%;">
                         <span class="tag">Próximo evento</span>
                         <h2>Temporada 2027</h2>
                         <p>Reunión junta directiva 21:00.<br>Lugar: Sport Bar Ajalvir.</p>
                     </div>
                 </div>
 
-                <!-- COLUMNA 4: Inmo Ajalvir y Carrusel Horizontal de 5 imágenes (ancho original controlado) -->
+                <!-- COLUMNA 4: Inmo Ajalvir (misma altura, logo a todo ancho y imagen1.png) -->
                 <div class="columna-inmo-publicidad">
-                    <!-- Logo superior enlazado a inmoajalvir.es -->
+                    <!-- Logo superior abarcando todo el ancho y enlazado a inmoajalvir.es -->
                     <div class="inmo-logo-container">
-                        <a href="https://inmoajalvir.es/" target="_blank" rel="noopener noreferrer" title="Visitar Inmo Ajalvir">
+                        <a href="https://inmoajalvir.es/" target="_blank" rel="noopener noreferrer" title="Visitar Inmo Ajalvir" style="width: 100%;">
                             <img src="assets/img/inmo-ajalvir-logo.png" alt="Inmo Ajalvir Logo" class="inmo-logo-img">
                         </a>
                     </div>
@@ -256,15 +260,15 @@
                     <!-- Carrusel de desplazamiento horizontal -->
                     <div class="carrusel-inmo-wrapper">
                         <div class="carrusel-inmo-track">
-                            <!-- BLOQUE 1 (Las 5 imágenes originales) -->
-                            <div class="carrusel-item"><img src="assets/img/inmo-img-1.png" alt="Inmo 1"></div>
+                            <!-- BLOQUE 1 (Con imagen1.png en la primera posición) -->
+                            <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-4.png" alt="Inmo 4"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-5.png" alt="Inmo 5"></div>
                             
                             <!-- BLOQUE 2 (Duplicado exacto para bucle infinito) -->
-                            <div class="carrusel-item"><img src="assets/img/inmo-img-1.png" alt="Inmo 1"></div>
+                            <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-4.png" alt="Inmo 4"></div>
