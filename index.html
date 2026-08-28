@@ -27,12 +27,46 @@
             width: 100%;
         }
 
-        /* Estilos específicos para la columna 1: Logo Fersán (limpio de ondas) */
+        /* Estilos específicos para la columna 1: Contenedor del Logo Fersán con Borde Degradado Animado (Efecto 5) */
         .columna-fersan {
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 1.5rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Marco animado para el borde degradado alrededor del logo */
+        .columna-fersan::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 18px;
+            background: linear-gradient(45deg, #ffc107, #ff5722, #00bcd4, #ffc107);
+            background-size: 300% 300%;
+            animation: bordeAnimado 6s ease infinite;
+            z-index: -1;
+        }
+
+        /* Fondo interno para aislar el borde del logo */
+        .columna-fersan::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #121212; /* Ajusta según el color de fondo de tu web */
+            border-radius: 14px;
+            z-index: -1;
+        }
+
+        @keyframes bordeAnimado {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .logo-fersan-link {
@@ -43,7 +77,7 @@
         /* Logo con animación combinada: Multigiro con zoom */
         .logo-fersan-animado {
             max-width: 100%;
-            width: 220px;
+            width: 200px;
             height: auto;
             animation: fersanZoomMultigiro 8s ease-in-out infinite;
             transform-origin: center center;
@@ -56,7 +90,7 @@
                 filter: hue-rotate(0deg) brightness(1) saturate(1);
             }
             50% {
-                transform: scale(1.5) rotate(720deg);
+                transform: scale(1.35) rotate(720deg);
                 filter: hue-rotate(15deg) brightness(1.1) saturate(1.2); 
             }
             100% {
@@ -65,10 +99,10 @@
             }
         }
 
-        /* EFECTO 5: Columna 4 con Borde Degradado Animado */
+        /* Estilos limpios para la cuarta columna (espacio libre para otra publicidad) */
         .columna-publicidad-libre {
-            position: relative;
             background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             padding: 1.5rem;
             min-height: 180px;
@@ -76,38 +110,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        /* Marco animado para el borde degradado */
-        .columna-publicidad-libre::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 14px;
-            background: linear-gradient(45deg, #ffc107, #ff5722, #00bcd4, #ffc107);
-            background-size: 300% 300%;
-            animation: bordeAnimado 6s ease infinite;
-            z-index: -1;
-        }
-
-        /* Fondo interno para tapar el centro y dejar visible solo el borde */
-        .columna-publicidad-libre::after {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background: #121212; /* Ajusta este color si tu fondo general es distinto */
-            border-radius: 10px;
-            z-index: -1;
-        }
-
-        @keyframes bordeAnimado {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Responsivo: se adapta a 2 columnas en pantallas medianas y a 1 en móviles */
@@ -135,26 +139,31 @@
 
         <button class="nav-toggle" data-nav-toggle>☰</button>
 
+        <!-- Contenedor que nav-auth.js rellenará automáticamente -->
         <div class="nav-links" data-nav-links></div>
     </nav>
 </header>
 
     <main>
+        <!-- SECCIÓN SUPERIOR DE ANCHO COMPLETO -->
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
+                <!-- COLUMNA 1: Logo Fersán con Borde Degradado Animado (Efecto 5) y Zoom Rotatorio -->
                 <div class="columna-fersan">
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.png" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
                     </a>
                 </div>
 
+                <!-- COLUMNA 2: Textos del club de veteranos -->
                 <div>
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
+                <!-- COLUMNA 3: Próximo evento -->
                 <div class="hero-card" style="margin:0; width:100%;">
                     <div class="match-card">
                         <span class="tag">Próximo evento</span>
@@ -163,6 +172,7 @@
                     </div>
                 </div>
 
+                <!-- COLUMNA 4: Espacio libre para otra publicidad (estático) -->
                 <div class="columna-publicidad-libre">
                     <span>Espacio reservado para nueva publicidad</span>
                 </div>
@@ -212,6 +222,7 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS MODULARES -->
     <script type="module" src="assets/js/nav-auth.js"></script>
     <script type="module" src="assets/js/app.js"></script>
     <script type="module">
