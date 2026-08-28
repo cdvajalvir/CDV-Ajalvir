@@ -49,8 +49,8 @@
                 <span>CD Veteranos Ajalvir</span>
             </a>
             <button class="nav-toggle" data-nav-toggle>☰</button>
-            <div class="nav-links" data-nav-links>
-                <!-- Menú estrictamente limitado a Administración -->
+            <!-- Añadimos un atributo data especial para que nav-auth sepa que aquí no debe inyectar el menú completo -->
+            <div class="nav-links" data-nav-links data-menu-restringido="true">
                 <a href="administracion.html" class="nav-link">Administración</a>
             </div>
         </nav>
@@ -96,6 +96,16 @@
     <!-- JAVASCRIPT -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/cuotas.js"></script>
+    
+    <!-- Script auxiliar en línea para asegurar que nav-auth.js no sobreescriba los enlaces si estuviera programado para ello -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelector('[data-nav-links]');
+            if (navLinks) {
+                navLinks.innerHTML = '<a href="administracion.html" class="nav-link">Administración</a>';
+            }
+        });
+    </script>
 
 </body>
 
