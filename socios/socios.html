@@ -92,7 +92,7 @@
                     </p>
 
                     <p>
-                        Estado de cuota registrado en la ficha del club.
+                        Estado de cuota registrado en la ficha del club para la temporada actual.
                     </p>
 
                 </article>
@@ -154,67 +154,7 @@
     ======================================================= -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/app.js"></script>
-    <script type="module">
-
-        import {
-            comprobarAcceso,
-            cerrarSesion
-        } from "../assets/js/auth.js";
-
-        window.cerrarSesion = cerrarSesion;
-
-        const cuota = 100; // total a pagar, se deberia guardar en algun sitio
-
-        comprobarAcceso([
-            "administrador",
-            "directiva",
-            "socio"
-        ], (socio) => {
-
-            document.getElementById("nombreSocio").textContent =
-                socio.nombre ||
-                socio.alias ||
-                socio.idSocio ||
-                "socio";
-
-            // 1. Obtener la cantidad pagada real desde la tabla
-            const pagado = socio.cantidad_pagada ?? 0;
-            
-            // 2. Obtener la cantidad pendiente calculada por la Edge Function
-            const pendiente = socio.cantidad_pendiente ?? 0;
-
-            // 3. Pintar en el DOM
-            const estadoCuotaElem = document.getElementById("estadoCuota");
-            const cuotaPendienteElem = document.getElementById("cuotaPendiente");
-
-            if (estadoCuotaElem && cuotaPendienteElem) {
-                // Muestra la cantidad realmente pagada
-                estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
-                
-                // Muestra el texto a la derecha según si debe dinero o no
-                if (pendiente > 0) {
-                    cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
-                    cuotaPendienteElem.style.color = "#d9534f"; // Rojo
-                } else {
-                    cuotaPendienteElem.textContent = `(al día)`;
-                    cuotaPendienteElem.style.color = "#2e7d32"; // Verde
-                }
-            }
-
-            // Dorsal
-            const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
-            document.getElementById("dorsalSocio").textContent =
-                dorsalTexto !== "" ? dorsalTexto : "-";
-
-            // Foto personalizada del socio
-            const imgElement = document.getElementById("fotoSocio");
-            if (socio.foto) {
-                imgElement.src = `../assets/img/${socio.foto}`;
-            }
-
-        });
-
-    </script>
+    <script type="module" src="../assets/js/socios.js"></script>
 
 </body>
 
