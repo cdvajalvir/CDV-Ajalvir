@@ -35,21 +35,26 @@ comprobarAcceso([
     let pagado = 0;
     let pendiente = 0;
 
-    // 1. Asegurar que 'cantidad_pagada' se convierte en array (por si viene como string JSON)
+    // Normalizar 'cantidad_pagada' sin importar cómo lo entregue Supabase (string, array u objeto)
     let cuotasArray = socio.cantidad_pagada;
+
     if (typeof cuotasArray === "string") {
         try {
             cuotasArray = JSON.parse(cuotasArray);
         } catch (e) {
-            console.error("Error al parsear cantidad_pagada:", e);
             cuotasArray = [];
         }
     }
 
-    // 2. Procesar el array de temporadas
+    // Si viene como un objeto único en lugar de array (por el tipo jsonb de la tabla)
+    if (cuotasArray && !Array.isArray(cuotasArray) && typeof cuotasArray === "object") {
+        // Lo convertimos en un array de los valores del objeto
+        cuotasArray = Object.values(cuotasArray);
+    }
+
     if (Array.isArray(cuotasArray) && cuotasArray.length > 0) {
         const datosTemporada = cuotasArray.find(
-            item => String(item.temporada).trim() === temporadaActual.trim()
+            item => item && String(item.temporada).trim() === temporadaActual.trim()
         );
 
         if (datosTemporada) {
