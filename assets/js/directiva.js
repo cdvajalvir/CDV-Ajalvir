@@ -43,7 +43,6 @@ async function inicializarPanelDirectiva() {
         if (selectTemp) {
             let temporadasSet = new Set();
             
-            // Recorrer los resultados de la tabla temporada de forma segura
             if (resTemps.data && Array.isArray(resTemps.data)) {
                 resTemps.data.forEach(t => {
                     const valorTemp = t.temporada;
@@ -54,9 +53,8 @@ async function inicializarPanelDirectiva() {
             }
 
             const temporadaActualCalculada = calcularTemporadaActual();
-            temporadasSet.add(temporadaActualCalculada); // Asegurar que la temporada actual esté presente
+            temporadasSet.add(temporadaActualCalculada);
 
-            // Ordenar de forma descendente (ej. 2025/2026, 2024/2025, 2023/2024)
             const listaOrdenada = Array.from(temporadasSet).sort().reverse();
 
             selectTemp.innerHTML = "";
@@ -70,12 +68,10 @@ async function inicializarPanelDirectiva() {
                 selectTemp.appendChild(opt);
             });
 
-            // Escuchar cambios en el selector para actualizar dinámicamente todo el panel
             selectTemp.removeEventListener("change", manejadorCambioTemporada);
             selectTemp.addEventListener("change", manejadorCambioTemporada);
         }
 
-        // Carga inicial del panel usando la temporada seleccionada por defecto (la actual)
         const temporadaInicial = selectTemp ? selectTemp.value : calcularTemporadaActual();
         actualizarVistaPorTemporada(temporadaInicial);
 
@@ -92,10 +88,8 @@ function manejadorCambioTemporada(e) {
 function actualizarVistaPorTemporada(temporadaSeleccionada) {
     console.log("Actualizando panel para la temporada:", temporadaSeleccionada);
 
-    // Filtrar perfiles de directiva o administradores
     const miembrosGestion = globalDirectivos.filter(s => s.rol === "directiva" || s.rol === "administrador");
 
-    // Rellenar métricas rápidas del panel superior si existen los elementos
     const elemSociosActivos = document.getElementById("sociosActivos");
     const elemTotalDirectiva = document.getElementById("totalDirectiva");
     const elemTotalAdmin = document.getElementById("totalAdmin");
@@ -132,15 +126,12 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     });
 
     renderizarGraficoCuotasTresEstados(pagadasTotalidad, pagadasParciales, noPagadas, temporadaSeleccionada, totalSociosTemporada);
-    // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE TARTA DE DETALLE DE GASTOS ---
     procesarYRenderizarDetalleGastos(globalMovimientos, temporadaSeleccionada);
-    // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE BARRAS DE INGRESOS Y GASTOS ---
     procesarYRenderizarGraficoBarras(globalMovimientos, temporadaSeleccionada);
-    // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DE LA TABLA DE SALDOS ---
     const tbody = document.querySelector("#tablaSaldosDirectiva tbody");
@@ -148,10 +139,8 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
 
     tbody.innerHTML = "";
 
-    // Filtrar movimientos de la temporada seleccionada
     const movimientosFiltrados = globalMovimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
-    // Agrupar y sumar los importes por UUID
     const saldosPorUuid = {};
     movimientosFiltrados.forEach(mov => {
         const uuid = mov.codigo_cuenta;
@@ -167,7 +156,6 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     miembrosGestion.forEach(miembro => {
         const saldoTotal = saldosPorUuid[miembro.id] || 0;
 
-        // Filtro: Si el saldo es 0, no se muestra
         if (saldoTotal !== 0) {
             filasRenderizadas++;
             const tr = document.createElement("tr");
@@ -212,9 +200,9 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
             datasets: [{
                 data: [totales, parciales, pendientes],
                 backgroundColor: [
-                    '#10b981', // Verde para total pagado
-                    '#f59e0b', // Amarillo/Ámbar para pago parcial
-                    '#ef4444'  // Rojo para pendientes / sin pagar
+                    '#10b981', // Verde
+                    '#f59e0b', // Amarillo/Ámbar
+                    '#ef4444'  // Rojo
                 ],
                 borderWidth: 1
             }]
@@ -255,7 +243,6 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoDetalleGastos");
     if (!canvasElement) return;
 
-    // Filtrar solo los movimientos de la temporada seleccionada
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
     const gastosPorTipo = {};
@@ -263,8 +250,6 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
 
     movimientosTemporada.forEach(mov => {
         const importe = parseFloat(mov.importe) || 0;
-        
-        // Determinamos si es un gasto (si el importe es negativo o el tipo indica gasto)
         const esGasto = mov.tipo ? (mov.tipo.toLowerCase() === 'gasto' || mov.tipo.toLowerCase() === 'gastos') : (importe < 0);
 
         if (esGasto) {
@@ -282,7 +267,6 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
     const labels = Object.keys(gastosPorTipo);
     const data = Object.values(gastosPorTipo);
 
-    // Colores corporativos variados para las porciones
     const coloresBase = [
         '#0284c7', // Azul
         '#f97316', // Naranja
@@ -346,13 +330,11 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoIngresosGastos");
     if (!canvasElement) return;
 
-    // 1. Extraer los años de la temporada
     const partes = temporadaSeleccionada.split("/");
     if (partes.length !== 2) return;
     const anioInicio = parseInt(partes[0]);
     const anioFin = parseInt(partes[1]);
 
-    // 2. Definir los 12 meses de la temporada (Septiembre a Agosto)
     const mesesDefinicion = [
         { mesIndex: 8, nombre: `sep ${String(anioInicio).slice(-2)}`, anio: anioInicio },
         { mesIndex: 9, nombre: `oct ${String(anioInicio).slice(-2)}`, anio: anioInicio },
@@ -372,7 +354,6 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const gastosPorMes = new Array(12).fill(0);
     const labelsMeses = mesesDefinicion.map(m => m.nombre);
 
-    // 3. Filtrar movimientos de la temporada seleccionada
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
     movimientosTemporada.forEach(mov => {
@@ -397,7 +378,6 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    // 4. Calcular el saldo acumulado mes a mes para la línea
     let saldoAcumulado = 0;
     const saldoEvolucionPorMes = mesesDefinicion.map((_, index) => {
         const ingresoMes = ingresosPorMes[index];
@@ -406,7 +386,6 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         return saldoAcumulado;
     });
 
-    // 5. Renderizar con Chart.js (Gráfico Mixto: Bar + Line)
     const ctx = canvasElement.getContext("2d");
 
     if (chartIngresosGastosInstance) {
@@ -414,7 +393,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     }
 
     chartIngresosGastosInstance = new Chart(ctx, {
-        type: 'bar', // Tipo base por defecto
+        type: 'bar',
         data: {
             labels: labelsMeses,
             datasets: [
@@ -438,12 +417,12 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                     type: 'line',
                     label: 'Evolución Saldo Acumulado',
                     data: saldoEvolucionPorMes,
-                    borderColor: '#38bdf8', // Azul claro brillante para la línea
+                    borderColor: '#38bdf8',
                     backgroundColor: '#38bdf8',
                     borderWidth: 3,
                     fill: false,
-                    tension: 0.1, // Línea ligeramente suavizada
-                    order: 1 // Se dibuja por encima de las barras
+                    tension: 0.1,
+                    order: 1
                 }
             ]
         },
