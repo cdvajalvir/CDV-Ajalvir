@@ -22,16 +22,17 @@ async function verificarAccesoAdmin() {
             .eq("id", session.user.id)
             .maybeSingle();
 
-        if (socioError || !socioData || socioData.rol !== "administrador") {
-            // Si no existe o no tiene el rol de administrador, bloquear acceso y redirigir
-            alert("Acceso no autorizado. Se requiere rol de administrador.");
+        // Permitir el acceso si el rol es "administrador" o "directiva"
+        if (socioError || !socioData || (socioData.rol !== "administrador" && socioData.rol !== "directiva")) {
+            // Si no existe o no tiene los permisos necesarios, bloquear acceso y redirigir
+            alert("Acceso no autorizado. Se requiere rol de administrador o directiva.");
             window.location.href = "../index.html";
             return false;
         }
 
         return true;
     } catch (err) {
-        console.error("Error al verificar permisos de administrador:", err);
+        console.error("Error al verificar permisos:", err);
         window.location.href = "../index.html";
         return false;
     }
