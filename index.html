@@ -27,17 +27,45 @@
             width: 100%;
         }
 
-        /* Estilos específicos para la columna 1: Logo Fersán */
+        /* Estilos específicos para la columna 1: Logo Fersán con efecto de ondas expansivas */
         .columna-fersan {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Efecto de ondas expansivas (Ripple) detrás del logo */
+        .columna-fersan::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            animation: ondasExpansivas 3s ease-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes ondasExpansivas {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
         }
 
         .logo-fersan-link {
             display: inline-block;
             text-decoration: none;
+            position: relative;
+            z-index: 2;
         }
 
         /* Logo con animación combinada: Multigiro con zoom + Pulso de Neón */
@@ -125,7 +153,7 @@
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán con Neón y Zoom Rotatorio -->
+                <!-- COLUMNA 1: Logo Fersán con Ondas, Neón y Zoom Rotatorio -->
                 <div class="columna-fersan">
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.png" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
