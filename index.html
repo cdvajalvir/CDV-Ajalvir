@@ -216,17 +216,14 @@
 
         <button class="nav-toggle" data-nav-toggle>☰</button>
 
-        <!-- Contenedor que nav-auth.js rellenará automáticamente -->
         <div class="nav-links" data-nav-links></div>
     </nav>
 </header>
 
     <main>
-        <!-- SECCIÓN SUPERIOR DE ANCHO COMPLETO -->
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1 (Posición 1): Logo Fersán con Etiqueta Caligráfica -->
                 <div class="columna-fersan">
                     <div class="etiqueta-colabora">Colaboran</div>
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
@@ -234,7 +231,6 @@
                     </a>
                 </div>
 
-                <!-- COLUMNA 2 (Posición 2): Inmo Ajalvir y Carrusel (Antes Columna 4) -->
                 <div class="columna-inmo-publicidad">
                     <div class="inmo-logo-container">
                         <a href="https://inmoajalvir.es/" target="_blank" rel="noopener noreferrer" title="Visitar Inmo Ajalvir" style="width: 100%;">
@@ -243,13 +239,11 @@
                     </div>
                     <div class="carrusel-inmo-wrapper">
                         <div class="carrusel-inmo-track">
-                            <!-- BLOQUE 1 -->
                             <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen4.png" alt="Inmo 4"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen5.png" alt="Inmo 5"></div>
-                            <!-- BLOQUE 2 (Bucle) -->
                             <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen3.png" alt="Inmo 3"></div>
@@ -259,15 +253,13 @@
                     </div>
                 </div>
 
-                <!-- COLUMNA 3 (Posición 3): Textos del club de veteranos (Ancho de 1.8fr, antes Columna 2) -->
                 <div style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
-                <!-- COLUMNA 4 (Posición 4): Próximo evento (Antes Columna 3) -->
-                <div class="hero-card" style="margin:0; width:100%; display: flex; align-items: center; height: 100%;">
+                <div class="hero-card" style="margin:0; width:100%; display: flex; align-items: flex-start; align-self: start; height: auto;">
                     <div class="match-card" style="width: 100%;">
                         <span class="tag">Próximo evento</span>
                         <h2>Temporada 2027</h2>
@@ -320,7 +312,6 @@
         </div>
     </footer>
 
-    <!-- SCRIPTS MODULARES -->
     <script type="module" src="assets/js/nav-auth.js"></script>
     <script type="module" src="assets/js/app.js"></script>
     <script type="module">
