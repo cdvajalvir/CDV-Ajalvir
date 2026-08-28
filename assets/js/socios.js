@@ -4,21 +4,18 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 window.cerrarSesion = cerrarSesion;
 
 /**
- * Función auxiliar para determinar la temporada actual de forma automática.
- * Ejemplo: Si estamos entre septiembre y diciembre de 2026, la temporada es "2026-2027".
- * Si estamos entre enero y agosto de 2026, es "2025-2026".
+ * Función para obtener la temporada actual en formato "YYYY/YYYY"
+ * Ejemplo: Si estamos en agosto de 2026, pertenece a "2026/2027".
  */
 function obtenerTemporadaActual() {
     const ahora = new Date();
     const anio = ahora.getFullYear();
     const mes = ahora.getMonth() + 1; // Enero es 1
 
-    // Si el mes es septiembre o posterior (>= 9), la temporada empieza en el año actual
     if (mes >= 9) {
-        return `${anio}-${anio + 1}`;
+        return `${anio}/${anio + 1}`;
     } else {
-        // Si es anterior a septiembre, pertenece a la temporada que empezó el año pasado
-        return `${anio - 1}-${anio}`;
+        return `${anio - 1}/${anio}`;
     }
 }
 
@@ -38,22 +35,30 @@ comprobarAcceso([
     // 2. Obtener la temporada actual
     const temporadaActual = obtenerTemporadaActual();
     
-    // 3. Extraer los datos del campo JSON de cuotas adaptado a la temporada actual
-    // Suponemos que 'socio.cuotas' es un objeto JSON del tipo: socio.cuotas['2026-2027'] = { pagado: X, pendiente: Y }
-    // O en su defecto, mantiene compatibilidad con campos planos si todavía conviven.
+    let totalCuota = 0;
     let pagado = 0;
     let pendiente = 0;
 
-    if (socio.cuotas && typeof socio.cuotas === "object") {
-        const datosTemporada = socio.cuotas[temporadaActual] || socio.cuotas[String(temporadaActual)];
+    // 3. Procesar el campo JSON 'cantidad_pagada' que es un array de objetos
+    // Formato esperado: [{"cuota": 100, "pagado": 0, "temporada": "2026/2027"}, ...]
+    if (Array.isArray(socio.cantidad_pagada)) {
+        const datosTemporada = socio.cantidad_pagada.find(
+            item => String(item.temporada).trim() === temporadaActual
+        );
+
         if (datosTemporada) {
-            pagado = datosTemporada.pagado ?? datosTemporada.cantidad_pagada ?? 0;
-            pendiente = datosTemporada.pendiente ?? datosTemporada.cantidad_pendiente ?? 0;
+            totalCuota = Number(datosTemporada.cuota) || 0;
+            pagado = Number(datosTemporada.pagado) || 0;
+            pendiente = Math.max(0, totalCuota - pagado);
         }
-    } else {
-        // Fallback por si en algún registro todavía llega plano
-        pagado = socio.cantidad_pagada ?? 0;
-        pendiente = socio.cantidad_pendiente ?? 0;
+    } else if (typeof socio.cantidad_pagada === "object" && socio.cantidad_pagada !== null) {
+        // Por si viniera en formato objeto clave-valor antiguo
+        const datosObj = socio.cantidad_pagada[temporadaActual];
+        if (datosObj) {
+            totalCuota = Number(datosObj.cuota) || 100;
+            pagado = Number(datosObj.pagado) || 0;
+            pendiente = Math.max(0, totalCuota - pagado);
+        }
     }
 
     // 4. Pintar los valores en el DOM de la tarjeta
