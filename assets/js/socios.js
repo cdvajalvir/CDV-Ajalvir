@@ -21,6 +21,9 @@ comprobarAcceso([
     "socio"
 ], (socio) => {
 
+    // IMPRIME EL OBJETO COMPLETO EN LA CONSOLA PARA INSPECCIONarlo
+    console.log("OBJETO SOCIO RECIBIDO COMPLETO:", socio);
+
     document.getElementById("nombreSocio").textContent =
         socio.nombre ||
         socio.alias ||
