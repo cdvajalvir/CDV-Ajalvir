@@ -1,1 +1,113 @@
+<!doctype html>
+<html lang="es">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gestión de Valores de Cuota · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            color: #ffffff;
+        }
+
+        .data-table thead th {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links>
+                <!-- Menú limitado exclusivamente a Administración / Volver -->
+                <a href="administracion.html" class="nav-link">Administración</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="page-hero">
+            <p class="eyebrow">Administración</p>
+            <h1>Gestion de valores de cuota</h1>
+            <p class="lead">Configuración y visualización de los valores de cuota establecidos por temporada.</p>
+        </section>
+
+        <section class="app-layout-single">
+            <div class="content-grid">
+
+                <article class="card wide">
+                    <h3>Valores de Cuota por Temporada</h3>
+
+                    <div class="table-responsive">
+                        <table class="data-table" id="tablaValoresCuota">
+                            <thead>
+                                <tr>
+                                    <th>Temporada</th>
+                                    <th>Valor de la Cuota (€)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyValoresCuota">
+                                <tr>
+                                    <td colspan="2" style="text-align: center; padding: 2rem;">Cargando valores de cuota...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="form-actions">
+                        <a class="btn btn-secondary" href="administracion.html">Volver a Administración</a>
+                    </div>
+
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module" src="../assets/js/cuotas.js"></script>
+
+</body>
+
+</html>
