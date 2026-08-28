@@ -27,48 +27,20 @@
             width: 100%;
         }
 
-        /* Estilos específicos para la columna 1: Logo Fersán con efecto de ondas expansivas */
+        /* Estilos específicos para la columna 1: Logo Fersán (limpio de ondas) */
         .columna-fersan {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Efecto de ondas expansivas (Ripple) detrás del logo */
-        .columna-fersan::before {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: rgba(255, 215, 0, 0.15);
-            border: 2px solid rgba(255, 215, 0, 0.4);
-            animation: ondasExpansivas 3s ease-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes ondasExpansivas {
-            0% {
-                transform: scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2.2);
-                opacity: 0;
-            }
         }
 
         .logo-fersan-link {
             display: inline-block;
             text-decoration: none;
-            position: relative;
-            z-index: 2;
         }
 
-        /* Logo con animación combinada: Multigiro con zoom (sin neón) */
+        /* Logo con animación combinada: Multigiro con zoom */
         .logo-fersan-animado {
             max-width: 100%;
             width: 220px;
@@ -93,10 +65,10 @@
             }
         }
 
-        /* Estilos para la cuarta columna (espacio libre para otra publicidad) */
+        /* EFECTO 5: Columna 4 con Borde Degradado Animado */
         .columna-publicidad-libre {
+            position: relative;
             background: rgba(255, 255, 255, 0.03);
-            border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             padding: 1.5rem;
             min-height: 180px;
@@ -104,8 +76,38 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Marco animado para el borde degradado */
+        .columna-publicidad-libre::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 14px;
+            background: linear-gradient(45deg, #ffc107, #ff5722, #00bcd4, #ffc107);
+            background-size: 300% 300%;
+            animation: bordeAnimado 6s ease infinite;
+            z-index: -1;
+        }
+
+        /* Fondo interno para tapar el centro y dejar visible solo el borde */
+        .columna-publicidad-libre::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: #121212; /* Ajusta este color si tu fondo general es distinto */
+            border-radius: 10px;
+            z-index: -1;
+        }
+
+        @keyframes bordeAnimado {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Responsivo: se adapta a 2 columnas en pantallas medianas y a 1 en móviles */
