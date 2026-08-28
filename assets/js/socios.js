@@ -3,12 +3,6 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
 
-/**
- * Función para obtener la temporada actual en formato "YYYY/YYYY"
- * Regla: La temporada va de septiembre a agosto.
- * - De enero a agosto de 2026 -> "2025/2026"
- * - De septiembre a diciembre de 2026 -> "2026/2027"
- */
 function obtenerTemporadaActual() {
     const ahora = new Date();
     const anio = ahora.getFullYear();
@@ -27,65 +21,70 @@ comprobarAcceso([
     "socio"
 ], (socio) => {
 
-    // 1. Mostrar nombre o alias del socio
     document.getElementById("nombreSocio").textContent =
         socio.nombre ||
         socio.alias ||
         socio.idSocio ||
         "socio";
 
-    // 2. Obtener la temporada actual
     const temporadaActual = obtenerTemporadaActual();
-    
+    console.log("Temporada actual calculada:", temporadaActual);
+    console.log("Datos de cantidad_pagada del socio:", socio.cantidad_pagada);
+
     let totalCuota = 0;
     let pagado = 0;
     let pendiente = 0;
 
-    // 3. Procesar el campo JSON 'cantidad_pagada' que es un array de objetos
-    // Ejemplo: [{"cuota": 100, "pagado": 100, "temporada": "2025/2026"}, ...]
-    if (Array.isArray(socio.cantidad_pagada)) {
-        const datosTemporada = socio.cantidad_pagada.find(
-            item => String(item.temporada).trim() === temporadaActual
+    // Asegurar que socio.cantidad_pagada sea un array (por si viene como string JSON)
+    let cuotasArray = socio.cantidad_pagada;
+    if (typeof cuotasArray === "string") {
+        try {
+            cuotasArray = JSON.parse(cuotasArray);
+        } catch (e) {
+            cuotasArray = [];
+        }
+    }
+
+    if (Array.isArray(cuotasArray) && cuotasArray.length > 0) {
+        // Buscar la temporada actual limpiando espacios y barras por seguridad
+        let datosTemporada = cuotasArray.find(
+            item => String(item.temporada).trim() === temporadaActual.trim()
         );
+
+        // Si no encuentra la exacta por fecha, cogemos la última del array como seguridad
+        if (!datosTemporada) {
+            datosTemporada = cuotasArray[cuotasArray.length - 1];
+        }
 
         if (datosTemporada) {
             totalCuota = Number(datosTemporada.cuota) || 0;
             pagado = Number(datosTemporada.pagado) || 0;
             pendiente = Math.max(0, totalCuota - pagado);
         }
-    } else if (typeof socio.cantidad_pagada === "object" && socio.cantidad_pagada !== null) {
-        const datosObj = socio.cantidad_pagada[temporadaActual];
-        if (datosObj) {
-            totalCuota = Number(datosObj.cuota) || 0;
-            pagado = Number(datosObj.pagado) || 0;
-            pendiente = Math.max(0, totalCuota - pagado);
-        }
     }
 
-    // 4. Pintar los valores en el DOM de la tarjeta de cuotas
+    // Pintar los valores en el DOM
     const estadoCuotaElem = document.getElementById("estadoCuota");
     const cuotaPendienteElem = document.getElementById("cuotaPendiente");
 
     if (estadoCuotaElem && cuotaPendienteElem) {
-        // Muestra en grande la cantidad pagada (ej: 100 €)
         estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
         
-        // Comprueba si está al día o tiene importe pendiente
         if (pendiente > 0) {
             cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
-            cuotaPendienteElem.style.color = "#d9534f"; // Rojo alerta
+            cuotaPendienteElem.style.color = "#d9534f"; // Rojo
         } else {
             cuotaPendienteElem.textContent = `(al día)`;
-            cuotaPendienteElem.style.color = "#2e7d32"; // Verde OK
+            cuotaPendienteElem.style.color = "#2e7d32"; // Verde
         }
     }
 
-    // 5. Dorsal del socio
+    // Dorsal
     const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
     document.getElementById("dorsalSocio").textContent =
         dorsalTexto !== "" ? dorsalTexto : "-";
 
-    // 6. Foto personalizada del socio
+    // Foto
     const imgElement = document.getElementById("fotoSocio");
     if (socio.foto) {
         imgElement.src = `../assets/img/${socio.foto}`;
