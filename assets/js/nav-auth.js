@@ -40,6 +40,8 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
+        } else if (pathName.includes("cuotas.html")) {
+            renderizarMenuUnicoCuotas(contenedorNav, basePath); // <-- NUEVO AQUÍ
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.includes("directiva")) {
@@ -156,6 +158,14 @@ function configurarBotonLogout(basePath) {
             window.location.href = `${basePath}index.html`;
         });
     }
+}
+
+function renderizarMenuUnicoCuotas(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="${basePath}admin/administracion.html">Administración</a>
+        <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+    `;
+    configurarBotonLogout(basePath);
 }
 
 document.addEventListener("DOMContentLoaded", cargarNavegacionDinamica);
