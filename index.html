@@ -40,27 +40,27 @@
             text-decoration: none;
         }
 
-        /* Logo con animación rotatoria y zoom dinámico desde el centro */
+        /* Logo con animación rotatoria y zoom dinámico extremo (desde 50% más pequeño hasta 50% más grande) */
         .logo-fersan-animado {
             max-width: 100%;
             width: 220px;
             height: auto;
-            animation: fersanRotativoZoom 6s ease-in-out infinite;
+            animation: fersanZoomExtremo 6s ease-in-out infinite;
             transform-origin: center center;
         }
 
-        @keyframes fersanRotativoZoom {
+        @keyframes fersanZoomExtremo {
             0% {
-                transform: scale(0.85) rotate(0deg); /* Empieza más pequeño y sin rotación */
-                filter: hue-rotate(0deg) brightness(1) saturate(1);
+                transform: scale(0.5) rotate(0deg); /* Arranca al 50% de su tamaño (la mitad) */
+                filter: hue-rotate(0deg) brightness(0.8) saturate(0.8);
             }
             50% {
-                transform: scale(1.12) rotate(360deg); /* Llega al pico de tamaño máximo tras dar una vuelta completa */
-                filter: hue-rotate(20deg) brightness(1.15) saturate(1.3); /* Cambio dinámico de tono y brillo */
+                transform: scale(1.5) rotate(180deg); /* Llega a la mitad del ciclo siendo un 50% más grande */
+                filter: hue-rotate(20deg) brightness(1.2) saturate(1.4); 
             }
             100% {
-                transform: scale(0.85) rotate(720deg); /* Vuelve al tamaño pequeño completando la segunda vuelta */
-                filter: hue-rotate(0deg) brightness(1) saturate(1);
+                transform: scale(0.5) rotate(360deg); /* Vuelve al 50% de tamaño completando la vuelta completa */
+                filter: hue-rotate(0deg) brightness(0.8) saturate(0.8);
             }
         }
 
@@ -114,7 +114,7 @@
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán con animación rotatoria y zoom -->
+                <!-- COLUMNA 1: Logo Fersán con animación rotatoria y zoom extremo -->
                 <div class="columna-fersan">
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
