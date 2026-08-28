@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
 
             userId = authData.user.id;
 
-            // Crear registro en la tabla socios
+            // Crear registro en la tabla socios incluyendo el JSONB cantidad_pagada inicial
             const { error: insertSocioError } = await supabase
                 .from("socios")
                 .insert({
@@ -178,7 +178,14 @@ Deno.serve(async (req) => {
                     email: emailNorm,
                     telefono,
                     rol: "socio",
-                    activo: false
+                    activo: false,
+                    cantidad_pagada: [
+                        {
+                            cuota: 0,
+                            pagado: 0,
+                            temporada: temporadanorm
+                        }
+                    ]
                 });
 
             if (insertSocioError) {
