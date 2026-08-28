@@ -23,7 +23,7 @@ async function verificarPermisoAdmin() {
 
 verificarPermisoAdmin();
 
-// Variable global para guardar el saldo de la caja antes del nuevo movimiento
+// Variable global para guardar el saldo de la caja de la temporada actual
 let saldoBaseGlobal = 0;
 
 // 1. Asignar la fecha de apunte e inicializar datos al cargar la página
@@ -53,7 +53,20 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Cargar la lista de socios directiva/admin
     cargarSociosDirectiva();
 
-    // Obtener el último saldo global registrado en la base de datos
+    // Detectar cambios en la temporada seleccionada
+    const inputTemporada = document.getElementById("temporada");
+    if (inputTemporada) {
+        inputTemporada.addEventListener("change", async () => {
+            await obtenerUltimoSaldoGlobal();
+            calcularNuevoSaldo();
+        });
+        inputTemporada.addEventListener("input", async () => {
+            await obtenerUltimoSaldoGlobal();
+            calcularNuevoSaldo();
+        });
+    }
+
+    // Obtener el saldo inicial según la temporada inicial del formulario
     await obtenerUltimoSaldoGlobal();
 });
 
@@ -90,15 +103,25 @@ async function cargarSociosDirectiva() {
     }
 }
 
-// 3. Obtener el último saldo global acumulado del club
+// 3. Obtener el último saldo acumulado filtrado por la temporada seleccionada
 async function obtenerUltimoSaldoGlobal() {
     const inputSaldo = document.getElementById("saldo");
+    const inputTemporada = document.getElementById("temporada");
+    const temporadaSeleccionada = inputTemporada ? inputTemporada.value.trim() : "";
+
+    // Si no hay temporada seleccionada, el saldo se queda a 0 o vacío
+    if (!temporadaSeleccionada) {
+        saldoBaseGlobal = 0;
+        if (inputSaldo) inputSaldo.value = "";
+        return;
+    }
 
     try {
         const { data: ultimosMovimientos, error } = await supabaseClient
             .from("movimientos")
             .select("saldo")
-            .order("create_at", { ascending: false }) // <-- Ordena por fecha/hora exacta de inserción
+            .eq("temporada", temporadaSeleccionada)
+            .order("create_at", { ascending: false }) // Ordena por fecha/hora exacta de inserción
             .limit(1);
 
         if (error) throw error;
@@ -106,6 +129,7 @@ async function obtenerUltimoSaldoGlobal() {
         if (ultimosMovimientos && ultimosMovimientos.length > 0 && ultimosMovimientos[0].saldo !== null) {
             saldoBaseGlobal = parseFloat(ultimosMovimientos[0].saldo);
         } else {
+            // Si es una temporada nueva sin movimientos previos, el saldo arranca en 0
             saldoBaseGlobal = 0;
         }
 
@@ -114,7 +138,7 @@ async function obtenerUltimoSaldoGlobal() {
         }
 
     } catch (err) {
-        console.error("Error al obtener el último saldo global:", err);
+        console.error("Error al obtener el saldo de la temporada:", err);
         saldoBaseGlobal = 0;
         if (inputSaldo) inputSaldo.value = "0.00";
     }
@@ -124,8 +148,15 @@ async function obtenerUltimoSaldoGlobal() {
 function calcularNuevoSaldo() {
     const inputImporte = document.getElementById("importe");
     const inputSaldo = document.getElementById("saldo");
+    const inputTemporada = document.getElementById("temporada");
 
     if (!inputSaldo) return;
+
+    // Si no hay temporada seleccionada, no calculamos saldo
+    if (inputTemporada && !inputTemporada.value.trim()) {
+        inputSaldo.value = "";
+        return;
+    }
 
     const valorImporte = parseFloat(inputImporte ? inputImporte.value : 0);
 
@@ -193,13 +224,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (form) form.reset();
         reponerFecha();
         mostrarMensaje("");
-        // Al limpiar, volvemos a poner el saldo base original
+        // Al limpiar, volvemos a consultar el saldo base de la temporada actual del formulario
         await obtenerUltimoSaldoGlobal();
     }
 
     if (form) {
         form.addEventListener("submit", async (evento) => {
             evento.preventDefault();
+
+            const inputTemporada = document.getElementById("temporada");
+            if (!inputTemporada || !inputTemporada.value.trim()) {
+                mostrarMensaje("Debe seleccionar una temporada para registrar el movimiento.", true);
+                return;
+            }
 
             formatearDecimales(inputImporte);
             calcularNuevoSaldo(); // Asegurar saldo calculado justo antes de enviar
@@ -217,14 +254,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 2. Gestionar el tipo de gasto (ENUM)
             const valorTipo = document.getElementById("tipo").value;
-            // Si está vacío o queremos prevenir fallos de ENUM, enviamos null
             const tipoGastoFormateado = valorTipo && valorTipo.trim() !== "" ? valorTipo : null;
 
             // 3. Construcción del objeto coincidiendo exactamente con el esquema PostgreSQL
             const movimiento = {
-                temporada: document.getElementById("temporada").value,
+                temporada: inputTemporada.value.trim(),
                 fecha_contable: document.getElementById("fecha_contable").value, // YYYY-MM-DD
-                fecha_apunte: fechaApunteFormateada,                            // YYYY-MM-DD
+                fecha_apunte: fechaApunteFormateada,                             // YYYY-MM-DD
                 concepto: document.getElementById("concepto").value,
                 tipo: tipoGastoFormateado,
                 codigo_cuenta: document.getElementById("codigo_cuenta").value,  // UUID como String
