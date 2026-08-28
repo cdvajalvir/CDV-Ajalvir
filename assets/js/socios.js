@@ -29,32 +29,28 @@ comprobarAcceso([
 
     const temporadaActual = obtenerTemporadaActual();
     console.log("Temporada actual calculada:", temporadaActual);
-    console.log("Datos de cantidad_pagada del socio:", socio.cantidad_pagada);
+    console.log("Valor crudo de cantidad_pagada:", socio.cantidad_pagada);
 
     let totalCuota = 0;
     let pagado = 0;
     let pendiente = 0;
 
-    // Asegurar que socio.cantidad_pagada sea un array (por si viene como string JSON)
+    // 1. Asegurar que 'cantidad_pagada' se convierte en array (por si viene como string JSON)
     let cuotasArray = socio.cantidad_pagada;
     if (typeof cuotasArray === "string") {
         try {
             cuotasArray = JSON.parse(cuotasArray);
         } catch (e) {
+            console.error("Error al parsear cantidad_pagada:", e);
             cuotasArray = [];
         }
     }
 
+    // 2. Procesar el array de temporadas
     if (Array.isArray(cuotasArray) && cuotasArray.length > 0) {
-        // Buscar la temporada actual limpiando espacios y barras por seguridad
-        let datosTemporada = cuotasArray.find(
+        const datosTemporada = cuotasArray.find(
             item => String(item.temporada).trim() === temporadaActual.trim()
         );
-
-        // Si no encuentra la exacta por fecha, cogemos la última del array como seguridad
-        if (!datosTemporada) {
-            datosTemporada = cuotasArray[cuotasArray.length - 1];
-        }
 
         if (datosTemporada) {
             totalCuota = Number(datosTemporada.cuota) || 0;
@@ -63,28 +59,30 @@ comprobarAcceso([
         }
     }
 
-    // Pintar los valores en el DOM
+    // 3. Pintar los valores en el DOM de la tarjeta
     const estadoCuotaElem = document.getElementById("estadoCuota");
     const cuotaPendienteElem = document.getElementById("cuotaPendiente");
 
     if (estadoCuotaElem && cuotaPendienteElem) {
+        // Muestra en grande la cantidad pagada (ej: 100 €)
         estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
         
+        // Muestra al día o el importe pendiente calculado
         if (pendiente > 0) {
             cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
-            cuotaPendienteElem.style.color = "#d9534f"; // Rojo
+            cuotaPendienteElem.style.color = "#d9534f"; // Rojo alerta
         } else {
             cuotaPendienteElem.textContent = `(al día)`;
-            cuotaPendienteElem.style.color = "#2e7d32"; // Verde
+            cuotaPendienteElem.style.color = "#2e7d32"; // Verde OK
         }
     }
 
-    // Dorsal
+    // 4. Dorsal del socio
     const dorsalTexto = socio.numero ? String(socio.numero).trim() : "";
     document.getElementById("dorsalSocio").textContent =
         dorsalTexto !== "" ? dorsalTexto : "-";
 
-    // Foto
+    // 5. Foto personalizada del socio
     const imgElement = document.getElementById("fotoSocio");
     if (socio.foto) {
         imgElement.src = `../assets/img/${socio.foto}`;
