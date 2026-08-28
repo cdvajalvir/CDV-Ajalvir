@@ -18,10 +18,10 @@
             margin-left: auto;
         }
 
-        /* Distribución en 4 columnas fluidas que se reparten todo el ancho disponible */
+        /* Distribución en 4 columnas equilibradas para evitar que la columna 4 se expanda de más */
         .hero-grid-4cols {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr 1.8fr 1fr 1fr; /* Columna 2 (textos) un poco más ancha, el resto equilibradas */
             gap: 2rem;
             align-items: center; /* Alinea los contenidos verticalmente al centro */
             width: 100%;
@@ -37,7 +37,7 @@
             min-height: 260px;
         }
 
-        /* Etiqueta oblicua estilo "Silent Landfield" */
+        /* Etiqueta oblicua estilo "Silent Landfield" (desplazada 80px izq, 60px arriba) */
         .etiqueta-colabora {
             position: absolute;
             top: -38px;
@@ -103,17 +103,19 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
-            padding: 1.25rem 1rem;
+            padding: 1.25rem 0.75rem;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
             align-items: center;
             justify-content: center;
             width: 100%;
+            max-width: 100%; /* Evita que rebase su celda asignada */
             box-sizing: border-box;
+            overflow: hidden;
         }
 
-        /* Logo superior que ocupa todo el ancho vinculado a inmoajalvir.es */
+        /* Logo superior ajustado al ancho de la columna */
         .inmo-logo-container {
             width: 100%;
             text-align: center;
@@ -122,7 +124,7 @@
         .inmo-logo-img {
             width: 100%;
             height: auto;
-            max-height: 70px;
+            max-height: 60px;
             object-fit: contain;
             display: block;
             transition: transform 0.3s ease;
@@ -138,32 +140,33 @@
             overflow: hidden;
             position: relative;
             display: flex;
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
 
         .carrusel-inmo-track {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             width: max-content;
             animation: deslizarCarrusel 20s linear infinite;
         }
 
-        /* Pausa la animación al pasar el ratón para poder ver las imágenes con calma */
+        /* Pausa la animación al pasar el ratón */
         .carrusel-inmo-wrapper:hover .carrusel-inmo-track {
             animation-play-state: paused;
         }
 
         .carrusel-item {
-            width: 75px;
-            height: 55px;
+            width: 60px;
+            height: 45px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
         }
 
         .carrusel-item img {
@@ -178,7 +181,7 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(calc(-50% - 0.75rem));
+                transform: translateX(calc(-50% - 0.5rem));
             }
         }
 
@@ -207,14 +210,17 @@
 
         <button class="nav-toggle" data-nav-toggle>☰</button>
 
+        <!-- Contenedor que nav-auth.js rellenará automáticamente -->
         <div class="nav-links" data-nav-links></div>
     </nav>
 </header>
 
     <main>
+        <!-- SECCIÓN SUPERIOR DE ANCHO COMPLETO -->
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
+                <!-- COLUMNA 1: Logo Fersán con Etiqueta Caligráfica Desplazada -->
                 <div class="columna-fersan">
                     <div class="etiqueta-colabora">Colabora</div>
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
@@ -222,12 +228,14 @@
                     </a>
                 </div>
 
+                <!-- COLUMNA 2: Textos del club de veteranos -->
                 <div>
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
+                <!-- COLUMNA 3: Próximo evento -->
                 <div class="hero-card" style="margin:0; width:100%;">
                     <div class="match-card">
                         <span class="tag">Próximo evento</span>
@@ -236,21 +244,26 @@
                     </div>
                 </div>
 
+                <!-- COLUMNA 4: Inmo Ajalvir y Carrusel Horizontal de 5 imágenes (ancho original controlado) -->
                 <div class="columna-inmo-publicidad">
+                    <!-- Logo superior enlazado a inmoajalvir.es -->
                     <div class="inmo-logo-container">
                         <a href="https://inmoajalvir.es/" target="_blank" rel="noopener noreferrer" title="Visitar Inmo Ajalvir">
                             <img src="assets/img/inmo-ajalvir-logo.png" alt="Inmo Ajalvir Logo" class="inmo-logo-img">
                         </a>
                     </div>
 
+                    <!-- Carrusel de desplazamiento horizontal -->
                     <div class="carrusel-inmo-wrapper">
                         <div class="carrusel-inmo-track">
+                            <!-- BLOQUE 1 (Las 5 imágenes originales) -->
                             <div class="carrusel-item"><img src="assets/img/inmo-img-1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-4.png" alt="Inmo 4"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-5.png" alt="Inmo 5"></div>
                             
+                            <!-- BLOQUE 2 (Duplicado exacto para bucle infinito) -->
                             <div class="carrusel-item"><img src="assets/img/inmo-img-1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/inmo-img-3.png" alt="Inmo 3"></div>
@@ -305,6 +318,7 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS MODULARES -->
     <script type="module" src="assets/js/nav-auth.js"></script>
     <script type="module" src="assets/js/app.js"></script>
     <script type="module">
