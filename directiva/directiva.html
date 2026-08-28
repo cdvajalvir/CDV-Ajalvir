@@ -119,58 +119,70 @@
 
             <div class="app-main">
 
-                <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                <div class="content-grid" style="display: flex; flex-direction: column; gap: 1.5rem;">
 
-                    <!-- Resumen de saldos de Directiva y Administradores -->
-                    <article class="card">
+                    <!-- ==========================================
+                         FILA SUPERIOR (Tabla + Las dos tartas)
+                    =========================================== -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
 
-                        <h3>
-                            Resumen de saldos (Directiva y Administradores)
-                        </h3>
+                        <!-- Resumen de saldos de Directiva y Administradores (Ocupa la columna izquierda completa) -->
+                        <article class="card" style="margin: 0;">
+                            <h3>
+                                Resumen de saldos (Directiva y Administradores)
+                            </h3>
 
-                        <div class="table-responsive">
-                            <table class="table" id="tablaSaldosDirectiva">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre y Apellidos</th>
-                                        <th style="text-align: right;">Saldo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center;">Cargando saldos...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </article>
-
-                    <!-- Estado de Cuotas (Socios) -->
-                    <article class="card">
-                        <h3>Estado de Cuotas (Socios)</h3>
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="graficoCuotas"></canvas>
-                        </div>
-                    </article>
-
-                    <!-- Detalle de Gastos (Nuevo Gráfico de Tarta) -->
-                    <article class="card">
-                        <h3>Detalle Gastos</h3>
-                        <div style="position: relative; height: 250px; width: 100%;">
-                            <canvas id="graficoDetalleGastos"></canvas>
-                        </div>
-                    </article>
-
-                    <!-- Evolución de Ingresos y Gastos por Mes -->
-                    <article class="card" style="grid-column: 1 / -1;">
-                        <h3>Evolución de Ingresos y Gastos por Mes</h3>
-                        <div style="width: 100%; overflow-x: auto;">
-                            <div id="contenedorGraficoBarras" style="position: relative; height: 300px; min-width: 600px;">
-                                <canvas id="graficoIngresosGastos"></canvas>
+                            <div class="table-responsive">
+                                <table class="table" id="tablaSaldosDirectiva">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre y Apellidos</th>
+                                            <th style="text-align: right;">Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" style="text-align: center;">Cargando saldos...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
+                        </article>
+
+                        <!-- Contenedor derecho para las dos tartas en paralelo exacto -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <!-- Estado de Cuotas (Socios) -->
+                            <article class="card" style="margin: 0;">
+                                <h3>Estado de Cuotas (Socios)</h3>
+                                <div style="position: relative; height: 250px; width: 100%;">
+                                    <canvas id="graficoCuotas"></canvas>
+                                </div>
+                            </article>
+
+                            <!-- Detalle de Gastos (Nuevo Gráfico de Tarta) -->
+                            <article class="card" style="margin: 0;">
+                                <h3>Detalle Gastos</h3>
+                                <div style="position: relative; height: 250px; width: 100%;">
+                                    <canvas id="graficoDetalleGastos"></canvas>
+                                </div>
+                            </article>
                         </div>
-                    </article>
+
+                    </div>
+
+                    <!-- ==========================================
+                         FILA INFERIOR (Gráfico de barras ancho)
+                    =========================================== -->
+                    <div>
+                        <article class="card" style="margin: 0;">
+                            <h3>Evolución de Ingresos y Gastos por Mes</h3>
+                            <div style="width: 100%; overflow-x: auto;">
+                                <div id="contenedorGraficoBarras" style="position: relative; height: 300px; min-width: 600px;">
+                                    <canvas id="graficoIngresosGastos"></canvas>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
 
                 </div>
 
