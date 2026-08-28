@@ -9,17 +9,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
     <style>
-        /* Contenedor principal del bloque superior con posición relativa para anclar la publicidad */
-        .hero {
-            position: relative;
+        /* Adaptamos el grid principal superior para que tenga 4 columnas exactas */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            align-items: start;
         }
 
-        /* Bloque de publicidad Fersán situado exactamente en la zona superior izquierda (círculo amarillo) */
-        .publicidad-fersan-absoluta {
-            position: absolute;
-            top: 1rem;
-            left: 1.5rem;
-            z-index: 10;
+        /* Estilos específicos para la columna 1: Logo Fersán */
+        .columna-fersan {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .logo-fersan-link {
@@ -27,10 +29,8 @@
             text-decoration: none;
         }
 
-        /* Logo con animación de zoom centrado y cambio cíclico de tono/color */
         .logo-fersan-animado {
-            max-width: 220px;
-            width: 100%;
+            max-width: 100%;
             height: auto;
             animation: fersanZoomCentral 4s ease-in-out infinite;
             transform-origin: center center;
@@ -51,22 +51,30 @@
             }
         }
 
-        /* Ajuste de margen superior en la columna de texto para que no se solape con el logo absoluto */
-        .hero-texto-columna {
-            padding-top: 5rem;
+        /* Estilos para la cuarta columna (espacio libre para futura publicidad) */
+        .columna-publicidad-libre {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
         }
 
-        /* Adaptación para pantallas móviles (en pantallas pequeñas pasa a flujo normal) */
-        @media (max-width: 768px) {
-            .hero {
-                position: static;
+        /* Responsivo para pantallas medianas/pequeñas (se adapta a 2 columnas o 1) */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            .publicidad-fersan-absoluta {
-                position: static;
-                margin-bottom: 1.5rem;
-            }
-            .hero-texto-columna {
-                padding-top: 0;
+        }
+        @media (max-width: 640px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -90,29 +98,37 @@
 
     <main>
         <section class="hero container">
-            <!-- LOGO DE PUBLICIDAD FERSÁN (Ubicado exactamente en el círculo amarillo superior izquierdo) -->
-            <div class="publicidad-fersan-absoluta">
-                <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
-                    <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
-                </a>
-            </div>
-
+            <!-- DISTRIBUCIÓN EN 4 COLUMNAS -->
             <div class="hero-grid">
-                <!-- LADO IZQUIERDO: Textos originales del club con espacio superior reservado -->
-                <div class="hero-texto-columna">
+                
+                <!-- COLUMNA 1: Logo Fersán (Círculo amarillo) -->
+                <div class="columna-fersan">
+                    <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
+                        <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
+                    </a>
+                </div>
+
+                <!-- COLUMNA 2: Textos del club de veteranos -->
+                <div>
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
-                <!-- LADO DERECHO: Evento original intacto -->
-                <div class="hero-card">
+                <!-- COLUMNA 3: Próximo evento -->
+                <div class="hero-card" style="margin:0;">
                     <div class="match-card">
                         <span class="tag">Próximo evento</span>
                         <h2>Temporada 2027</h2>
                         <p>Reunión junta directiva 21:00.<br>Lugar: Sport Bar Ajalvir.</p>
                     </div>
                 </div>
+
+                <!-- COLUMNA 4: Espacio libre para otra publicidad -->
+                <div class="columna-publicidad-libre">
+                    <span>Espacio reservado para nueva publicidad</span>
+                </div>
+
             </div>
         </section>
 
