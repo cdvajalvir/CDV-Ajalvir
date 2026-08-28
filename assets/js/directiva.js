@@ -219,9 +219,13 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
                 },
                 legend: {
                     position: 'bottom',
+                    align: 'start', // <--- Alinea la caja entera de la leyenda a la izquierda
                     labels: {
                         color: '#ffffff',
-                        font: { size: 12 }
+                        font: { size: 12 },
+                        textAlign: 'left', // <--- Alinea el texto de cada línea a la izquierda
+                        boxWidth: 14,
+                        padding: 12
                     }
                 },
                 tooltip: {
