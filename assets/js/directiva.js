@@ -3,7 +3,8 @@ import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
 
-let chartCuotasInstance = null; // Control de instancia del gráfico de tarta
+let chartCuotasInstance = null; // Control de instancia del gráfico de tarta de cuotas
+let chartDetalleGastosInstance = null; // Control de instancia del gráfico de tarta de detalle de gastos
 let chartIngresosGastosInstance = null; // Control de instancia del gráfico de barras
 let globalDirectivos = [];
 let globalMovimientos = [];
@@ -26,7 +27,7 @@ function calcularTemporadaActual() {
 
 async function inicializarPanelDirectiva() {
     try {
-        // 1. Obtener socios, movimientos (con fecha_contable y tipo) y las temporadas desde la tabla 'temporada'
+        // 1. Obtener socios, movimientos y las temporadas desde la tabla 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
             supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_apunte, tipo"),
@@ -87,7 +88,7 @@ function manejadorCambioTemporada(e) {
     actualizarVistaPorTemporada(e.target.value);
 }
 
-// Función que actualiza métricas, gráfico y tabla según la temporada elegida
+// Función que actualiza métricas, gráficos y tabla según la temporada elegida
 function actualizarVistaPorTemporada(temporadaSeleccionada) {
     console.log("Actualizando panel para la temporada:", temporadaSeleccionada);
 
@@ -103,7 +104,7 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     if (elemTotalDirectiva) elemTotalDirectiva.textContent = globalDirectivos.filter(s => s.rol === "directiva").length;
     if (elemTotalAdmin) elemTotalAdmin.textContent = globalDirectivos.filter(s => s.rol === "administrador").length;
 
-    // --- CÁLCULO DEL GRÁFICO DE TARTA (3 ESTADOS Y FILTRADO POR TEMPORADA) ---
+    // --- CÁLCULO DEL GRÁFICO DE TARTA DE CUOTAS (3 ESTADOS) ---
     let totalSociosTemporada = 0;
     let pagadasTotalidad = 0;
     let pagadasParciales = 0;
@@ -131,6 +132,10 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     });
 
     renderizarGraficoCuotasTresEstados(pagadasTotalidad, pagadasParciales, noPagadas, temporadaSeleccionada, totalSociosTemporada);
+    // ---------------------------------------------------------------------
+
+    // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE TARTA DE DETALLE DE GASTOS ---
+    procesarYRenderizarDetalleGastos(globalMovimientos, temporadaSeleccionada);
     // ---------------------------------------------------------------------
 
     // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE BARRAS DE INGRESOS Y GASTOS ---
@@ -189,7 +194,7 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     }
 }
 
-// Función encargada de pintar o actualizar el gráfico de tarta con 3 estados en Chart.js
+// Función encargada de pintar o actualizar el gráfico de tarta de cuotas en Chart.js
 function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temporadaLabel, totalSocios) {
     const canvasElement = document.getElementById("graficoCuotas");
     if (!canvasElement) return;
@@ -237,6 +242,97 @@ function renderizarGraficoCuotasTresEstados(totales, parciales, pendientes, temp
                             const valor = context.raw || 0;
                             const porcentaje = totalSocios > 0 ? ((valor / totalSocios) * 100).toFixed(1) : 0;
                             return ` ${context.label}: ${porcentaje}% (${valor} socios)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Función para procesar los gastos por tipo y renderizar el gráfico de tarta de detalle de gastos
+function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
+    const canvasElement = document.getElementById("graficoDetalleGastos");
+    if (!canvasElement) return;
+
+    // Filtrar solo los movimientos de la temporada seleccionada
+    const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
+
+    const gastosPorTipo = {};
+    let totalGastosTemporada = 0;
+
+    movimientosTemporada.forEach(mov => {
+        const importe = parseFloat(mov.importe) || 0;
+        
+        // Determinamos si es un gasto (si el importe es negativo o el tipo indica gasto)
+        const esGasto = mov.tipo ? (mov.tipo.toLowerCase() === 'gasto' || mov.tipo.toLowerCase() === 'gastos') : (importe < 0);
+
+        if (esGasto) {
+            const valorGasto = Math.abs(importe);
+            const tipoGasto = mov.tipo && mov.tipo.trim() !== '' ? mov.tipo.trim() : 'Otros';
+
+            if (!gastosPorTipo[tipoGasto]) {
+                gastosPorTipo[tipoGasto] = 0;
+            }
+            gastosPorTipo[tipoGasto] += valorGasto;
+            totalGastosTemporada += valorGasto;
+        }
+    });
+
+    const labels = Object.keys(gastosPorTipo);
+    const data = Object.values(gastosPorTipo);
+
+    // Colores corporativos variados para las porciones
+    const coloresBase = [
+        '#0284c7', // Azul
+        '#f97316', // Naranja
+        '#facc15', // Amarillo
+        '#10b981', // Verde
+        '#a855f7', // Morado
+        '#ec4899'  // Rosa
+    ];
+
+    const backgroundColors = labels.map((_, index) => coloresBase[index % coloresBase.length]);
+
+    const ctx = canvasElement.getContext("2d");
+
+    if (chartDetalleGastosInstance) {
+        chartDetalleGastosInstance.destroy();
+    }
+
+    chartDetalleGastosInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Temporada ${temporadaSeleccionada}`,
+                    color: '#ffffff',
+                    font: { size: 14 }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff',
+                        font: { size: 11 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const valor = context.raw || 0;
+                            const porcentaje = totalGastosTemporada > 0 ? ((valor / totalGastosTemporada) * 100).toFixed(1) : 0;
+                            return ` ${context.label}: ${valor.toFixed(2)} € (${porcentaje}%)`;
                         }
                     }
                 }
