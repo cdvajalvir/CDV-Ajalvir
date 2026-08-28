@@ -9,39 +9,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
     <style>
-        /* Estilos para el banner publicitario interactivo de Fersán */
-        .publicidad-izquierda {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
+        /* Contenedor principal del bloque superior con posición relativa para anclar la publicidad */
+        .hero {
+            position: relative;
+        }
+
+        /* Bloque de publicidad Fersán situado exactamente en la zona superior izquierda (círculo amarillo) */
+        .publicidad-fersan-absoluta {
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            z-index: 10;
         }
 
         .logo-fersan-link {
             display: inline-block;
             text-decoration: none;
-            margin-bottom: 1.2rem;
         }
 
+        /* Logo con animación de zoom centrado y cambio cíclico de tono/color */
         .logo-fersan-animado {
-            max-width: 240px;
+            max-width: 220px;
+            width: 100%;
             height: auto;
-            animation: fersanEfectoDinamico 4s ease-in-out infinite;
-            transform-origin: center center; /* Zoom centrado desde el propio logo */
+            animation: fersanZoomCentral 4s ease-in-out infinite;
+            transform-origin: center center;
         }
 
-        @keyframes fersanEfectoDinamico {
+        @keyframes fersanZoomCentral {
             0% {
                 transform: scale(1);
                 filter: hue-rotate(0deg) brightness(1) saturate(1);
             }
             50% {
-                transform: scale(1.08); /* Zoom-in suave */
-                filter: hue-rotate(25deg) brightness(1.15) saturate(1.3); /* Cambio dinámico de tono y color */
+                transform: scale(1.08); /* Zoom-in suave desde el centro */
+                filter: hue-rotate(20deg) brightness(1.12) saturate(1.25); /* Cambio dinámico de tono/color */
             }
             100% {
                 transform: scale(1);
                 filter: hue-rotate(0deg) brightness(1) saturate(1);
+            }
+        }
+
+        /* Ajuste de margen superior en la columna de texto para que no se solape con el logo absoluto */
+        .hero-texto-columna {
+            padding-top: 5rem;
+        }
+
+        /* Adaptación para pantallas móviles (en pantallas pequeñas pasa a flujo normal) */
+        @media (max-width: 768px) {
+            .hero {
+                position: static;
+            }
+            .publicidad-fersan-absoluta {
+                position: static;
+                margin-bottom: 1.5rem;
+            }
+            .hero-texto-columna {
+                padding-top: 0;
             }
         }
     </style>
@@ -65,18 +90,22 @@
 
     <main>
         <section class="hero container">
+            <!-- LOGO DE PUBLICIDAD FERSÁN (Ubicado exactamente en el círculo amarillo superior izquierdo) -->
+            <div class="publicidad-fersan-absoluta">
+                <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
+                    <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
+                </a>
+            </div>
+
             <div class="hero-grid">
-                <!-- LADO IZQUIERDO: Publicidad Fersán arriba + Textos originales del club debajo -->
-                <div class="publicidad-izquierda">
-                    <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
-                        <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
-                    </a>
+                <!-- LADO IZQUIERDO: Textos originales del club con espacio superior reservado -->
+                <div class="hero-texto-columna">
                     <p class="eyebrow">Club de fútbol veteranos</p>
                     <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
                     <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
                 </div>
                 
-                <!-- LADO DERECHO: Evento -->
+                <!-- LADO DERECHO: Evento original intacto -->
                 <div class="hero-card">
                     <div class="match-card">
                         <span class="tag">Próximo evento</span>
