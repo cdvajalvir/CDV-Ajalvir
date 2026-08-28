@@ -9,19 +9,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     
     <style>
-        /* Adaptamos el grid principal superior para que tenga 4 columnas exactas */
-        .hero-grid {
+        /* Contenedor de ancho completo para aprovechar toda la pantalla */
+        .hero-ancho-total {
+            width: 100%;
+            padding-left: 3vw;
+            padding-right: 3vw;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        /* Distribución en 4 columnas fluidas que se reparten todo el ancho disponible */
+        .hero-grid-4cols {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
-            align-items: start;
+            align-items: center; /* Alinea los contenidos verticalmente al centro */
+            width: 100%;
         }
 
         /* Estilos específicos para la columna 1: Logo Fersán */
         .columna-fersan {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
+            align-items: center;
         }
 
         .logo-fersan-link {
@@ -31,6 +42,7 @@
 
         .logo-fersan-animado {
             max-width: 100%;
+            width: 220px;
             height: auto;
             animation: fersanZoomCentral 4s ease-in-out infinite;
             transform-origin: center center;
@@ -51,7 +63,7 @@
             }
         }
 
-        /* Estilos para la cuarta columna (espacio libre para futura publicidad) */
+        /* Estilos para la cuarta columna (espacio libre para otra publicidad) */
         .columna-publicidad-libre {
             background: rgba(255, 255, 255, 0.03);
             border: 2px dashed rgba(255, 255, 255, 0.15);
@@ -66,14 +78,14 @@
             font-size: 0.9rem;
         }
 
-        /* Responsivo para pantallas medianas/pequeñas (se adapta a 2 columnas o 1) */
-        @media (max-width: 1024px) {
-            .hero-grid {
+        /* Responsivo: se adapta a 2 columnas en pantallas medianas y a 1 en móviles */
+        @media (max-width: 1200px) {
+            .hero-grid-4cols {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
         @media (max-width: 640px) {
-            .hero-grid {
+            .hero-grid-4cols {
                 grid-template-columns: 1fr;
             }
         }
@@ -97,11 +109,11 @@
 </header>
 
     <main>
-        <section class="hero container">
-            <!-- DISTRIBUCIÓN EN 4 COLUMNAS -->
-            <div class="hero-grid">
+        <!-- SECCIÓN SUPERIOR DE ANCHO COMPLETO -->
+        <section class="hero hero-ancho-total">
+            <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán (Círculo amarillo) -->
+                <!-- COLUMNA 1: Logo Fersán -->
                 <div class="columna-fersan">
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
@@ -116,7 +128,7 @@
                 </div>
                 
                 <!-- COLUMNA 3: Próximo evento -->
-                <div class="hero-card" style="margin:0;">
+                <div class="hero-card" style="margin:0; width:100%;">
                     <div class="match-card">
                         <span class="tag">Próximo evento</span>
                         <h2>Temporada 2027</h2>
