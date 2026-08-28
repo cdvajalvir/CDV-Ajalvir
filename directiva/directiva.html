@@ -119,7 +119,7 @@
 
             <div class="app-main">
 
-                <div class="content-grid">
+                <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
 
                     <!-- Resumen de saldos de Directiva y Administradores -->
                     <article class="card">
@@ -145,6 +145,8 @@
                         </div>
 
                     </article>
+
+                    <!-- Estado de Cuotas (Socios) -->
                     <article class="card">
                         <h3>Estado de Cuotas (Socios)</h3>
                         <div style="position: relative; height: 250px; width: 100%;">
@@ -152,6 +154,15 @@
                         </div>
                     </article>
 
+                    <!-- Detalle de Gastos (Nuevo Gráfico de Tarta) -->
+                    <article class="card">
+                        <h3>Detalle Gastos</h3>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="graficoDetalleGastos"></canvas>
+                        </div>
+                    </article>
+
+                    <!-- Evolución de Ingresos y Gastos por Mes -->
                     <article class="card" style="grid-column: 1 / -1;">
                         <h3>Evolución de Ingresos y Gastos por Mes</h3>
                         <div style="width: 100%; overflow-x: auto;">
