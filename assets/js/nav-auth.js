@@ -99,23 +99,15 @@ function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
 }
 
 function renderizarMenuPaginaAdmin(contenedor, rol, basePath) {
-    if (rol === "directiva") {
-        // Si es de directiva, el menú debe mostrar "Directiva" para poder volver atrás
-        contenedor.innerHTML = `
-            <a href="${basePath}index.html">Inicio</a>
-            <a href="${basePath}socios/socios.html">Área socios</a>
-            <a href="${basePath}directiva/directiva.html">Directiva</a>
-            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
-        `;
-    } else {
-        // Menú para administradores reales
-        contenedor.innerHTML = `
-            <a href="${basePath}index.html">Inicio</a>
-            <a href="${basePath}socios/socios.html">Área socios</a>
-            <a href="${basePath}directiva/directiva.html">Directiva</a>
-            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
-        `;
-    }
+    const textoBoton = (rol === "directiva") ? "Directiva" : "Administración";
+    const enlaceBoton = (rol === "directiva") ? `${basePath}directiva/directiva.html` : `${basePath}admin/administracion.html`;
+
+    contenedor.innerHTML = `
+        <a href="${basePath}index.html">Inicio</a>
+        <a href="${basePath}socios/socios.html">Área socios</a>
+        <a href="${enlaceBoton}">${textoBoton}</a>
+        <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
+    `;
     configurarBotonLogout(basePath);
 }
 
