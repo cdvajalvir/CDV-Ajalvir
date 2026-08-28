@@ -27,17 +27,39 @@
             width: 100%;
         }
 
-        /* Estilos específicos para la columna 1: Logo Fersán */
+        /* Estilos específicos para la columna 1: Marco estático para la etiqueta y el logo */
         .columna-fersan {
+            position: relative; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 220px; /* Asegura espacio fijo para que la animación no desplace nada */
+        }
+
+        /* Etiqueta oblicua "Colabora" fija en la esquina superior izquierda (fuera de la animación) */
+        .etiqueta-colabora {
+            position: absolute;
+            top: 10px;
+            left: -28px;
+            transform: rotate(-45deg);
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: #121212;
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            z-index: 20; /* Siempre por encima pero independiente */
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .logo-fersan-link {
             display: inline-block;
             text-decoration: none;
+            z-index: 2;
         }
 
         /* Logo con animación combinada: Multigiro con zoom + Neón azulado rápido y el doble de ancho */
@@ -125,8 +147,9 @@
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán con Neón Azulado Rápido, Ancho y Zoom Rotatorio -->
+                <!-- COLUMNA 1: Logo Fersán con Etiqueta Estática "Colabora" e Independiente de la Animación -->
                 <div class="columna-fersan">
+                    <div class="etiqueta-colabora">Colabora</div>
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.png" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
                     </a>
