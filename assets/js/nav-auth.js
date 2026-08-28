@@ -38,7 +38,9 @@ export async function cargarNavegacionDinamica() {
         // Comportamiento específico según la página o el rol
         if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
-        } else if (pathName.includes("administracion.html") || pathName.includes("registros.html")) {
+        } else if (pathName.includes("registros.html")) {
+            renderizarMenuUnicoRegistros(contenedorNav, rol, basePath); // <--- Exclusivo solo para registros.html
+        } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, rol, basePath);
         } else if (pathName.includes("directiva")) {
             renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
@@ -109,6 +111,19 @@ function renderizarMenuPaginaAdmin(contenedor, rol, basePath) {
         <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
     `;
     configurarBotonLogout(basePath);
+}
+
+// NUEVA FUNCIÓN EXCLUSIVA PARA registros.html (Sin cerrar sesión y sin elementos extra)
+function renderizarMenuUnicoRegistros(contenedor, rol, basePath) {
+    if (rol === "directiva") {
+        contenedor.innerHTML = `
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+        `;
+    } else {
+        contenedor.innerHTML = `
+            <a href="${basePath}admin/administracion.html">Administración</a>
+        `;
+    }
 }
 
 function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
