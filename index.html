@@ -18,12 +18,12 @@
             margin-left: auto;
         }
 
-        /* Distribución en 4 columnas con altura estirada para que todas midan lo mismo en la fila */
+        /* Distribución en 4 columnas adaptada al nuevo orden manteniendo los anchos originales (1fr, 1fr, 1.8fr, 1fr) */
         .hero-grid-4cols {
             display: grid;
-            grid-template-columns: 1fr 1.8fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1.8fr 1fr;
             gap: 2rem;
-            align-items: stretch; /* Fuerza a todas las columnas a tener la misma altura */
+            align-items: stretch; /* Fuerza a todas las columnas a medir lo mismo en altura */
             width: 100%;
         }
 
@@ -38,7 +38,7 @@
             min-height: 260px;
         }
 
-        /* Etiqueta oblicua estilo "Silent Landfield" (desplazada 80px izq, 60px arriba) */
+        /* Etiqueta oblicua estilo "Silent Landfield" (desplazada 20px hacia abajo) */
         .etiqueta-colabora {
             position: absolute;
             top: -10px;
@@ -98,7 +98,7 @@
         }
 
         /* ==========================================================
-           ESTILOS PARA LA COLUMNA 4: INMO-AJALVIR Y CARRUSEL INFINITO
+           ESTILOS PARA LA COLUMNA DE INMO-AJALVIR Y CARRUSEL INFINITO
            ========================================================== */
         .columna-inmo-publicidad {
             background: rgba(255, 255, 255, 0.02);
@@ -159,7 +159,7 @@
             animation-play-state: paused;
         }
 
-        /* Imágenes del carrusel con el triple de tamaño (aprox. 180px de ancho x 135px de alto) */
+        /* Imágenes del carrusel con el triple de tamaño */
         .carrusel-item {
             width: 180px;
             height: 135px;
@@ -180,7 +180,7 @@
             object-fit: cover;
         }
 
-        /* Animación continua de derecha a izquierda adaptada al nuevo tamaño */
+        /* Animación continua de derecha a izquierda */
         @keyframes deslizarCarrusel {
             0% {
                 transform: translateX(0);
@@ -226,7 +226,7 @@
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán con Etiqueta Caligráfica Desplazada -->
+                <!-- COLUMNA 1 (Posición 1): Logo Fersán con Etiqueta Caligráfica -->
                 <div class="columna-fersan">
                     <div class="etiqueta-colabora">Colabora</div>
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
@@ -234,48 +234,44 @@
                     </a>
                 </div>
 
-                <!-- COLUMNA 2: Textos del club de veteranos -->
-                <div style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
-                    <p class="eyebrow">Club de fútbol veteranos</p>
-                    <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
-                    <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
-                </div>
-                
-                <!-- COLUMNA 3: Próximo evento -->
-                <div class="hero-card" style="margin:0; width:100%; display: flex; align-items: center; height: 100%;">
-                    <div class="match-card" style="width: 100%;">
-                        <span class="tag">Próximo evento</span>
-                        <h2>Temporada 2027</h2>
-                        <p>Reunión junta directiva 21:00.<br>Lugar: Sport Bar Ajalvir.</p>
-                    </div>
-                </div>
-
-                <!-- COLUMNA 4: Inmo Ajalvir (misma altura, logo a todo ancho y carrusel grande) -->
+                <!-- COLUMNA 2 (Posición 2): Inmo Ajalvir y Carrusel (Antes Columna 4) -->
                 <div class="columna-inmo-publicidad">
-                    <!-- Logo superior abarcando todo el ancho y enlazado a inmoajalvir.es -->
                     <div class="inmo-logo-container">
                         <a href="https://inmoajalvir.es/" target="_blank" rel="noopener noreferrer" title="Visitar Inmo Ajalvir" style="width: 100%;">
                             <img src="assets/img/inmo-ajalvir-logo.png" alt="Inmo Ajalvir Logo" class="inmo-logo-img">
                         </a>
                     </div>
-
-                    <!-- Carrusel de desplazamiento horizontal con imágenes de gran tamaño -->
                     <div class="carrusel-inmo-wrapper">
                         <div class="carrusel-inmo-track">
-                            <!-- BLOQUE 1 (Con imagen1.png y el triple de tamaño) -->
+                            <!-- BLOQUE 1 -->
                             <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen4.png" alt="Inmo 4"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen5.png" alt="Inmo 5"></div>
-                            
-                            <!-- BLOQUE 2 (Duplicado exacto para bucle infinito continuo) -->
+                            <!-- BLOQUE 2 (Bucle) -->
                             <div class="carrusel-item"><img src="assets/img/imagen1.png" alt="Inmo 1"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen2.png" alt="Inmo 2"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen3.png" alt="Inmo 3"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen4.png" alt="Inmo 4"></div>
                             <div class="carrusel-item"><img src="assets/img/imagen5.png" alt="Inmo 5"></div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA 3 (Posición 3): Textos del club de veteranos (Ancho de 1.8fr, antes Columna 2) -->
+                <div style="display: flex; flex-direction: column; justify-content: center; height: 100%;">
+                    <p class="eyebrow">Club de fútbol veteranos</p>
+                    <h1>Pasión, equipo y compromiso con Ajalvir.</h1>
+                    <p class="lead">Portal oficial del CD Veteranos Ajalvir: actualidad, calendario, equipos y acceso privado para socios, directiva y administración.</p>
+                </div>
+                
+                <!-- COLUMNA 4 (Posición 4): Próximo evento (Antes Columna 3) -->
+                <div class="hero-card" style="margin:0; width:100%; display: flex; align-items: center; height: 100%;">
+                    <div class="match-card" style="width: 100%;">
+                        <span class="tag">Próximo evento</span>
+                        <h2>Temporada 2027</h2>
+                        <p>Reunión junta directiva 21:00.<br>Lugar: Sport Bar Ajalvir.</p>
                     </div>
                 </div>
 
