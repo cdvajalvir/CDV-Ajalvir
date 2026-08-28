@@ -106,13 +106,12 @@ async function cargarValoresTemporadas() {
                         arrSociosCuotas = arrSociosCuotas.map(c => {
                             if (c && String(c.temporada).trim() === String(temporadaMeta).trim()) {
                                 modificado = true;
-                                return { ...c, cuota: nuevoValorCuota }; // Actualiza solo el importe de la cuota, preservando 'pagado'
+                                return { ...c, cuota: nuevoValorCuota }; // Actualiza solo la cuota, preservando 'pagado'
                             }
                             return c;
                         });
 
                         if (modificado) {
-                            // Actualizar en Supabase el campo JSONB para este socio
                             const { error: errUpdate } = await supabaseClient
                                 .from("socios")
                                 .update({ cantidad_pagada: arrSociosCuotas })
