@@ -5,16 +5,20 @@ window.cerrarSesion = cerrarSesion;
 
 /**
  * Función para obtener la temporada actual en formato "YYYY/YYYY"
- * Ejemplo: Si estamos en agosto de 2026, pertenece a "2026/2027".
+ * Regla: La temporada va de septiembre a agosto.
+ * - De enero a agosto de 2026 -> "2025/2026"
+ * - De septiembre a diciembre de 2026 -> "2026/2027"
  */
 function obtenerTemporadaActual() {
     const ahora = new Date();
     const anio = ahora.getFullYear();
-    const mes = ahora.getMonth() + 1; // Enero es 1
+    const mes = ahora.getMonth() + 1; // Enero es 1, Agosto es 8, Septiembre es 9
 
     if (mes >= 9) {
+        // De septiembre a diciembre: la temporada empieza este año
         return `${anio}/${anio + 1}`;
     } else {
+        // De enero a agosto: la temporada empezó el año pasado
         return `${anio - 1}/${anio}`;
     }
 }
@@ -32,7 +36,7 @@ comprobarAcceso([
         socio.idSocio ||
         "socio";
 
-    // 2. Obtener la temporada actual
+    // 2. Obtener la temporada actual bajo la nueva regla
     const temporadaActual = obtenerTemporadaActual();
     
     let totalCuota = 0;
@@ -40,7 +44,7 @@ comprobarAcceso([
     let pendiente = 0;
 
     // 3. Procesar el campo JSON 'cantidad_pagada' que es un array de objetos
-    // Formato esperado: [{"cuota": 100, "pagado": 0, "temporada": "2026/2027"}, ...]
+    // Formato: [{"cuota": 100, "pagado": 100, "temporada": "2025/2026"}, ...]
     if (Array.isArray(socio.cantidad_pagada)) {
         const datosTemporada = socio.cantidad_pagada.find(
             item => String(item.temporada).trim() === temporadaActual
@@ -52,7 +56,6 @@ comprobarAcceso([
             pendiente = Math.max(0, totalCuota - pagado);
         }
     } else if (typeof socio.cantidad_pagada === "object" && socio.cantidad_pagada !== null) {
-        // Por si viniera en formato objeto clave-valor antiguo
         const datosObj = socio.cantidad_pagada[temporadaActual];
         if (datosObj) {
             totalCuota = Number(datosObj.cuota) || 100;
