@@ -20,14 +20,14 @@
         .logo-fersan-link {
             display: inline-block;
             text-decoration: none;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .logo-fersan-animado {
             max-width: 240px;
             height: auto;
             animation: fersanEfectoDinamico 4s ease-in-out infinite;
-            transform-origin: left center;
+            transform-origin: center center; /* Zoom centrado desde el propio logo */
         }
 
         @keyframes fersanEfectoDinamico {
@@ -66,7 +66,7 @@
     <main>
         <section class="hero container">
             <div class="hero-grid">
-                <!-- LADO IZQUIERDO: Publicidad Fersán con animación y textos del club -->
+                <!-- LADO IZQUIERDO: Publicidad Fersán arriba + Textos originales del club debajo -->
                 <div class="publicidad-izquierda">
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
                         <img src="assets/img/fersan-logo.jpg" alt="Fersán Ópticos y Audiólogos" class="logo-fersan-animado">
