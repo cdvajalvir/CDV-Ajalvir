@@ -37,23 +37,23 @@
             min-height: 220px; /* Asegura espacio fijo para que la animación no desplace nada */
         }
 
-        /* Etiqueta oblicua "Colabora" fija en la esquina superior izquierda (fuera de la animación) */
+        /* Etiqueta oblicua "Colabora": 50% más grande, sin fondo de relleno y texto amarillo */
         .etiqueta-colabora {
             position: absolute;
-            top: 10px;
-            left: -28px;
+            top: 15px;
+            left: -40px;
             transform: rotate(-45deg);
-            background: linear-gradient(135deg, #ffc107, #ff9800);
-            color: #121212;
-            font-weight: 800;
-            font-size: 0.7rem;
+            background: transparent; /* Sin fondo en el recuadro */
+            color: #ffc107; /* Amarillo llamativo del club */
+            font-weight: 900;
+            font-size: 1.05rem; /* 50% mayor tamaño aproximado (de 0.7rem a 1.05rem) */
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 3px 30px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1.5px;
+            padding: 6px 45px; /* 50% más de área y presencia */
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 193, 7, 0.5); /* Resaltado para legibilidad perfecta sin fondo */
             z-index: 20; /* Siempre por encima pero independiente */
             pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: none;
         }
 
         .logo-fersan-link {
@@ -147,7 +147,7 @@
         <section class="hero hero-ancho-total">
             <div class="hero-grid-4cols">
                 
-                <!-- COLUMNA 1: Logo Fersán con Etiqueta Estática "Colabora" e Independiente de la Animación -->
+                <!-- COLUMNA 1: Logo Fersán con Etiqueta Oblicua Amarilla, sin fondo y 50% mayor -->
                 <div class="columna-fersan">
                     <div class="etiqueta-colabora">Colabora</div>
                     <a href="https://fersan.es/" target="_blank" rel="noopener noreferrer" class="logo-fersan-link" title="Visitar Óptica Fersán">
