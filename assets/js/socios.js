@@ -21,9 +21,6 @@ comprobarAcceso([
     "socio"
 ], (socio) => {
 
-    // IMPRIME EL OBJETO COMPLETO EN LA CONSOLA PARA INSPECCIONarlo
-    console.log("OBJETO SOCIO RECIBIDO COMPLETO:", socio);
-
     document.getElementById("nombreSocio").textContent =
         socio.nombre ||
         socio.alias ||
@@ -31,8 +28,6 @@ comprobarAcceso([
         "socio";
 
     const temporadaActual = obtenerTemporadaActual();
-    console.log("Temporada actual calculada:", temporadaActual);
-    console.log("Valor crudo de cantidad_pagada:", socio.cantidad_pagada);
 
     let totalCuota = 0;
     let pagado = 0;
@@ -92,7 +87,7 @@ comprobarAcceso([
 
     // 5. Foto personalizada del socio
     const imgElement = document.getElementById("fotoSocio");
-    if (socio.foto) {
+    if (socio.foto && imgElement) {
         imgElement.src = `../assets/img/${socio.foto}`;
     }
 
