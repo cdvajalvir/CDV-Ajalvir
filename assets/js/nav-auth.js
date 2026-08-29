@@ -13,7 +13,6 @@ export async function cargarNavegacionDinamica() {
     if (!contenedorNav) return;
 
     // 1. Detectar ruta base de forma segura
-    const pathName = window.location.pathname;
     const esRaiz = pathName.endsWith("/index.html") || pathName.endsWith("/");
     
     const isInSubfolder = !esRaiz && (
@@ -48,7 +47,7 @@ export async function cargarNavegacionDinamica() {
         } else if (pathName.includes("registros.html")) {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("cuotas.html")) {
-            renderizarMenuUnicoCuotas(contenedorNav, basePath); // <-- NUEVO AQUÍ
+            renderizarMenuUnicoCuotas(contenedorNav, basePath);
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.includes("directiva")) {
@@ -174,4 +173,16 @@ function renderizarMenuUnicoCuotas(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-document.addEventListener("DOMContentLoaded", cargarNavegacionDinamica);
+// Inicialización global: gestiona el menú móvil (hamburguesa) y lanza la navegación dinámica
+document.addEventListener("DOMContentLoaded", () => {
+    const navToggle = document.querySelector("[data-nav-toggle]");
+    const navLinks = document.querySelector(".nav-links");
+
+    if (navToggle && navLinks) {
+        navToggle.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
+        });
+    }
+
+    cargarNavegacionDinamica();
+});
