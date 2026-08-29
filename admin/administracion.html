@@ -31,9 +31,20 @@
             margin-top: 1rem;
         }
 
-        /* Empuja el botón de Gest.Cuotas completamente a la derecha */
+        /* Empuja el bloque de botones de gestión completamente a la derecha */
         .btn-gest-cuotas {
             margin-left: auto;
+        }
+
+        .btn-gest-socios {
+            margin-left: 0.5rem; /* Pequeña separación entre Gest.Socios y Gest.Cuotas */
+        }
+
+        @media (max-width: 600px) {
+            .btn-gest-cuotas,
+            .btn-gest-socios {
+                margin-left: 0;
+            }
         }
 
         /* Indicador visual de campo solo lectura */
@@ -173,8 +184,9 @@
                             <a class="btn btn-secondary" href="registros.html">Ver Registros</a>
                             <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
                             
-                            <!-- Botón Gest.Cuotas alineado a la derecha -->
-                            <a class="btn btn-secondary btn-gest-cuotas" href="cuotas.html">Gest.Cuotas</a>
+                            <!-- Botones de Gestión alineados a la derecha -->
+                            <a class="btn btn-secondary btn-gest-cuotas" href="activasocio.html">Gest.Socios</a>
+                            <a class="btn btn-secondary btn-gest-socios" href="cuotas.html">Gest.Cuotas</a>
                         </div>
 
                         <div style="grid-column: 1 / -1;">
