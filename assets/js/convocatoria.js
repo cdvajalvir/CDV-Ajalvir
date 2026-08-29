@@ -13,11 +13,11 @@ async function cargarProximaConvocatoria(userId) {
     if (!contenedor) return;
 
     try {
-        // Consultamos la convocatoria más reciente (puedes ajustar el orden según convenga, ej. por fecha o ID descendiente)
+        // Consultamos la convocatoria que tenga el campo 'activa' en true
         const { data: convocatorias, error } = await supabaseClient
             .from("convocatorias")
             .select("*")
-            .order("id", { ascending: false })
+            .eq("activa", true)
             .limit(1);
 
         if (error) throw error;
@@ -32,7 +32,7 @@ async function cargarProximaConvocatoria(userId) {
             return;
         }
 
-        const convo = convocatorias.id; // Asumiendo que la tabla tiene 'id'
+        const convo = convocatorias[0]; // Cogemos el registro activo
         const usersArray = Array.isArray(convo.users) ? convo.users : [];
         const estaApuntado = usersArray.includes(userId);
 
@@ -88,14 +88,11 @@ async function cargarProximaConvocatoria(userId) {
             try {
                 let nuevosUsers = [...usersArray];
                 if (estaApuntado) {
-                    // Si ya estaba apuntado, lo quitamos del array (filtrar su ID)
                     nuevosUsers = nuevosUsers.filter(id => id !== userId);
                 } else {
-                    // Si no estaba, añadimos su UUID
                     nuevosUsers.push(userId);
                 }
 
-                // Actualizamos en Supabase
                 const { error: updateError } = await supabaseClient
                     .from("convocatorias")
                     .update({ users: nuevosUsers })
@@ -104,9 +101,8 @@ async function cargarProximaConvocatoria(userId) {
                 if (updateError) throw updateError;
 
                 mensajeAsistencia.style.color = "#2e7d32";
-                mensajeAsistencia.textContent = estaApuntado ? "Has cancelado tu asistencia.".replace() : "¡Asistencia confirmada correctamente!";
+                mensajeAsistencia.textContent = estaApuntado ? "Has cancelado tu asistencia." : "¡Asistencia confirmada correctamente!";
 
-                // Recargamos los datos para reflejar el estado actual
                 setTimeout(() => {
                     cargarProximaConvocatoria(userId);
                 }, 1000);
