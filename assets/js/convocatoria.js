@@ -32,8 +32,17 @@ async function cargarProximaConvocatoria(userId) {
             return;
         }
 
-        const convo = convocatorias[0]; // Cogemos el registro activo
-        const usersArray = Array.isArray(convo.users) ? convo.users : [];
+        const convo = convocatorias[0]; 
+        
+        // Asegurarnos de normalizar el array de usuarios de forma robusta
+        let usersArray = [];
+        if (Array.isArray(convo.users)) {
+            usersArray = convo.users;
+        } else if (typeof convo.users === "string") {
+            // Por si Supabase lo devuelve en formato texto de array de postgres tipo "{uuid1,uuid2}"
+            usersArray = convo.users.replace(/[{}]/g, "").split(",").filter(Boolean);
+        }
+
         const estaApuntado = usersArray.includes(userId);
 
         // Renderizamos la tarjeta de la convocatoria
@@ -64,7 +73,7 @@ async function cargarProximaConvocatoria(userId) {
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
                     <div>
                         <p style="margin: 0; font-size: 0.9rem; color: rgba(255,255,255,0.8);">
-                            Total jugadores confirmados: <strong>${usersArray.length}</strong>
+                            Total jugadores confirmados: <strong id="contadorConfirmados">${usersArray.length}</strong>
                         </p>
                     </div>
                     <div>
@@ -86,13 +95,32 @@ async function cargarProximaConvocatoria(userId) {
             btnAsistencia.textContent = "Actualizando...";
 
             try {
-                let nuevosUsers = [...usersArray];
-                if (estaApuntado) {
+                // Volvemos a consultar los datos frescos de la BD justo antes de modificar
+                const { data: freshConvoData, error: fetchError } = await supabaseClient
+                    .from("convocatorias")
+                    .select("users")
+                    .eq("id", convo.id)
+                    .single();
+
+                if (fetchError) throw fetchError;
+
+                let currentUsers = [];
+                if (Array.isArray(freshConvoData.users)) {
+                    currentUsers = freshConvoData.users;
+                } else if (typeof freshConvoData.users === "string") {
+                    currentUsers = freshConvoData.users.replace(/[{}]/g, "").split(",").filter(Boolean);
+                }
+
+                const yaApuntadoAhora = currentUsers.includes(userId);
+                let nuevosUsers = [...currentUsers];
+
+                if (yaApuntadoAhora) {
                     nuevosUsers = nuevosUsers.filter(id => id !== userId);
                 } else {
                     nuevosUsers.push(userId);
                 }
 
+                // Actualizamos en Supabase forzando el formato de array nativo
                 const { error: updateError } = await supabaseClient
                     .from("convocatorias")
                     .update({ users: nuevosUsers })
@@ -101,7 +129,7 @@ async function cargarProximaConvocatoria(userId) {
                 if (updateError) throw updateError;
 
                 mensajeAsistencia.style.color = "#2e7d32";
-                mensajeAsistencia.textContent = estaApuntado ? "Has cancelado tu asistencia." : "¡Asistencia confirmada correctamente!";
+                mensajeAsistencia.textContent = yaApuntadoAhora ? "Has cancelado tu asistencia." : "¡Asistencia confirmada correctamente!";
 
                 setTimeout(() => {
                     cargarProximaConvocatoria(userId);
