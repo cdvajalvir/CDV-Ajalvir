@@ -1,4 +1,5 @@
 // assets/js/notificaciones.js
+import { supabaseClient } from "./supabase.js";
 
 export function inicializarControlNotificaciones() {
     document.addEventListener("DOMContentLoaded", async () => {
