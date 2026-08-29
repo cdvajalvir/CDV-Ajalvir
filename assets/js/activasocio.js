@@ -15,7 +15,7 @@ async function cargarTemporadasPendientes() {
 
     if (!selectTemporada || !gridPendientes) return;
 
-    gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Cargando temporadas...</div>`;
+    gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Cargando temporadas...</div>`;
 
     try {
         // 1. Cargar las temporadas disponibles desde la tabla 'temporada'
@@ -30,7 +30,7 @@ async function cargarTemporadasPendientes() {
 
         if (!temporadasData || temporadasData.length === 0) {
             selectTemporada.innerHTML = '<option value="">No hay temporadas registradas</option>';
-            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">No hay temporadas registradas.</div>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">No hay temporadas registradas.</div>`;
             return;
         }
 
@@ -56,7 +56,7 @@ async function cargarTemporadasPendientes() {
             if (temporadaVal) {
                 await cargarSociosPendientes(temporadaVal);
             } else {
-                gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Selecciona una temporada...</div>`;
+                gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Selecciona una temporada...</div>`;
             }
         };
 
@@ -66,7 +66,7 @@ async function cargarTemporadasPendientes() {
             mensajeActiva.style.color = "#d9534f";
             mensajeActiva.textContent = `Error: ${err.message}`;
         }
-        gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #d9534f;">Error al cargar datos.</div>`;
+        gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #d9534f;">Error al cargar datos.</div>`;
     }
 }
 
@@ -75,7 +75,7 @@ async function cargarSociosPendientes(temporada) {
     const mensajeActiva = document.getElementById("mensajeActiva");
     if (!gridPendientes) return;
 
-    gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Cargando socios pendientes...</div>`;
+    gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Cargando socios pendientes...</div>`;
     if (mensajeActiva) mensajeActiva.textContent = "";
 
     try {
@@ -89,7 +89,7 @@ async function cargarSociosPendientes(temporada) {
         if (errTempRecord) throw errTempRecord;
 
         if (!tempRecord || !tempRecord.users || tempRecord.users.length === 0) {
-            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">No hay socios registrados en la temporada ${temporada}.</div>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">No hay socios registrados en la temporada ${temporada}.</div>`;
             return;
         }
 
@@ -105,7 +105,7 @@ async function cargarSociosPendientes(temporada) {
         if (errSocios) throw errSocios;
 
         if (!sociosPendientes || sociosPendientes.length === 0) {
-            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</div>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</div>`;
             return;
         }
 
@@ -165,6 +165,6 @@ async function cargarSociosPendientes(temporada) {
 
     } catch (err) {
         console.error("Error al cargar socios pendientes:", err);
-        gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #d9534f;">Error al cargar la lista de pendientes.</div>`;
+        gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #d9534f;">Error al cargar la lista de pendientes.</div>`;
     }
 }
