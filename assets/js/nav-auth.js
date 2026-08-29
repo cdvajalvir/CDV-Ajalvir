@@ -2,6 +2,13 @@
 import { supabaseClient } from "./supabase.js";
 
 export async function cargarNavegacionDinamica() {
+    const pathName = window.location.pathname;
+
+    // EXCLUSIÓN: Si estamos en la página de perfil, no alteramos el menú estático
+    if (pathName.includes("perfil.html")) {
+        return;
+    }
+
     const contenedorNav = document.querySelector("[data-nav-links]");
     if (!contenedorNav) return;
 
