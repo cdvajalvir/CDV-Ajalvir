@@ -173,24 +173,33 @@ function renderizarMenuUnicoCuotas(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-// Inicialización global del menú móvil usando la clase "open" del CSS
+// Inicialización global robusta que controla el menú móvil de forma persistente
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Configurar el botón hamburguesa de forma permanente nada más cargar la página
     const navToggle = document.querySelector("[data-nav-toggle]");
-    const navLinks = document.querySelector(".nav-links");
-
-    if (navToggle && navLinks) {
+    
+    if (navToggle) {
         navToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            navLinks.classList.toggle("open"); // <-- Cambiado de active a open
+            // Buscamos dinámicamente el contenedor en cada clic por si se ha reescrito
+            const contenedorNav = document.querySelector("[data-nav-links]");
+            if (contenedorNav) {
+                contenedorNav.classList.toggle("open");
+                contenedorNav.classList.toggle("active");
+            }
         });
 
-        // Cerrar el menú al hacer clic en cualquier enlace dentro de él
-        navLinks.querySelectorAll("a, button").forEach(item => {
-            item.addEventListener("click", () => {
-                navLinks.classList.remove("open");
-            });
+        // Cerrar el menú al hacer clic en cualquier opción del menú desplegado
+        document.addEventListener("click", (e) => {
+            const contenedorNav = document.querySelector("[data-nav-links]");
+            const navToggleBtn = document.querySelector("[data-nav-toggle]");
+            if (contenedorNav && !contenedorNav.contains(e.target) && navToggleBtn && !navToggleBtn.contains(e.target)) {
+                contenedorNav.classList.remove("open");
+                contenedorNav.classList.remove("active");
+            }
         });
     }
 
+    // 2. Ejecutar la lógica dinámica de roles y rutas
     cargarNavegacionDinamica();
 });
