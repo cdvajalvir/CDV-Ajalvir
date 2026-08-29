@@ -167,7 +167,50 @@ Deno.serve(async (req) => {
 
             userId = authData.user.id;
 
-            // Crear registro en la tabla socios incluyendo el JSONB cantidad_pagada inicial
+            // --- BUSCAR LA CUOTA OFICIAL DEL ADMINISTRADOR PARA ESTA TEMPORADA ---
+            let cuotaOficial = 0;
+            const { data: adminSocios, error: errorAdmin } = await supabase
+                .from("socios")
+                .select("cantidad_pagada")
+                .eq("rol", "administrador");
+
+            if (!errorAdmin && adminSocios && adminSocios.length > 0) {
+                for (const admin of adminSocios) {
+                    if (Array.isArray(admin.cantidad_pagada)) {
+                        const temporadaAdmin = admin.cantidad_pagada.find(
+                            (item) => item.temporada === temporadanorm
+                        );
+                        if (temporadaAdmin && temporadaAdmin.cuota !== undefined && temporadaAdmin.cuota > 0) {
+                            cuotaOficial = temporadaAdmin.cuota;
+                            break; 
+                        }
+                    }
+                }
+            }
+
+            // Si el administrador no la tiene definida, buscar en cualquier otro socio que tenga cuota > 0
+            if (cuotaOficial === 0) {
+                const { data: todosSocios } = await supabase
+                    .from("socios")
+                    .select("cantidad_pagada");
+
+                if (todosSocios) {
+                    for (const socio of todosSocios) {
+                        if (Array.isArray(socio.cantidad_pagada)) {
+                            const tempEncontrada = socio.cantidad_pagada.find(
+                                (item) => item.temporada === temporadanorm
+                            );
+                            if (tempEncontrada && tempEncontrada.cuota !== undefined && tempEncontrada.cuota > 0) {
+                                cuotaOficial = tempEncontrada.cuota;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            // --------------------------------------------------------------------
+
+            // Crear registro en la tabla socios incluyendo el JSONB cantidad_pagada inicial con la cuota encontrada
             const { error: insertSocioError } = await supabase
                 .from("socios")
                 .insert({
@@ -181,7 +224,7 @@ Deno.serve(async (req) => {
                     activo: false,
                     cantidad_pagada: [
                         {
-                            cuota: 0,
+                            cuota: cuotaOficial,
                             pagado: 0,
                             temporada: temporadanorm
                         }
