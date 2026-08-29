@@ -10,12 +10,12 @@ comprobarAcceso(["administrador"], async (socioAdmin) => {
 
 async function cargarTemporadasPendientes() {
     const selectTemporada = document.getElementById("selectTemporada");
-    const tbodyPendientes = document.getElementById("tbodyPendientes");
+    const gridPendientes = document.getElementById("gridPendientes");
     const mensajeActiva = document.getElementById("mensajeActiva");
 
-    if (!selectTemporada || !tbodyPendientes) return;
+    if (!selectTemporada || !gridPendientes) return;
 
-    tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">Cargando temporadas...</td></tr>`;
+    gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Cargando temporadas...</div>`;
 
     try {
         // 1. Cargar las temporadas disponibles desde la tabla 'temporada'
@@ -30,7 +30,7 @@ async function cargarTemporadasPendientes() {
 
         if (!temporadasData || temporadasData.length === 0) {
             selectTemporada.innerHTML = '<option value="">No hay temporadas registradas</option>';
-            tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">No hay temporadas registradas.</td></tr>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">No hay temporadas registradas.</div>`;
             return;
         }
 
@@ -56,7 +56,7 @@ async function cargarTemporadasPendientes() {
             if (temporadaVal) {
                 await cargarSociosPendientes(temporadaVal);
             } else {
-                tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">Selecciona una temporada...</td></tr>`;
+                gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Selecciona una temporada...</div>`;
             }
         };
 
@@ -66,16 +66,16 @@ async function cargarTemporadasPendientes() {
             mensajeActiva.style.color = "#d9534f";
             mensajeActiva.textContent = `Error: ${err.message}`;
         }
-        tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: #d9534f;">Error al cargar datos.</td></tr>`;
+        gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #d9534f;">Error al cargar datos.</div>`;
     }
 }
 
 async function cargarSociosPendientes(temporada) {
-    const tbodyPendientes = document.getElementById("tbodyPendientes");
+    const gridPendientes = document.getElementById("gridPendientes");
     const mensajeActiva = document.getElementById("mensajeActiva");
-    if (!tbodyPendientes) return;
+    if (!gridPendientes) return;
 
-    tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">Cargando socios pendientes...</td></tr>`;
+    gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Cargando socios pendientes...</div>`;
     if (mensajeActiva) mensajeActiva.textContent = "";
 
     try {
@@ -89,13 +89,13 @@ async function cargarSociosPendientes(temporada) {
         if (errTempRecord) throw errTempRecord;
 
         if (!tempRecord || !tempRecord.users || tempRecord.users.length === 0) {
-            tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">No hay socios registrados en la temporada ${temporada}.</td></tr>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">No hay socios registrados en la temporada ${temporada}.</div>`;
             return;
         }
 
         const userIds = tempRecord.users;
 
-        // 3. Buscar en la tabla 'socios' los que estén en ese array y tengan activo = false (sin pedir email ni estado)
+        // 3. Buscar en la tabla 'socios' los que estén en ese array y tengan activo = false
         const { data: sociosPendientes, error: errSocios } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellido, dni, activo")
@@ -105,22 +105,25 @@ async function cargarSociosPendientes(temporada) {
         if (errSocios) throw errSocios;
 
         if (!sociosPendientes || sociosPendientes.length === 0) {
-            tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</td></tr>`;
+            gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</div>`;
             return;
         }
 
-        tbodyPendientes.innerHTML = "";
+        gridPendientes.innerHTML = "";
 
         sociosPendientes.forEach((socio) => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td><strong>${socio.nombre || ""} ${socio.apellido || ""}</strong></td>
-                <td>${socio.dni || "-"}</td>
-                <td style="text-align: right;">
+            const card = document.createElement("div");
+            card.className = "socio-card-item";
+            card.innerHTML = `
+                <div class="socio-info">
+                    <h4>${socio.nombre || ""} ${socio.apellido || ""}</h4>
+                    <p>DNI: ${socio.dni || "-"}</p>
+                </div>
+                <div class="socio-action">
                     <button class="btn btn-primary btn-sm btn-activar-socio" data-id="${socio.id}" data-temporada="${temporada}">Activar</button>
-                </td>
+                </div>
             `;
-            tbodyPendientes.appendChild(tr);
+            gridPendientes.appendChild(card);
         });
 
         // 4. Asignar eventos a los botones de activar
@@ -145,7 +148,7 @@ async function cargarSociosPendientes(temporada) {
                         mensajeActiva.textContent = "¡Socio activado correctamente!";
                     }
 
-                    // Recargar la tabla para reflejar los cambios
+                    // Recargar la rejilla para reflejar los cambios
                     await cargarSociosPendientes(temporadaActual);
 
                 } catch (err) {
@@ -162,6 +165,6 @@ async function cargarSociosPendientes(temporada) {
 
     } catch (err) {
         console.error("Error al cargar socios pendientes:", err);
-        tbodyPendientes.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem; color: #d9534f;">Error al cargar la lista de pendientes.</td></tr>`;
+        gridPendientes.innerHTML = `<div style="grid-column: span 4; text-align: center; padding: 3rem; color: #d9534f;">Error al cargar la lista de pendientes.</div>`;
     }
 }
