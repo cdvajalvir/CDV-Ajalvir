@@ -17,25 +17,22 @@
     ======================================================= -->
 
     <header class="site-header">
+    <nav class="navbar container">
+        <a class="brand" href="socios.html">
+            <span class="brand-logo">
+                <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+            </span>
+            <span>CD Veteranos Ajalvir</span>
+        </a>
 
-        <nav class="navbar container">
-            <!-- El logo lleva al panel principal de socios -->
-            <a class="brand" href="socios.html">
-                <span class="brand-logo">
-                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
-                </span>
-                <span>CD Veteranos Ajalvir</span>
-            </a>
+        <button class="nav-toggle" data-nav-toggle>☰</button>
 
-            <button class="nav-toggle" data-nav-toggle>☰</button>
-
-            <!-- Menú estático exclusivo para volver a socios.html -->
-            <div class="nav-links" data-nav-links>
-                <a href="socios.html">Área socio</a>
-            </div>
-        </nav>
-
-    </header>
+        <!-- Este menú se mantiene estático gracias a la exclusión en nav-auth.js -->
+        <div class="nav-links" data-nav-links>
+            <a href="socios.html">Área socio</a>
+        </div>
+    </nav>
+</header>
 
     <!-- ======================================================
          CONTENIDO
