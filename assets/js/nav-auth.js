@@ -173,14 +173,22 @@ function renderizarMenuUnicoCuotas(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-// Inicialización global: gestiona el menú móvil (hamburguesa) y lanza la navegación dinámica
+// Inicialización global del menú móvil usando la clase "open" del CSS
 document.addEventListener("DOMContentLoaded", () => {
     const navToggle = document.querySelector("[data-nav-toggle]");
     const navLinks = document.querySelector(".nav-links");
 
     if (navToggle && navLinks) {
-        navToggle.addEventListener("click", () => {
-            navLinks.classList.toggle("active");
+        navToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle("open"); // <-- Cambiado de active a open
+        });
+
+        // Cerrar el menú al hacer clic en cualquier enlace dentro de él
+        navLinks.querySelectorAll("a, button").forEach(item => {
+            item.addEventListener("click", () => {
+                navLinks.classList.remove("open");
+            });
         });
     }
 
