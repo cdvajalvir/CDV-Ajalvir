@@ -141,7 +141,6 @@ function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
-            <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
         `;
         configurarBotonLogout(basePath);
     }
