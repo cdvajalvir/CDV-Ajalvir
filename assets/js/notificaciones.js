@@ -44,7 +44,7 @@ export function inicializarControlNotificaciones() {
 // Función para pedir permiso al navegador y guardar en Supabase
 async function activarNotificacionesPush(userId, toggleElement) {
     try {
-        const registration = await navigator.serviceWorker.register("/sw.js");
+        const registration = await navigator.serviceWorker.register("/CDV-Ajalvir/sw.js");
         
         // 🔑 PEGA AQUÍ TU CLAVE PÚBLICA VAPID REAL
         const publicVapidKey = "BMEMmV_PcdB1gcewKNC7BEKKTuN530wM9rapmnVl1xUln-N5qSxLfsekzw7tY1Y8mdpZZTmeSgI2HOFkIPsdYmI"; 
