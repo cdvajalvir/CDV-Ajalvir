@@ -104,13 +104,7 @@ async function cargarProximaConvocatoria(userId) {
 
                 if (fetchError) throw fetchError;
 
-                let currentUsers = [];
-                if (Array.isArray(freshConvoData.users)) {
-                    currentUsers = freshConvoData.users;
-                } else if (typeof freshConvoData.users === "string") {
-                    currentUsers = freshConvoData.users.replace(/[{}]/g, "").split(",").filter(Boolean);
-                }
-
+                let currentUsers = Array.isArray(freshConvoData.users) ? freshConvoData.users : [];
                 const yaApuntadoAhora = currentUsers.includes(userId);
                 let nuevosUsers = [...currentUsers];
 
@@ -120,13 +114,19 @@ async function cargarProximaConvocatoria(userId) {
                     nuevosUsers.push(userId);
                 }
 
-                // Actualizamos en Supabase forzando el formato de array nativo
-                const { error: updateError } = await supabaseClient
+                // Actualizamos en Supabase y pedimos .select() para verificar si afectó registros
+                const { data: updateData, error: updateError } = await supabaseClient
                     .from("convocatorias")
                     .update({ users: nuevosUsers })
-                    .eq("id", convo.id);
+                    .eq("id", convo.id)
+                    .select();
 
                 if (updateError) throw updateError;
+
+                // Si updateData está vacío, significa que RLS bloqueó la operación silenciosamente
+                if (!updateData || updateData.length === 0) {
+                    throw new Error("Supabase ha bloqueado la actualización. Revisa la política de UPDATE en RLS.");
+                }
 
                 mensajeAsistencia.style.color = "#2e7d32";
                 mensajeAsistencia.textContent = yaApuntadoAhora ? "Has cancelado tu asistencia." : "¡Asistencia confirmada correctamente!";
