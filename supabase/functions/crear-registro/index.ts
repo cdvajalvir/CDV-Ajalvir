@@ -167,7 +167,29 @@ Deno.serve(async (req) => {
 
             userId = authData.user.id;
 
-            // Crear registro en la tabla socios incluyendo el JSONB cantidad_pagada inicial
+            // --- BUSCAR LA CUOTA OFICIAL DE ESTA TEMPORADA ---
+            // Buscamos en cualquier socio existente que tenga registrada esta temporada para extraer su valor de cuota
+            let cuotaOficial = 0;
+            const { data: sociosConCuota, error: errorCuota } = await supabase
+                .from("socios")
+                .select("cantidad_pagada");
+
+            if (!errorCuota && sociosConCuota) {
+                for (const socio of sociosConCuota) {
+                    if (Array.isArray(socio.cantidad_pagada)) {
+                        const temporadaEncontrada = socio.cantidad_pagada.find(
+                            (item) => item.temporada === temporadanorm
+                        );
+                        if (temporadaEncontrada && temporadaEncontrada.cuota !== undefined) {
+                            cuotaOficial = temporadaEncontrada.cuota;
+                            break; // Encontramos una cuota válida para esta temporada, salimos del bucle
+                        }
+                    }
+                }
+            }
+            // -------------------------------------------------
+
+            // Crear registro en la tabla socios incluyendo el JSONB cantidad_pagada inicial con la cuota encontrada
             const { error: insertSocioError } = await supabase
                 .from("socios")
                 .insert({
@@ -181,7 +203,7 @@ Deno.serve(async (req) => {
                     activo: false,
                     cantidad_pagada: [
                         {
-                            cuota: 0,
+                            cuota: cuotaOficial,
                             pagado: 0,
                             temporada: temporadanorm
                         }
