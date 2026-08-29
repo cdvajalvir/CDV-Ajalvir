@@ -145,16 +145,17 @@
                         del club aparecerán en esta sección.
                     </p>
 
-                    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                        <div>
-                            <strong style="display: block; font-size: 0.95rem;">Notificaciones en este dispositivo</strong>
-                            <span style="font-size: 0.85rem; opacity: 0.8;">Recibe avisos automáticos cuando haya una convocatoria pendiente.</span>
-                        </div>
-                        <label style="position: relative; display: inline-block; width: 50px; height: 26px; cursor: pointer;">
-                            <input type="checkbox" id="push-toggle" style="opacity: 0; width: 0; height: 0;">
-                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 26px;"></span>
-                        </label>
-                    </div>
+                    <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+    <div>
+        <strong style="display: block; font-size: 0.95rem; color: #fff;">Notificaciones en este dispositivo</strong>
+        <span style="font-size: 0.85rem; opacity: 0.8; color: #ccc;">Recibe avisos automáticos cuando haya una convocatoria pendiente.</span>
+    </div>
+    <!-- Cambiamos a un elemento label directo que envuelve un checkbox funcional -->
+    <label style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: #fff; font-weight: 500;">
+        <input type="checkbox" id="push-toggle" style="width: 20px; height: 20px; cursor: pointer;">
+        <span>Activar</span>
+    </label>
+</div>
 
                 </article>
 
