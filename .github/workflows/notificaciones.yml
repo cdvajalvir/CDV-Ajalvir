@@ -13,6 +13,6 @@ jobs:
       steps:
         - name: Llamar a la Edge Function de Supabase
           run: |
-            curl -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/socios?select=*&limit=1" \
+            curl -X POST "${{ secrets.SUPABASE_FUNCTION_URL }}" \
                  -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
                  -H "Content-Type: application/json"
