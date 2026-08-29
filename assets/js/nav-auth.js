@@ -185,7 +185,7 @@ function renderizarMenuUnicoActivaSocios(contenedor, basePath) {
 
 function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
     contenedor.innerHTML = `
-        <a href="${basePath}/socios.html">Área socios</a>
+        <a href="${basePath}socios/socios.html">Área socios</a>
     `;
     configurarBotonLogout(basePath);
 }
