@@ -1,4 +1,10 @@
 // assets/js/socios.js
+
+import { inicializarControlNotificaciones } from "./notificaciones.js";
+
+// Ejecutamos la función de las notificaciones al cargar el script
+inicializarControlNotificaciones();
+
 import { comprobarAcceso, cerrarSesion } from "./auth.js";
 
 window.cerrarSesion = cerrarSesion;
