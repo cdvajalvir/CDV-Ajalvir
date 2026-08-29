@@ -245,7 +245,18 @@ Deno.serve(async (req) => {
                 users: [userId]
             });
 
-        if (insertError && insertError.code === '23505') {
+        // SI NO HAY ERROR EN EL INSERT, ES QUE LA TEMPORADA SE ACABA DE CREAR POR PRIMERA VEZ
+        if (!insertError) {
+            const { error: massUpdateError } = await supabase
+                .from("socios")
+                .update({ activo: false })
+                .neq("rol", "administrador"); // Resetea a todos menos a los administradores
+
+            if (massUpdateError) {
+                console.error("Error al desactivar socios para la nueva temporada:", massUpdateError);
+            }
+        } 
+        else if (insertError && insertError.code === '23505') {
             // La temporada ya existe, recuperamos el array actual
             const { data: registroActual } = await supabase
                 .from("temporada")
