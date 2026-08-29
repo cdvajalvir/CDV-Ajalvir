@@ -9,75 +9,124 @@
 
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
+        /* Contenedor principal ensanchado para aprovechar toda la pantalla */
+        .container-fluid {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
         .content-grid {
             display: flex;
-            justify-content: flex-start;
             flex-direction: column;
             gap: 1.5rem;
-        }
-
-        .card.wide {
             width: 100%;
-            max-width: 750px;
         }
 
-        .filter-container {
+        /* Selector de temporada independiente y destacado */
+        .filter-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1rem;
+            width: 100%;
         }
 
-        .filter-container label {
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .filter-group label {
             font-weight: 500;
             color: #ffffff;
+            white-space: nowrap;
         }
 
         .filter-select {
-            padding: 0.4rem 0.6rem;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             border-radius: 4px;
         }
 
-        .table-responsive {
+        /* Grid fluido de 4 columnas */
+        .socios-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
             width: 100%;
-            overflow-x: auto;
-            margin-top: 1rem;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.95rem;
+        /* Tarjeta individual de socio */
+        .socio-card-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
-        .data-table th,
-        .data-table td {
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--color-border, #e2e8f0);
+        .socio-info h4 {
+            margin: 0 0 0.35rem 0;
+            font-size: 1rem;
             color: #ffffff;
-            vertical-align: middle;
-            white-space: nowrap; /* Fuerza a que el texto no salte de línea */
+            word-break: break-word;
         }
 
-        .data-table thead th {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff !important;
-            font-weight: 600;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        .socio-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .socio-action {
+            display: flex;
+            justify-content: flex-end;
         }
 
         .btn-sm {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
         }
 
         #mensajeActiva {
             margin-top: 1rem;
             font-weight: 500;
+        }
+
+        /* Adaptabilidad responsive (Breakpoints) */
+        @media (max-width: 1300px) {
+            .socios-grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .socios-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container-fluid {
+                padding: 0 1rem;
+            }
+            .socios-grid-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -99,9 +148,10 @@
         </nav>
     </header>
 
-    <main class="container">
+    <!-- Usamos el contenedor fluido para ancho completo -->
+    <main class="container-fluid" style="padding-top: 2rem; padding-bottom: 3rem;">
 
-        <section class="page-hero">
+        <section class="page-hero" style="margin-bottom: 2rem;">
             <p class="eyebrow">Administración</p>
             <h1>Gestión de Socios por Temporada</h1>
             <p class="lead">Activación de socios pendientes para la temporada seleccionada.</p>
@@ -110,37 +160,22 @@
         <section class="app-layout-single">
             <div class="content-grid">
 
-                <article class="card wide">
-                    <h3>Socios Pendientes de Activación</h3>
-
-                    <!-- Selector de Temporada -->
-                    <div class="filter-container">
+                <!-- Selector de Temporada Independiente -->
+                <div class="filter-wrapper">
+                    <div class="filter-group">
                         <label for="selectTemporada">Temporada:</label>
                         <select class="filter-select" id="selectTemporada">
                             <option value="">Cargando temporadas...</option>
                         </select>
                     </div>
+                </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table" id="tablaPendientes">
-                            <thead>
-                                <tr>
-                                    <th>Nombre y Apellidos</th>
-                                    <th>DNI</th>
-                                    <th style="text-align: right;"></th> <!-- Columna de acciones -->
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyPendientes">
-                                <tr>
-                                    <td colspan="3" style="text-align: center; padding: 2rem;">Selecciona una temporada...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Grid de socios en 4 columnas -->
+                <div class="socios-grid-container" id="gridPendientes">
+                    <div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Selecciona una temporada...</div>
+                </div>
 
-                    <p id="mensajeActiva"></p>
-
-                </article>
+                <p id="mensajeActiva"></p>
 
             </div>
         </section>
