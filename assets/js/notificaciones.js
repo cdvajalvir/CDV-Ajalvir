@@ -46,7 +46,7 @@ async function activarNotificacionesPush(userId, toggleElement) {
         const registration = await navigator.serviceWorker.register("/sw.js");
         
         // 🔑 PEGA AQUÍ TU CLAVE PÚBLICA VAPID REAL
-        const publicVapidKey = "TU_PUBLIC_VAPID_KEY_AQUI"; 
+        const publicVapidKey = "BMEMmV_PcdB1gcewKNC7BEKKTuN530wM9rapmnVl1xUln-N5qSxLfsekzw7tY1Y8mdpZZTmeSgI2HOFkIPsdYmI"; 
 
         const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
