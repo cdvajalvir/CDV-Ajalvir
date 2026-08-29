@@ -1,5 +1,4 @@
-// Importar el cliente de Supabase ajustando la ruta desde assets/js/ hacia la raíz o donde esté tu cliente
-import { supabase } from "./supabaseClient.js"; // O la ruta correcta según tengas en tus otros js de assets/js/
+import { supabase } from "./supabaseClient.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const selectTemporada = document.getElementById("selectTemporada");
@@ -11,34 +10,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. Cargar las temporadas disponibles en el desplegable
     async function cargarTemporadas() {
         try {
+            console.log("Consultando temporadas en Supabase...");
+            
+            // Consultamos la tabla temporada ordenadas por temporada descendente
             const { data, error } = await supabase
                 .from("temporada")
                 .select("temporada")
                 .order("temporada", { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error("Error devuelto por Supabase:", error);
+                throw error;
+            }
+
+            console.log("Datos de temporadas recibidos:", data);
 
             selectTemporada.innerHTML = '<option value="">-- Selecciona una temporada --</option>';
 
             if (data && data.length > 0) {
                 data.forEach((item) => {
-                    const option = document.createElement("option");
-                    option.value = item.temporada;
-                    option.textContent = item.temporada;
-                    selectTemporada.appendChild(option);
+                    // Verificamos que el campo exista (puede venir como item.temporada)
+                    const valorTemporada = item.temporada;
+                    if (valorTemporada) {
+                        const option = document.createElement("option");
+                        option.value = valorTemporada;
+                        option.textContent = valorTemporada;
+                        selectTemporada.appendChild(option);
+                    }
                 });
 
-                // Seleccionar por defecto la primera (la más reciente)
-                selectTemporada.value = data[0].temporada;
-                temporadaActualSeleccionada = data[0].temporada;
-                cargarSociosPendientes(temporadaActualSeleccionada);
+                // Si se cargaron opciones válidas, seleccionamos la primera por defecto
+                if (selectTemporada.options.length > 1) {
+                    selectTemporada.selectedIndex = 1;
+                    temporadaActualSeleccionada = selectTemporada.value;
+                    console.log("Temporada seleccionada por defecto:", temporadaActualSeleccionada);
+                    cargarSociosPendientes(temporadaActualSeleccionada);
+                } else {
+                    selectTemporada.innerHTML = '<option value="">No hay temporadas válidas</option>';
+                }
             } else {
                 selectTemporada.innerHTML = '<option value="">No hay temporadas registradas</option>';
             }
         } catch (err) {
-            console.error("Error cargando temporadas:", err);
-            mensajeActiva.textContent = "Error al cargar las temporadas.";
+            console.error("Excepción en cargarTemporadas:", err);
+            mensajeActiva.textContent = "Error al cargar las temporadas. Revisa la consola.";
             mensajeActiva.style.color = "#ff6b6b";
+            selectTemporada.innerHTML = '<option value="">Error de carga</option>';
         }
     }
 
@@ -48,7 +65,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         mensajeActiva.textContent = "";
 
         try {
-            // Paso A: Obtener el array de users de la tabla temporada para la temporada elegida
+            console.log(`Buscando registro para la temporada: ${temporada}`);
+
+            // Paso A: Obtener el registro de la temporada seleccionada
             const { data: tempRecord, error: tempError } = await supabase
                 .from("temporada")
                 .select("users")
@@ -63,6 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const userIds = tempRecord.users;
+            console.log("IDs de usuarios en esta temporada:", userIds);
 
             // Paso B: Cruzar con la tabla socios filtrando aquellos cuyo activo sea false
             const { data: sociosPendientes, error: sociosError } = await supabase
@@ -72,6 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 .eq("activo", false);
 
             if (sociosError) throw sociosError;
+
+            console.log("Socios pendientes encontrados:", sociosPendientes);
 
             if (!sociosPendientes || sociosPendientes.length === 0) {
                 tbodyPendientes.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</td></tr>`;
@@ -83,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             sociosPendientes.forEach((socio) => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td><strong>${socio.nombre} ${socio.apellido}</strong></td>
+                    <td><strong>${socio.nombre || ""} ${socio.apellido || ""}</strong></td>
                     <td>${socio.dni || "-"}</td>
                     <td>${socio.email || "-"}</td>
                     <td><span class="badge-pending">Pendiente activar</span></td>
