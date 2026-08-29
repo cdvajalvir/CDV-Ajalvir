@@ -48,6 +48,8 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("cuotas.html")) {
             renderizarMenuUnicoCuotas(contenedorNav, basePath);
+        } else if (pathName.includes("activasocio.html")) { // <--- FALTA ESTE BLOQUE
+            renderizarMenuUnicoActivaSocios(contenedorNav, basePath); // <---
         } else if (pathName.includes("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.includes("directiva")) {
