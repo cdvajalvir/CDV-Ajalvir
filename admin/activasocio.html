@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gestión de Socios · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .content-grid {
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card.wide {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-container label {
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-radius: 4px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-border, #e2e8f0);
+            color: #ffffff;
+            vertical-align: middle;
+        }
+
+        .data-table thead th {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .badge-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        #mensajeActiva {
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="administracion.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links>
+                <a href="administracion.html" class="nav-link">Administración</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="page-hero">
+            <p class="eyebrow">Administración</p>
+            <h1>Gestión de Socios por Temporada</h1>
+            <p class="lead">Control de solicitudes y activación de socios pendientes para la temporada seleccionada.</p>
+        </section>
+
+        <section class="app-layout-single">
+            <div class="content-grid">
+
+                <article class="card wide">
+                    <h3>Socios Pendientes de Activación</h3>
+
+                    <!-- Selector de Temporada -->
+                    <div class="filter-container">
+                        <label for="selectTemporada">Temporada:</label>
+                        <select class="filter-select" id="selectTemporada">
+                            <option value="">Cargando temporadas...</option>
+                        </select>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table" id="tablaPendientes">
+                            <thead>
+                                <tr>
+                                    <th>Nombre y Apellidos</th>
+                                    <th>DNI</th>
+                                    <th>Email</th>
+                                    <th>Estado</th>
+                                    <th style="text-align: right;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyPendientes">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 2rem;">Selecciona una temporada para ver los socios pendientes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p id="mensajeActiva"></p>
+
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module" src="./activasocio.js"></script>
+
+</body>
+
+</html>
