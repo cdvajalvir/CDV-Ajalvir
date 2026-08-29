@@ -172,6 +172,13 @@ function renderizarMenuUnicoCuotas(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
+function renderizarMenuUnicoActivaSocios(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="${basePath}admin/administracion.html">Administración</a>
+    `;
+    configurarBotonLogout(basePath);
+}
+
 // Inicialización global robusta que controla el menú móvil de forma persistente
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Configurar el botón hamburguesa de forma permanente nada más cargar la página
