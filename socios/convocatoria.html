@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Convocatoria · CD Veteranos Ajalvir</title>
+
+    <!-- Ruta a la hoja de estilos subiendo un nivel a la raíz -->
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .convocatoria-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .convocatoria-detalle {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .detalle-item span {
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.25rem;
+        }
+        .detalle-item p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .comentarios-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid var(--accent-color, #007bff);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .estado-asistencia {
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======================================================
+         CABECERA
+    ======================================================= -->
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+
+            <!-- Menú dinámico de navegación -->
+            <div class="nav-links" data-nav-links></div>
+        </nav>
+    </header>
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+    <main class="container">
+
+        <!-- Cabecera de la página -->
+        <section class="page-hero">
+            <p class="eyebrow">Área privada</p>
+            <h1>Próxima Convocatoria</h1>
+            <p class="lead">Consulta los detalles del próximo encuentro y confirma tu asistencia.</p>
+        </section>
+
+        <!-- Panel principal -->
+        <section class="dashboard">
+
+            <!-- Menú lateral -->
+            <aside class="side-panel">
+                <a href="socios.html">Portal socios</a>
+                <a href="perfil.html">Mi perfil</a>
+                <a href="convocatoria.html" class="active">Convocatoria</a>
+            </aside>
+
+            <!-- Contenedor de la convocatoria -->
+            <div class="content-grid" style="grid-column: span 3;">
+                <div id="contenedorConvocatoria">
+                    <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatoria...</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ======================================================= -->
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module" src="../assets/js/convocatoria.js"></script>
+
+</body>
+
+</html>
