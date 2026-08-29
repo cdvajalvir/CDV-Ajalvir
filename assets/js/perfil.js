@@ -109,10 +109,42 @@ function mostrarPerfil() {
 
     grid.innerHTML = "";
 
+    // Cálculo automático de la temporada actual (de septiembre a agosto)
+    const fechaActual = new Date();
+    const anioActual = fechaActual.getFullYear();
+    const mesActual = fechaActual.getMonth() + 1; // Enero es 1, Diciembre es 12
+
+    let temporadaActual = "";
+    if (mesActual >= 9) {
+        // De septiembre a diciembre: Ej. Sep 2026 -> 2026/2027
+        temporadaActual = `${anioActual}/${anioActual + 1}`;
+    } else {
+        // De enero a agosto: Ej. Feb 2026 -> 2025/2026
+        temporadaActual = `${anioActual - 1}/${anioActual}`;
+    }
+
     campos.forEach((campo) => {
-        const valor = campo.campo === "nombreCompleto"
-            ? `${socioActual.nombre || ""} ${socioActual.apellido || ""}`.trim()
-            : socioActual[campo.campo];
+        let valor = "";
+
+        if (campo.campo === "nombreCompleto") {
+            valor = `${socioActual.nombre || ""} ${socioActual.apellido || ""}`.trim();
+        } else if (campo.campo === "cantidad_pagada") {
+            const pagos = socioActual[campo.campo];
+            if (Array.isArray(pagos) && pagos.length > 0) {
+                // Buscamos el registro que coincida con la temporada actual calculada
+                const pagoTemporada = pagos.find(p => p.temporada === temporadaActual);
+                
+                if (pagoTemporada) {
+                    valor = `${pagoTemporada.pagado} € (Cuota: ${pagoTemporada.cuota} €)`;
+                } else {
+                    valor = `0 € (Temporada ${temporadaActual} no registrada)`;
+                }
+            } else {
+                valor = "0 €";
+            }
+        } else {
+            valor = socioActual[campo.campo];
+        }
 
         grid.insertAdjacentHTML(
             "beforeend",
@@ -176,12 +208,19 @@ function editarPerfil() {
                     `
                 );
             } else {
+                // Si es un campo no editable como cantidad_pagada en modo edición, 
+                // podemos mostrar también su valor actual formateado o en texto plano
+                let valorNoEditable = socioActual[campo.campo];
+                if (campo.campo === "cantidad_pagada" && Array.isArray(valorNoEditable)) {
+                    valorNoEditable = valorNoEditable.map(p => `${p.temporada}: ${p.pagado}€`).join(", ");
+                }
+
                 grid.insertAdjacentHTML(
                     "beforeend",
                     `
                     <div class="profile-item">
                         <span>${campo.titulo}</span>
-                        <strong>${socioActual[campo.campo] ?? "-"}</strong>
+                        <strong>${valorNoEditable || "-"}</strong>
                     </div>
                     `
                 );
