@@ -12,24 +12,24 @@
         /* Contenedor principal ensanchado para aprovechar toda la pantalla */
         .container-fluid {
             width: 100%;
-            max-width: 1600px;
+            max-width: 1750px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
         }
 
         .content-grid {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
             width: 100%;
         }
 
-        /* Selector de temporada independiente y destacado */
+        /* Selector de temporada independiente y compacto */
         .filter-wrapper {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.25rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.85rem 1.25rem;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -41,54 +41,57 @@
             align-items: center;
             gap: 1rem;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
         }
 
         .filter-group label {
             font-weight: 500;
             color: #ffffff;
             white-space: nowrap;
+            font-size: 0.95rem;
         }
 
         .filter-select {
             width: 100%;
-            padding: 0.5rem 0.75rem;
+            padding: 0.4rem 0.6rem;
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ffffff;
             border-radius: 4px;
+            font-size: 0.95rem;
         }
 
-        /* Grid fluido de 4 columnas */
+        /* Grid fluido de 5 columnas */
         .socios-grid-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
             width: 100%;
         }
 
-        /* Tarjeta individual de socio */
+        /* Tarjeta individual de socio con altura reducida (~25%) */
         .socio-card-item {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 1.25rem;
+            border-radius: 5px;
+            padding: 0.75rem 0.85rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .socio-info h4 {
-            margin: 0 0 0.35rem 0;
-            font-size: 1rem;
+            margin: 0 0 0.15rem 0;
+            font-size: 0.9rem;
             color: #ffffff;
             word-break: break-word;
+            line-height: 1.2;
         }
 
         .socio-info p {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: rgba(255, 255, 255, 0.7);
         }
 
@@ -98,31 +101,38 @@
         }
 
         .btn-sm {
-            padding: 0.3rem 0.8rem;
-            font-size: 0.85rem;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
         }
 
         #mensajeActiva {
-            margin-top: 1rem;
+            margin-top: 0.5rem;
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
-        /* Adaptabilidad responsive (Breakpoints) */
-        @media (max-width: 1300px) {
+        /* Adaptabilidad responsive (Breakpoints para 5 columnas) */
+        @media (max-width: 1500px) {
+            .socios-grid-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
             .socios-grid-container {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 850px) {
             .socios-grid-container {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 550px) {
             .container-fluid {
-                padding: 0 1rem;
+                padding: 0 0.75rem;
             }
             .socios-grid-container {
                 grid-template-columns: 1fr;
@@ -148,10 +158,9 @@
         </nav>
     </header>
 
-    <!-- Usamos el contenedor fluido para ancho completo -->
-    <main class="container-fluid" style="padding-top: 2rem; padding-bottom: 3rem;">
+    <main class="container-fluid" style="padding-top: 1.5rem; padding-bottom: 2rem;">
 
-        <section class="page-hero" style="margin-bottom: 2rem;">
+        <section class="page-hero" style="margin-bottom: 1.25rem;">
             <p class="eyebrow">Administración</p>
             <h1>Gestión de Socios por Temporada</h1>
             <p class="lead">Activación de socios pendientes para la temporada seleccionada.</p>
@@ -170,9 +179,9 @@
                     </div>
                 </div>
 
-                <!-- Grid de socios en 4 columnas -->
+                <!-- Grid de socios en 5 columnas -->
                 <div class="socios-grid-container" id="gridPendientes">
-                    <div style="grid-column: span 4; text-align: center; padding: 3rem; color: #fff;">Selecciona una temporada...</div>
+                    <div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Selecciona una temporada...</div>
                 </div>
 
                 <p id="mensajeActiva"></p>
