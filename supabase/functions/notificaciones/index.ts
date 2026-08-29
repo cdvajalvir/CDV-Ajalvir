@@ -5,7 +5,7 @@ import webpush from "npm:web-push@3.6.6"
 // Configurar las claves VAPID (debes guardarlas como secretos en Supabase o ponerlas aquí)
 const vapidPublicKey = Deno.env.get("VAPID_PUBLIC_KEY") || "";
 const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY") || "";
-const vapidEmail = Deno.env.get("VAPID_EMAIL") || "mailto:admin@cdveteranosajalvir.es";
+const vapidEmail = Deno.env.get("VAPID_EMAIL") || "mailto:cdve.ajalvir@gmail.com";
 
 webpush.setVapidDetails(vapidEmail, vapidPublicKey, vapidPrivateKey);
 
