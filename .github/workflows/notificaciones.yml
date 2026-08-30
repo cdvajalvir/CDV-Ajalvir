@@ -14,9 +14,7 @@ jobs:
           SUPABASE_FUNCTION_URL: ${{ secrets.SUPABASE_FUNCTION_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          echo "URL configurada empieza por: ${SUPABASE_FUNCTION_URL:0:10}"
-          
-          curl -v -X POST "$SUPABASE_FUNCTION_URL" \
+          curl -s -X POST "$SUPABASE_FUNCTION_URL" \
                -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
                -H "Content-Type: application/json" \
                -d "{}"
