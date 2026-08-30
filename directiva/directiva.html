@@ -144,10 +144,10 @@
                     <!-- ==========================================
                          FILA INFERIOR (Alineada perfectamente con las 3 columnas superiores)
                     =========================================== -->
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start; width: 100%;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: start; width: 100%;">
                         
-                        <!-- Gráfico Evolución (Ocupa el equivalente a 2 columnas) -->
-                        <article class="card" style="margin: 0; min-width: 0;">
+                        <!-- Gráfico Evolución (Ocupa exactamente 2 columnas de las 3) -->
+                        <article class="card" style="margin: 0; grid-column: span 2; min-width: 0;">
                             <h3>Evolución de Ingresos y Gastos por Mes</h3>
                             <div style="width: 100%; overflow-x: auto;">
                                 <div id="contenedorGraficoBarras" style="position: relative; height: 300px; min-width: 500px;">
@@ -156,8 +156,8 @@
                             </div>
                         </article>
 
-                        <!-- Nueva Card: Participación del Socio (Se estira y alinea con la derecha del todo) -->
-                        <article class="card" style="margin: 0; height: 185px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <!-- Nueva Card: Participación del Socio (Ocupa la 3ª columna entera y alinea a la derecha del todo) -->
+                        <article class="card" style="margin: 0; grid-column: span 1; height: 185px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                             <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem; color: #94a3b8;">Participación del Socio</h3>
                             <p id="participacionSocioValor" style="font-size: 2.5rem; font-weight: bold; color: #38bdf8; margin: 0;">
                                 0.00 €
