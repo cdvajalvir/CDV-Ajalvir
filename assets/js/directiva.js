@@ -30,7 +30,7 @@ async function inicializarPanelDirectiva() {
         // 1. Obtener socios, movimientos y las temporadas desde la tabla 'temporada'
         const [resSocios, resMovs, resTemps] = await Promise.all([
             supabaseClient.from("socios").select("id, nombre, apellido, rol, activo, cantidad_pagada"),
-            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_apunte, tipo"),
+            supabaseClient.from("movimientos").select("codigo_cuenta, importe, temporada, fecha_apunte, tipo, concepto, create_at, saldo"),
             supabaseClient.from("temporada").select("temporada")
         ]);
 
@@ -179,6 +179,47 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
 
     if (filasRenderizadas === 0) {
         tbody.innerHTML = `<tr><td colspan="2" style="text-align: center;">No hay miembros de directiva con saldo pendiente en la temporada ${temporadaSeleccionada}.</td></tr>`;
+    }
+
+    // --- CÁLCULO Y RENDERIZADO DE PARTICIPACIÓN DEL SOCIO ---
+    
+    // 1. Contar socios activos
+    const sociosActivosCount = globalDirectivos.filter(s => s.activo === true).length;
+
+    // 2. Filtrar movimientos y ordenar para coger el ÚLTIMO registro creado
+    let saldoUltimoRegistro = 0;
+    let importeSituacionPartida = 0;
+
+    if (movimientosFiltrados.length > 0) {
+        // Ordenamos por fecha de creación (de más reciente a más antiguo)
+        const movsOrdenados = [...movimientosFiltrados].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        
+        // Cogemos el saldo del primer elemento (que es el último creado cronológicamente)
+        saldoUltimoRegistro = parseFloat(movsOrdenados[0].saldo) || 0;
+
+        // 3. Sumar importes cuyo concepto empiece por "Situacion de partida"
+        movimientosFiltrados.forEach(mov => {
+            if (mov.concepto && mov.concepto.trim().toLowerCase().startsWith('situacion de partida')) {
+                importeSituacionPartida += parseFloat(mov.importe) || 0;
+            }
+        });
+    }
+
+    // 4. Calcular el valor final de la participación
+    let participacionFinal = 0;
+    if (sociosActivosCount > 0) {
+        participacionFinal = (saldoUltimoRegistro - importeSituacionPartida) / sociosActivosCount;
+    }
+
+    // 5. Inyectarlo en la nueva tarjeta HTML
+    const elemParticipacionValor = document.getElementById("participacionSocioValor");
+    const elemParticipacionLabel = document.getElementById("temporadaParticipacionLabel");
+    
+    if (elemParticipacionValor) {
+        elemParticipacionValor.textContent = `${participacionFinal.toFixed(2)} €`;
+    }
+    if (elemParticipacionLabel) {
+        elemParticipacionLabel.textContent = temporadaSeleccionada;
     }
 }
 
