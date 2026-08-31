@@ -46,6 +46,8 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("convocatoria.html")) {
             renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
+        } else if (pathName.includes("gestconvocatoria.html")) {
+            renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("cuotas.html")) {
@@ -186,6 +188,13 @@ function renderizarMenuUnicoActivaSocios(contenedor, basePath) {
 function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="socios.html">Área socios</a>
+    `;
+    configurarBotonLogout(basePath);
+}
+
+function renderizarMenuUnicoGestionConvocatoria(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="directiva.html">Directiva</a>
     `;
     configurarBotonLogout(basePath);
 }
