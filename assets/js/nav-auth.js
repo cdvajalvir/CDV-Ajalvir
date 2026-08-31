@@ -44,10 +44,10 @@ export async function cargarNavegacionDinamica() {
         // Comportamiento específico según la página o el rol
         if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
-        } else if (pathName.includes("convocatoria.html")) {
-            renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
         } else if (pathName.includes("gestconvocatoria.html")) {
             renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
+        } else if (pathName.includes("convocatoria.html")) {
+            renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("cuotas.html")) {
