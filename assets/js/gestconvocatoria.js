@@ -22,15 +22,14 @@ async function cargarConvocatorias() {
     try {
         const { data: convocatorias, error } = await supabaseClient
             .from("convocatorias")
-            .select("*")
-            .order("idx", { ascending: false });
+            .select("*"); // Quitamos el order por idx que daba error
 
         if (error) throw error;
 
         renderizarConvocatorias(convocatorias || []);
     } catch (err) {
-        console.error("Error al cargar convocatorias:", err);
-        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias.</p>`;
+        console.error("Error detallado de Supabase:", JSON.stringify(err, null, 2));
+        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias: ${err.message || ''}</p>`;
     }
 }
 
@@ -43,14 +42,17 @@ function renderizarConvocatorias(lista) {
         return;
     }
 
-    lista.forEach(conv => {
+    lista.forEach((conv, index) => {
         const card = document.createElement("article");
         card.className = "convocatoria-card";
         card.dataset.id = conv.id;
 
+        // Mostramos un número de orden visual basado en la lista (1, 2, 3...) o el id recortado
+        const numOrden = index + 1;
+
         card.innerHTML = `
             <div class="convocatoria-header-actions">
-                <h3 style="margin: 0; color: #38bdf8;">Partido / Evento ID: ${conv.idx ?? 'N/D'}</h3>
+                <h3 style="margin: 0; color: #38bdf8;">Convocatoria #${numOrden}</h3>
                 <div style="display: flex; align-items: center; gap: 1.5rem;">
                     <label class="toggle-activo-container" title="Marcar como convocatoria activa">
                         <input type="checkbox" class="input-activa" ${conv.activa ? 'checked' : ''}>
@@ -92,7 +94,6 @@ function renderizarConvocatorias(lista) {
             </div>
         `;
 
-        // Evento para el botón Guardar
         const btnGuardar = card.querySelector(".btn-guardar-conv");
         btnGuardar.addEventListener("click", () => guardarConvocatoria(conv.id, card));
 
@@ -109,8 +110,7 @@ async function guardarConvocatoria(id, cardElement) {
     const activaVal = cardElement.querySelector(".input-activa").checked;
 
     try {
-        // Si marcamos esta como activa, opcionalmente podríamos asegurar que las demás se desmarquen
-        // o dejarlo directo según la lógica de tu base de datos. Si solo debe haber una activa:
+        // Si marcamos esta como activa, desactivamos las demás
         if (activaVal) {
             await supabaseClient
                 .from("convocatorias")
@@ -136,27 +136,13 @@ async function guardarConvocatoria(id, cardElement) {
         await cargarConvocatorias();
     } catch (err) {
         console.error("Error al guardar convocatoria:", err);
-        alert("Hubo un error al guardar los cambios.");
+        alert("Hubo un error al guardar los cambios: " + (err.message || ''));
     }
 }
 
 async function aniadirNuevaConvocatoriaUI() {
     try {
-        // Obtenemos el último idx para autoincrementar o calcular el siguiente
-        const { data: ultimas, error: errIdx } = await supabaseClient
-            .from("convocatorias")
-            .select("idx")
-            .order("idx", { ascending: false })
-            .limit(1);
-
-        if (errIdx) throw errIdx;
-
-        const nuevoIdx = (ultimas && ultimas.length > 0 && typeof ultimas[0].idx === 'number') 
-            ? ultimas[0].idx + 1 
-            : 0;
-
         const nuevaConvocatoriaData = {
-            idx: nuevoIdx,
             convocatoria: "Nuevo Partido / Evento",
             users: [],
             lugar: "Por determinar",
@@ -174,7 +160,7 @@ async function aniadirNuevaConvocatoriaUI() {
 
         await cargarConvocatorias();
     } catch (err) {
-        console.error("Error al crear nueva convocatoria:", err);
-        alert("Error al añadir la nueva convocatoria.");
+        console.error("Error al crear nueva convocatoria:", JSON.stringify(err, null, 2));
+        alert("Error al añadir la nueva convocatoria: " + (err.message || ''));
     }
 }
