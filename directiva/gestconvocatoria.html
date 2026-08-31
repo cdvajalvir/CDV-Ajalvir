@@ -12,48 +12,42 @@
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
         }
+        /* Forzamos una única línea horizontal con grid de 7 columnas */
         .convocatoria-fila {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 6px;
             padding: 0.75rem 1rem;
             display: grid;
-            grid-template-columns: 2fr 130px 1fr 110px 2fr 90px 80px;
+            grid-template-columns: 2fr 130px 1.2fr 90px 2fr 80px 80px;
             gap: 0.75rem;
             align-items: center;
-        }
-        .convocatoria-fila header-fila {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 0.2rem;
-            display: block;
         }
         .campo-grupo {
             display: flex;
             flex-direction: column;
         }
         .campo-grupo label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: rgba(255, 255, 255, 0.5);
             margin-bottom: 2px;
+            text-transform: uppercase;
         }
         .convocatoria-fila input,
-        .convocatoria-fila select,
-        .convocatoria-fila textarea {
+        .convocatoria-fila select {
             background: #1e293b;
             color: #fff;
             border: 1px solid #475569;
             border-radius: 4px;
             padding: 6px 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             width: 100%;
         }
         .convocatoria-fila input:focus,
-        .convocatoria-fila select:focus,
-        .convocatoria-fila textarea:focus {
+        .convocatoria-fila select:focus {
             outline: none;
             border-color: #38bdf8;
         }
@@ -61,13 +55,14 @@
             background: #0284c7;
             color: #fff;
             border: none;
-            padding: 7px 12px;
+            padding: 7px 10px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: background 0.2s;
-            height: fit-content;
+            width: 100%;
+            text-align: center;
         }
         .btn-guardar:hover {
             background: #0369a1;
@@ -91,7 +86,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
             cursor: pointer;
         }
         .toggle-activo-container input[type="checkbox"] {
@@ -100,17 +94,9 @@
             cursor: pointer;
         }
         .toggle-activo-container span {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: bold;
-        }
-
-        /* Responsivo básico por si la pantalla es estrecha */
-        @media(max-width: 1024px) {
-            .convocatoria-fila {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-                padding: 1rem;
-            }
+            margin-top: 2px;
         }
     </style>
 </head>
