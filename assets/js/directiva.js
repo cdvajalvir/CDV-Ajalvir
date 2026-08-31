@@ -183,10 +183,18 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
 
     // --- CÁLCULO Y RENDERIZADO DE PARTICIPACIÓN DEL SOCIO ---
     
-    // 1. Contar socios activos
-    const sociosActivosCount = globalDirectivos.filter(s => s.activo === true).length;
+    // 1. Contar socios cuya cantidad pagada > 0 en la temporada seleccionada
+    let sociosActivosCount = 0;
+    globalDirectivos.forEach(socio => {
+        if (socio.cantidad_pagada && Array.isArray(socio.cantidad_pagada)) {
+            const datosTemporada = socio.cantidad_pagada.find(item => item.temporada === temporadaSeleccionada);
+            if (datosTemporada && parseFloat(datosTemporada.pagado || 0) > 0) {
+                sociosActivosCount++;
+            }
+        }
+    });
 
-    // 2. Filtrar estrictamente por la temporada seleccionada
+    // 2. Filtrar estrictamente por la temporada seleccionada para los movimientos
     const movsTemporadaExacta = globalMovimientos.filter(m => m.temporada === temporadaSeleccionada);
 
     let saldoUltimoRegistro = 0;
