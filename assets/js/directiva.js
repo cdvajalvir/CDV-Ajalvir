@@ -186,21 +186,32 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     // 1. Contar socios activos
     const sociosActivosCount = globalDirectivos.filter(s => s.activo === true).length;
 
-    // 2. Filtrar movimientos y ordenar para coger el ÚLTIMO registro creado
+    // 2. Filtrar estrictamente por la temporada seleccionada
+    const movsTemporadaExacta = globalMovimientos.filter(m => m.temporada === temporadaSeleccionada);
+
     let saldoUltimoRegistro = 0;
     let importeSituacionPartida = 0;
 
-    if (movimientosFiltrados.length > 0) {
-        // Ordenamos por fecha de creación (de más reciente a más antiguo)
-        const movsOrdenados = [...movimientosFiltrados].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    if (movsTemporadaExacta.length > 0) {
+        // Ordenar por create_at (de más antiguo a más moderno) para que el último sea el de fecha de creación mayor
+        const movsOrdenadosPorCreacion = [...movsTemporadaExacta].sort((a, b) => new Date(a.create_at) - new Date(b.create_at));
         
-        // Cogemos el saldo del primer elemento (que es el último creado cronológicamente)
-        saldoUltimoRegistro = parseFloat(movsOrdenados[0].saldo) || 0;
+        // El último movimiento según create_at es el último del array ordenado
+        const ultimoMovimiento = movsOrdenadosPorCreacion[movsOrdenadosPorCreacion.length - 1];
+        saldoUltimoRegistro = parseFloat(ultimoMovimiento.saldo) || 0;
 
-        // 3. Sumar importes cuyo concepto empiece por "Situacion de partida"
-        movimientosFiltrados.forEach(mov => {
-            if (mov.concepto && mov.concepto.trim().toLowerCase().startsWith('situacion de partida')) {
-                importeSituacionPartida += parseFloat(mov.importe) || 0;
+        // 3. Sumar importes cuyo concepto empiece por "situacion de partida" (normalizando tildes y minúsculas)
+        movsTemporadaExacta.forEach(mov => {
+            if (mov.concepto) {
+                const conceptoClean = mov.concepto
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, ""); // Elimina tildes
+
+                if (conceptoClean.startsWith('situacion de partida')) {
+                    importeSituacionPartida += parseFloat(mov.importe) || 0;
+                }
             }
         });
     }
