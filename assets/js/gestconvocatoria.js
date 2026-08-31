@@ -99,7 +99,27 @@ async function guardarConvocatoria(id, filaElement) {
     const comentariosVal = filaElement.querySelector(".input-comentarios").value.trim();
     const activaVal = filaElement.querySelector(".input-activa").checked;
 
+    // VALIDACIÓN: Comprobar cuántas convocatorias están marcadas como activas en pantalla
+    if (activaVal) {
+        const todasLasFilas = document.querySelectorAll(".convocatoria-fila");
+        let activasEnPantalla = 0;
+
+        todasLasFilas.forEach(fila => {
+            const checkbox = fila.querySelector(".input-activa");
+            // Si está marcada y pertenece a otra fila diferente a la que estamos guardando
+            if (checkbox && checkbox.checked && fila.dataset.id !== id) {
+                activasEnPantalla++;
+            }
+        });
+
+        if (activasEnPantalla > 0) {
+            alert("⚠️ ¡Atención! Ya existe otra convocatoria marcada como activa. Solo puede haber una convocatoria activa al mismo tiempo.");
+            return; // Detenemos el guardado
+        }
+    }
+
     try {
+        // Si esta se marca como activa, desmarcamos automáticamente las demás en la base de datos
         if (activaVal) {
             await supabaseClient
                 .from("convocatorias")
