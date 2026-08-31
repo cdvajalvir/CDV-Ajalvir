@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Convocatoria · CD Veteranos Ajalvir</title>
 
-    <!-- Ruta a la hoja de estilos subiendo un nivel a la raíz -->
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         .convocatoria-card {
@@ -15,48 +14,101 @@
             border-radius: 8px;
             padding: 2rem;
             margin-bottom: 1.5rem;
-            max-width: 800px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
+            position: relative;
+        }
+        .convocatoria-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
         }
         .convocatoria-detalle {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-        .detalle-item span {
-            display: block;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 0.25rem;
-        }
-        .detalle-item p {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #ffffff;
-        }
-        .comentarios-box {
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 3px solid var(--accent-color, #007bff);
-            padding: 1rem;
-            border-radius: 4px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
             margin-bottom: 1.5rem;
         }
-        .estado-asistencia {
+        .detalle-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .detalle-item label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.3rem;
+        }
+        .detalle-item input,
+        .detalle-item select,
+        .detalle-item textarea {
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .detalle-item input:focus,
+        .detalle-item select:focus,
+        .detalle-item textarea:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .acciones-card {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            align-items: center;
             margin-top: 1rem;
-            font-weight: 500;
-            text-align: center;
+        }
+        .btn-guardar {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-guardar:hover {
+            background: #0369a1;
+        }
+        .btn-nuevo {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto 2rem auto;
+        }
+        .btn-nuevo:hover {
+            background: #059669;
+        }
+        .toggle-activo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .toggle-activo-container input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- ======================================================
-         CABECERA
-    ======================================================= -->
     <header class="site-header">
         <nav class="navbar container">
             <a class="brand" href="../index.html">
@@ -65,34 +117,29 @@
                 </span>
                 <span>CD Veteranos Ajalvir</span>
             </a>
-
             <button class="nav-toggle" data-nav-toggle>☰</button>
             <div class="nav-links" data-nav-links></div>
         </nav>
     </header>
 
-    <!-- ======================================================
-         CONTENIDO
-    ======================================================= -->
     <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
 
-        <!-- Cabecera de la página -->
         <section class="page-hero" style="text-align: center; margin-bottom: 2rem;">
             <p class="eyebrow">Área privada</p>
-            <h1>Gestion de Convocatorias</h1>
-            <p class="lead">Gestiona las convocatorias de la temporada y la activa.</p>
+            <h1>Gestión de Convocatorias</h1>
+            <p class="lead">Crea, edita y activa las convocatorias de los próximos partidos.</p>
         </section>
 
-        <!-- Contenedor principal de la convocatoria -->
+        <!-- Botón para añadir nueva convocatoria -->
+        <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
+
+        <!-- Contenedor principal de la lista de convocatorias -->
         <div id="contenedorConvocatoria">
-            <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatoria...</p>
+            <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>
         </div>
 
     </main>
 
-    <!-- ======================================================
-         JAVASCRIPT
-    ======================================================= -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/gestconvocatoria.js"></script>
 
