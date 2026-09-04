@@ -5,8 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Acceso privado · CD Veteranos Ajalvir</title>
     <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        /* Forzamos que el body permita apilar el login centrado y el footer abajo ocupando todo el ancho */
+        body.login-body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+        }
+        .login-card {
+            margin: auto; /* Centra la tarjeta vertical y horizontalmente en el espacio disponible */
+        }
+        .site-footer {
+            width: 100%; /* Ocupa todo el ancho de la pantalla */
+        }
+    </style>
 </head>
 <body class="login-body">
+
+    <div></div> <!-- Espaciador superior invisible para equilibrar el centrado de la tarjeta -->
+
     <main class="login-card">
         <img class="login-logo" src="assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
         <h1>Acceso privado</h1>
