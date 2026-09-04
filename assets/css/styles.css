@@ -32,6 +32,7 @@ body {
         radial-gradient(circle at 82% 8%, rgba(254, 218, 10, .18) 0, transparent 28%),
         linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 45%, #020817 100%);
     min-height: 100vh;
+    padding-bottom: 90px; /* <--- Añade esta línea para proteger el espacio del footer fijo */
 }
 a { color: inherit; text-decoration: none; }
 button, input, select, textarea { font: inherit; }
@@ -175,7 +176,19 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 .profile-item span { display: block; color: var(--muted); font-size: .86rem; font-weight: 800; }
 .profile-item strong { font-size: 1.05rem; }
 
-.site-footer { padding: 34px 0; background: #050914; border-top: 1px solid var(--border-yellow); }
+.site-footer { 
+    padding: 20px 0; /* Reducimos un poco el padding vertical para que no ocupe demasiado espacio en pantallas pequeñas */
+    background: #050914; 
+    border-top: 1px solid var(--border-yellow);
+    
+    /* Añade estas propiedades para fijarlo abajo: */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
 .footer-grid { display: flex; justify-content: space-between; gap: 20px; }
 .footer-grid p { margin: .3rem 0; color: var(--muted); }
 .footer-grid div:last-child { display: flex; gap: 18px; color: var(--muted); }
