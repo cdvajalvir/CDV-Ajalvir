@@ -9,6 +9,23 @@
 
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <style>
+        /* Hacemos que la página ocupe toda la altura de la ventana y distribuya los elementos */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Hacemos que el contenido principal expanda su espacio para empujar el footer abajo */
+        main.container {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
     <header class="site-header">
@@ -30,6 +47,7 @@
             </div>
         </nav>
     </header>
+
     <main class="container">
         <section class="page-hero">
             <p class="eyebrow">
@@ -41,7 +59,6 @@
         </section>
         <section class="cards">
             <a href="https://copafacil.com/-sb735" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: block; max-width: 450px;">
-                <!-- Añadido display flex, align-items center y gap a la card -->
                 <article class="card" style="display: flex; align-items: center; gap: 1.25rem;">
                     <div class="icon" style="background-color: transparent; border: none; padding: 0; flex-shrink: 0; margin-bottom: 0;">
                         <img src="../assets/img/logo-boxing.png" alt="Icono Last Round Boxeo" style="width: 70px; height: auto; display: block; object-fit: contain;">
