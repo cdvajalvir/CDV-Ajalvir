@@ -19,13 +19,14 @@ async function cargarConvocatorias() {
     contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>`;
 
     try {
-        const { data: convocatorias, error } = await supabaseClient
-            .from("convocatorias")
-            .select("*");
+        const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+            body: { action: 'cargar' }
+        });
 
         if (error) throw error;
+        if (response.error) throw new Error(response.error);
 
-        renderizarConvocatorias(convocatorias || []);
+        renderizarConvocatorias(response.data || []);
     } catch (err) {
         console.error("Error al cargar convocatorias:", err);
         contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias.</p>`;
@@ -99,14 +100,13 @@ async function guardarConvocatoria(id, filaElement) {
     const comentariosVal = filaElement.querySelector(".input-comentarios").value.trim();
     const activaVal = filaElement.querySelector(".input-activa").checked;
 
-    // VALIDACIÓN: Comprobar cuántas convocatorias están marcadas como activas en pantalla
+    // VALIDACIÓN LOCAL: Comprobar cuántas convocatorias están marcadas como activas en pantalla
     if (activaVal) {
         const todasLasFilas = document.querySelectorAll(".convocatoria-fila");
         let activasEnPantalla = 0;
 
         todasLasFilas.forEach(fila => {
             const checkbox = fila.querySelector(".input-activa");
-            // Si está marcada y pertenece a otra fila diferente a la que estamos guardando
             if (checkbox && checkbox.checked && fila.dataset.id !== id) {
                 activasEnPantalla++;
             }
@@ -114,58 +114,45 @@ async function guardarConvocatoria(id, filaElement) {
 
         if (activasEnPantalla > 0) {
             alert("⚠️ ¡Atención! Ya existe otra convocatoria marcada como activa. Solo puede haber una convocatoria activa al mismo tiempo.");
-            return; // Detenemos el guardado
+            return;
         }
     }
 
     try {
-        // Si esta se marca como activa, desmarcamos automáticamente las demás en la base de datos
-        if (activaVal) {
-            await supabaseClient
-                .from("convocatorias")
-                .update({ activa: false })
-                .neq("id", id);
-        }
-
-        const { error } = await supabaseClient
-            .from("convocatorias")
-            .update({
-                convocatoria: convocatoriaVal,
-                tipo_convocatoria: tipoVal,
-                lugar: lugarVal,
-                hora: horaVal,
-                comentarios: comentariosVal,
-                activa: activaVal
-            })
-            .eq("id", id);
+        const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+            body: {
+                action: 'actualizar',
+                payload: {
+                    id,
+                    convocatoria: convocatoriaVal,
+                    tipo_convocatoria: tipoVal,
+                    lugar: lugarVal,
+                    hora: horaVal,
+                    comentarios: comentariosVal,
+                    activa: activaVal
+                }
+            }
+        });
 
         if (error) throw error;
+        if (response.error) throw new Error(response.error);
 
         alert("¡Convocatoria actualizada correctamente!");
         await cargarConvocatorias();
     } catch (err) {
         console.error("Error al guardar convocatoria:", err);
-        alert("Hubo un error al guardar los cambios.");
+        alert("Hubo un error al guardar los cambios: " + err.message);
     }
 }
 
 async function aniadirNuevaConvocatoriaUI() {
     try {
-        const nuevaConvocatoriaData = {
-            convocatoria: "Nuevo Partido",
-            users: [],
-            lugar: "Por determinar",
-            hora: "10:00:00",
-            comentarios: "",
-            activa: false,
-            tipo_convocatoria: "Oficial"
-        };
-
-        const { error } = await supabaseClient
-            .from("convocatorias")
-            .insert([nuevaConvocatoriaData]);
+        const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+            body: { action: 'crear' }
+        });
 
         if (error) throw error;
+        if (response.error) throw new Error(response.error);
 
         await cargarConvocatorias();
     } catch (err) {
