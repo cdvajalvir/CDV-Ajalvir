@@ -75,21 +75,23 @@ serve(async (req) => {
     // CREAR NUEVA CONVOCATORIA
     if (action === 'crear') {
       const nuevaConvocatoriaData = {
-        convocatoria: "Nuevo Partido",
-        users: null,          // Lo mandamos como null para evitar conflictos con el array de uuids
+        convocatoria: `Nuevo Partido (${new Date().toLocaleDateString()})`,
         lugar: "Por determinar",
         hora: "10:00:00",
         comentarios: "",
-        activa: false
-        // Omitimos tipo_convocatoria temporalmente para que coja el default o NULL si lo permite, 
-        // o puedes asignarle el primer valor válido de tu enum cat_partido si es obligatorio.
+        activa: false,
+        tipo_convocatoria: "Oficial"
       }
 
       const { error } = await supabaseAdmin
         .from('convocatorias')
         .insert([nuevaConvocatoriaData])
 
-      if (error) throw error
+      if (error) {
+        console.error("Error de Supabase en Insert:", error)
+        throw new Error(error.message)
+      }
+
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
