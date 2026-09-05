@@ -119,21 +119,36 @@
 
     <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
 
-        <section class="page-hero" style="text-align: center; margin-bottom: 2rem;">
-            <p class="eyebrow">Área privada</p>
-            <h1>Gestión de Convocatorias</h1>
-            <p class="lead">Edita y activa las convocatorias en formato de línea rápida.</p>
-        </section>
+    <section class="page-hero" style="text-align: center; margin-bottom: 2rem;">
+        <p class="eyebrow">Área privada</p>
+        <h1>Gestión de Convocatorias</h1>
+        <p class="lead">Edita y activa las convocatorias en formato de línea rápida.</p>
+    </section>
 
-        <!-- Botón para añadir nueva convocatoria -->
-        <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
+    <!-- Botón para añadir nueva convocatoria -->
+    <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
 
-        <!-- Contenedor principal de la lista en formato fila -->
+    <!-- Layout de dos columnas: Izquierda (Filas), Derecha (Card de Socios Apuntados) -->
+    <div class="gestion-layout" style="display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start;">
+        
+        <!-- Columna Izquierda: Lista de Convocatorias -->
         <div id="contenedorConvocatoria" class="tabla-convocatorias">
             <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>
         </div>
 
-    </main>
+        <!-- Columna Derecha: Card de Socios Apuntados a la Convocatoria Activa -->
+        <aside class="card-socios-activa" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
+            <h3 style="font-size: 1rem; color: #38bdf8; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Apuntados</h3>
+            <p id="tituloConvocatoriaActiva" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
+            
+            <ul id="listaSociosApuntados" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto;">
+                <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>
+            </ul>
+        </aside>
+
+    </div>
+
+</main>
 
     <footer class="site-footer">
         <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
