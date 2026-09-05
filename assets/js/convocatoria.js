@@ -16,7 +16,7 @@ async function cargarProximaConvocatoria() {
 
     try {
         // Llamamos a la Edge Function para obtener la convocatoria activa de forma segura
-        const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+        const { data: response, error } = await supabaseClient.functions.invoke('convocatoria-socio', {
             body: { action: 'cargar_activa_socio' }
         });
 
@@ -87,7 +87,7 @@ async function cargarProximaConvocatoria() {
 
             try {
                 // Llamamos a la Edge Function para alternar la asistencia del socio de forma segura
-                const { data: updateResp, error: updateError } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+                const { data: updateResp, error: updateError } = await supabaseClient.functions.invoke('convocatoria-socio', {
                     body: { 
                         action: 'toggle_asistencia',
                         payload: { convocatoriaId: convo.id }
