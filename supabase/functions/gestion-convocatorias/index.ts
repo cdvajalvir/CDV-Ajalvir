@@ -76,12 +76,13 @@ serve(async (req) => {
     if (action === 'crear') {
       const nuevaConvocatoriaData = {
         convocatoria: "Nuevo Partido",
-        users: [],
+        users: null,          // Lo mandamos como null para evitar conflictos con el array de uuids
         lugar: "Por determinar",
         hora: "10:00:00",
         comentarios: "",
-        activa: false,
-        tipo_convocatoria: "Oficial"
+        activa: false
+        // Omitimos tipo_convocatoria temporalmente para que coja el default o NULL si lo permite, 
+        // o puedes asignarle el primer valor válido de tu enum cat_partido si es obligatorio.
       }
 
       const { error } = await supabaseAdmin
