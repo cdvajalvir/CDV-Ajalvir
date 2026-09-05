@@ -79,11 +79,33 @@ function renderizarConvocatorias(lista) {
 
             <div class="toggle-activo-container" title="Marcar como convocatoria activa">
                 <input type="checkbox" class="input-activa" ${conv.activa ? 'checked' : ''}>
-                <span style="color: ${conv.activa ? '#34d399' : '#94a3b8'};">Activa</span>
+                <span class="label-activo-texto" style="color: ${conv.activa ? '#34d399' : '#94a3b8'};">Activa</span>
             </div>
 
             <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
         `;
+
+        // LÓGICA DE EXCLUSIVIDAD PARA LOS TICKS EN TIEMPO REAL
+        const checkboxActiva = fila.querySelector(".input-activa");
+        const textoActivo = fila.querySelector(".label-activo-texto");
+
+        checkboxActiva.addEventListener("change", () => {
+            if (checkboxActiva.checked) {
+                // Si este se marca, desmarcamos todos los demás visualmente en la pantalla
+                document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
+                    if (otraFila.dataset.id !== conv.id) {
+                        const otroCheckbox = otraFila.querySelector(".input-activa");
+                        const otroTexto = otraFila.querySelector(".label-activo-texto");
+                        if (otroCheckbox) otroCheckbox.checked = false;
+                        if (otroTexto) otroTexto.style.color = "#94a3b8";
+                    }
+                });
+                textoActivo.style.color = "#34d399";
+            } else {
+                // Si se desmarca manualmente, se permite (ninguno activo)
+                textoActivo.style.color = "#94a3b8";
+            }
+        });
 
         const btnGuardar = fila.querySelector(".btn-guardar-conv");
         btnGuardar.addEventListener("click", () => guardarConvocatoria(conv.id, fila));
@@ -99,24 +121,6 @@ async function guardarConvocatoria(id, filaElement) {
     const horaVal = filaElement.querySelector(".input-hora").value.trim();
     const comentariosVal = filaElement.querySelector(".input-comentarios").value.trim();
     const activaVal = filaElement.querySelector(".input-activa").checked;
-
-    // VALIDACIÓN LOCAL: Comprobar cuántas convocatorias están marcadas como activas en pantalla
-    if (activaVal) {
-        const todasLasFilas = document.querySelectorAll(".convocatoria-fila");
-        let activasEnPantalla = 0;
-
-        todasLasFilas.forEach(fila => {
-            const checkbox = fila.querySelector(".input-activa");
-            if (checkbox && checkbox.checked && fila.dataset.id !== id) {
-                activasEnPantalla++;
-            }
-        });
-
-        if (activasEnPantalla > 0) {
-            alert("⚠️ ¡Atención! Ya existe otra convocatoria marcada como activa. Solo puede haber una convocatoria activa al mismo tiempo.");
-            return;
-        }
-    }
 
     try {
         const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
