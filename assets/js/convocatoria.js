@@ -5,24 +5,27 @@ import { supabaseClient } from "./supabase.js";
 window.cerrarSesion = cerrarSesion;
 
 comprobarAcceso(["socio", "administrador", "admin", "directiva"], async (socioActual) => {
-    await cargarProximaConvocatoria(socioActual.id);
+    await cargarProximaConvocatoria();
 });
 
-async function cargarProximaConvocatoria(userId) {
+async function cargarProximaConvocatoria() {
     const contenedor = document.getElementById("contenedorConvocatoria");
     if (!contenedor) return;
 
+    contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatoria...</p>`;
+
     try {
-        // Consultamos la convocatoria que tenga el campo 'activa' en true
-        const { data: convocatorias, error } = await supabaseClient
-            .from("convocatorias")
-            .select("*")
-            .eq("activa", true)
-            .limit(1);
+        // Llamamos a la Edge Function para obtener la convocatoria activa de forma segura
+        const { data: response, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+            body: { action: 'cargar_activa_socio' }
+        });
 
         if (error) throw error;
+        if (response && response.error) throw new Error(response.error);
 
-        if (!convocatorias || convocatorias.length === 0) {
+        const convo = response.data;
+
+        if (!convo) {
             contenedor.innerHTML = `
                 <div class="convocatoria-card" style="text-align: center;">
                     <h3>No hay convocatorias activas</h3>
@@ -32,20 +35,9 @@ async function cargarProximaConvocatoria(userId) {
             return;
         }
 
-        const convo = convocatorias[0]; 
-        
-        // Asegurarnos de normalizar el array de usuarios de forma robusta
-        let usersArray = [];
-        if (Array.isArray(convo.users)) {
-            usersArray = convo.users;
-        } else if (typeof convo.users === "string") {
-            // Por si Supabase lo devuelve en formato texto de array de postgres tipo "{uuid1,uuid2}"
-            usersArray = convo.users.replace(/[{}]/g, "").split(",").filter(Boolean);
-        }
+        const usersArray = Array.isArray(convo.users) ? convo.users : [];
+        const estaApuntado = response.estaApuntado; // Lo calculamos directamente en el backend de forma segura
 
-        const estaApuntado = usersArray.includes(userId);
-
-        // Renderizamos la tarjeta de la convocatoria
         contenedor.innerHTML = `
             <article class="convocatoria-card">
                 <h2 style="margin-top: 0; color: #fff; font-size: 1.5rem; margin-bottom: 1rem;">
@@ -86,7 +78,6 @@ async function cargarProximaConvocatoria(userId) {
             </article>
         `;
 
-        // Lógica del botón de asistencia
         const btnAsistencia = document.getElementById("btnAsistencia");
         const mensajeAsistencia = document.getElementById("mensajeAsistencia");
 
@@ -95,49 +86,27 @@ async function cargarProximaConvocatoria(userId) {
             btnAsistencia.textContent = "Actualizando...";
 
             try {
-                // Volvemos a consultar los datos frescos de la BD justo antes de modificar
-                const { data: freshConvoData, error: fetchError } = await supabaseClient
-                    .from("convocatorias")
-                    .select("users")
-                    .eq("id", convo.id)
-                    .single();
-
-                if (fetchError) throw fetchError;
-
-                let currentUsers = Array.isArray(freshConvoData.users) ? freshConvoData.users : [];
-                const yaApuntadoAhora = currentUsers.includes(userId);
-                let nuevosUsers = [...currentUsers];
-
-                if (yaApuntadoAhora) {
-                    nuevosUsers = nuevosUsers.filter(id => id !== userId);
-                } else {
-                    nuevosUsers.push(userId);
-                }
-
-                // Actualizamos en Supabase y pedimos .select() para verificar si afectó registros
-                const { data: updateData, error: updateError } = await supabaseClient
-                    .from("convocatorias")
-                    .update({ users: nuevosUsers })
-                    .eq("id", convo.id)
-                    .select();
+                // Llamamos a la Edge Function para alternar la asistencia del socio de forma segura
+                const { data: updateResp, error: updateError } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+                    body: { 
+                        action: 'toggle_asistencia',
+                        payload: { convocatoriaId: convo.id }
+                    }
+                });
 
                 if (updateError) throw updateError;
+                if (updateResp && updateResp.error) throw new Error(updateResp.error);
 
-                // Si updateData está vacío, significa que RLS bloqueó la operación silenciosamente
-                if (!updateData || updateData.length === 0) {
-                    throw new Error("Supabase ha bloqueado la actualización. Revisa la política de UPDATE en RLS.");
-                }
-
-                mensajeAsistencia.style.color = "#2e7d32";
-                mensajeAsistencia.textContent = yaApuntadoAhora ? "Has cancelado tu asistencia." : "¡Asistencia confirmada correctamente!";
+                mensajeAsistencia.style.color = "#34d399";
+                mensajeAsistencia.textContent = updateResp.apuntado ? "¡Asistencia confirmada correctamente!" : "Has cancelado tu asistencia.";
 
                 setTimeout(() => {
-                    cargarProximaConvocatoria(userId);
+                    cargarProximaConvocatoria();
                 }, 1000);
 
             } catch (err) {
                 console.error("Error al actualizar asistencia:", err);
-                mensajeAsistencia.style.color = "#d9534f";
+                mensajeAsistencia.style.color = "#ef4444";
                 mensajeAsistencia.textContent = `Error: ${err.message}`;
                 btnAsistencia.disabled = false;
                 btnAsistencia.textContent = estaApuntado ? '❌ No podré asistir / Cancelar' : '✅ Confirmar mi asistencia';
@@ -148,7 +117,7 @@ async function cargarProximaConvocatoria(userId) {
         console.error("Error al cargar la convocatoria:", err);
         contenedor.innerHTML = `
             <div class="convocatoria-card" style="text-align: center;">
-                <p style="color: #d9534f;">Error al cargar los datos de la convocatoria.</p>
+                <p style="color: #ef4444;">Error al cargar los datos de la convocatoria: ${err.message}</p>
             </div>
         `;
     }
