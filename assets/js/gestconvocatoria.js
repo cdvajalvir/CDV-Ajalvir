@@ -147,18 +147,28 @@ function actualizarPanelSocios(lista) {
 
     tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
 
-    const socios = activa.socios || activa.usuarios || [];
+    // Recogemos los usuarios/socios de la convocatoria (puede venir como 'users', 'socios' o 'usuarios')
+    const sociosApuntados = activa.users || activa.socios || activa.usuarios || [];
 
-    if (socios.length === 0) {
+    if (sociosApuntados.length === 0) {
         listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados todavía.</li>`;
         return;
     }
 
     listaCard.innerHTML = "";
-    socios.forEach((socio, index) => {
+    sociosApuntados.forEach((socio, index) => {
         const li = document.createElement("li");
         li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
-        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${typeof socio === 'string' ? socio : (socio.nombre || socio.email || 'Socio')}`;
+        
+        // Extraemos el nombre dependiendo de cómo llegue la estructura tras el cruce con la tabla socios
+        let nombreMostrar = "Socio";
+        if (typeof socio === 'string') {
+            nombreMostrar = `Usuario ID: ${socio.substring(0, 8)}...`; // Si solo llega el UUID por ahora
+        } else if (socio) {
+            nombreMostrar = socio.nombre_completo || socio.nombre || socio.email || `${socio.nombre || ''} ${socio.apellidos || ''}`.trim() || "Socio";
+        }
+
+        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
         listaCard.appendChild(li);
     });
 }
