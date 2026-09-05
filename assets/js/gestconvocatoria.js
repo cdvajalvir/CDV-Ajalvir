@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function cargarConvocatorias() {
     const contenedor = document.getElementById("contenedorConvocatoria");
+    if (!contenedor) return;
+    
     contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>`;
 
     try {
@@ -24,22 +26,24 @@ async function cargarConvocatorias() {
         });
 
         if (error) throw error;
-        if (response.error) throw new Error(response.error);
+        if (response && response.error) throw new Error(response.error);
 
-        const listaConvocatorias = response.data || [];
+        const listaConvocatorias = (response && response.data) ? response.data : [];
         renderizarConvocatorias(listaConvocatorias);
-        actualizarPanelSocios(listaConvocatorias); // Actualiza la card lateral de socios
+        actualizarPanelSocios(listaConvocatorias);
     } catch (err) {
         console.error("Error al cargar convocatorias:", err);
-        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias.</p>`;
+        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias: ${err.message}</p>`;
     }
 }
 
 function renderizarConvocatorias(lista) {
     const contenedor = document.getElementById("contenedorConvocatoria");
+    if (!contenedor) return;
+    
     contenedor.innerHTML = "";
 
-    if (lista.length === 0) {
+    if (!lista || lista.length === 0) {
         contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #94a3b8;">No hay convocatorias registradas.</p>`;
         return;
     }
@@ -90,12 +94,10 @@ function renderizarConvocatorias(lista) {
         const checkboxActiva = fila.querySelector(".input-activa");
         const textoActivo = fila.querySelector(".label-activo-texto");
 
-        // Lógica limpia de exclusividad para los ticks en pantalla
         checkboxActiva.addEventListener("change", () => {
             const estaMarcado = checkboxActiva.checked;
 
             if (estaMarcado) {
-                // Desmarcar visualmente todas las demás filas en pantalla
                 document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
                     if (otraFila.dataset.id !== conv.id) {
                         const otroCheckbox = otraFila.querySelector(".input-activa");
@@ -111,7 +113,6 @@ function renderizarConvocatorias(lista) {
                 conv.activa = false;
             }
 
-            // Sincronizar la propiedad activa en el array global de datos
             lista.forEach(item => {
                 if (item.id === conv.id) {
                     item.activa = estaMarcado;
@@ -120,7 +121,6 @@ function renderizarConvocatorias(lista) {
                 }
             });
 
-            // Actualizar inmediatamente el panel lateral de socios
             actualizarPanelSocios(lista);
         });
 
@@ -137,7 +137,6 @@ function actualizarPanelSocios(lista) {
 
     if (!tituloCard || !listaCard) return;
 
-    // Buscar la convocatoria activa actual
     const activa = lista.find(c => c.activa === true);
 
     if (!activa) {
@@ -148,58 +147,6 @@ function actualizarPanelSocios(lista) {
 
     tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
 
-    const socios = activa.socios || activa.usuarios || [];
-
-    if (socios.length === 0) {
-        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados todavía.</li>`;
-        return;
-    }
-
-    listaCard.innerHTML = "";
-    socios.forEach((socio, index) => {
-        const li = document.createElement("li");
-        li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
-        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${typeof socio === 'string' ? socio : (socio.nombre || socio.email || 'Socio')}`;
-        listaCard.appendChild(li);
-    });
-}
-
-// Función para refrescar el panel lateral basándose en los inputs actuales en pantalla
-function actualizarPanelSociosEnVivo() {
-    const filas = document.querySelectorAll(".convocatoria-fila");
-    let convocatoriaActivaData = null;
-
-    filas.forEach(fila => {
-        const checkbox = fila.querySelector(".input-activa");
-        if (checkbox && checkbox.checked) {
-            convocatoriaActivaData = {
-                convocatoria: fila.querySelector(".input-convocatoria").value,
-                // Asumimos que podemos rescatar los socios si guardamos la estructura o haciendo recarga. 
-                // Para mantener los socios sincronizados con la fuente de datos real, lo ideal es refrescar o mapear.
-            };
-        }
-    });
-}
-
-// Función principal para poblar la tarjeta lateral de socios
-function actualizarPanelSocios(lista) {
-    const tituloCard = document.getElementById("tituloConvocatoriaActiva");
-    const listaCard = document.getElementById("listaSociosApuntados");
-
-    if (!tituloCard || !listaCard) return;
-
-    // Buscamos la convocatoria que tenga activa: true
-    const activa = lista.find(c => c.activa === true);
-
-    if (!activa) {
-        tituloCard.textContent = "Ninguna activa";
-        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>`;
-        return;
-    }
-
-    tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
-
-    // Comprobamos si tiene socios apuntados (asumiendo que vienen en un array o propiedad de socios, ej. activa.usuarios o activa.socios)
     const socios = activa.socios || activa.usuarios || [];
 
     if (socios.length === 0) {
@@ -241,7 +188,7 @@ async function guardarConvocatoria(id, filaElement) {
         });
 
         if (error) throw error;
-        if (response.error) throw new Error(response.error);
+        if (response && response.error) throw new Error(response.error);
 
         alert("¡Convocatoria actualizada correctamente!");
         await cargarConvocatorias();
@@ -258,7 +205,7 @@ async function aniadirNuevaConvocatoriaUI() {
         });
 
         if (error) throw error;
-        if (response.error) throw new Error(response.error);
+        if (response && response.error) throw new Error(response.error);
 
         await cargarConvocatorias();
     } catch (err) {
