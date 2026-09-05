@@ -147,7 +147,6 @@ function actualizarPanelSocios(lista) {
 
     tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
 
-    // Recogemos los usuarios/socios de la convocatoria (puede venir como 'users', 'socios' o 'usuarios')
     const sociosApuntados = activa.users || activa.socios || activa.usuarios || [];
 
     if (sociosApuntados.length === 0) {
@@ -160,12 +159,11 @@ function actualizarPanelSocios(lista) {
         const li = document.createElement("li");
         li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
         
-        // Extraemos el nombre dependiendo de cómo llegue la estructura tras el cruce con la tabla socios
         let nombreMostrar = "Socio";
         if (typeof socio === 'string') {
-            nombreMostrar = `Usuario ID: ${socio.substring(0, 8)}...`; // Si solo llega el UUID por ahora
+            nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
         } else if (socio) {
-            nombreMostrar = socio.nombre_completo || socio.nombre || socio.email || `${socio.nombre || ''} ${socio.apellidos || ''}`.trim() || "Socio";
+            nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
         }
 
         li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
