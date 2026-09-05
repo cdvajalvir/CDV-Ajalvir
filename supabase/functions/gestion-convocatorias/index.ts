@@ -12,14 +12,14 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
+    // 1. Cliente temporal solo para verificar que el usuario está autenticado
+    const authClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
-    // Validar que el usuario esté autenticado y tenga rol de administrador/directiva
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser()
+    const { data: { user }, error: authError } = await authClient.auth.getUser()
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'No autorizado' }), {
         status: 401,
@@ -27,11 +27,17 @@ serve(async (req) => {
       })
     }
 
+    // 2. Cliente con privilegios de servidor (Service Role) para operar en la BD sin RLS
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     const { action, payload } = await req.json()
 
-    // 1. CARGAR CONVOCATORIAS
+    // CARGAR CONVOCATORIAS
     if (action === 'cargar') {
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabaseAdmin
         .from('convocatorias')
         .select('*')
         .order('id', { ascending: false })
@@ -42,13 +48,12 @@ serve(async (req) => {
       })
     }
 
-    // 2. ACTUALIZAR CONVOCATORIA
+    // ACTUALIZAR CONVOCATORIA
     if (action === 'actualizar') {
       const { id, convocatoria, tipo_convocatoria, lugar, hora, comentarios, activa } = payload
 
-      // Si se marca como activa, desactivamos las demás primero
       if (activa) {
-        const { error: errDesactivar } = await supabaseClient
+        const { error: errDesactivar } = await supabaseAdmin
           .from('convocatorias')
           .update({ activa: false })
           .neq('id', id)
@@ -56,7 +61,7 @@ serve(async (req) => {
         if (errDesactivar) throw errDesactivar
       }
 
-      const { error } = await supabaseClient
+      const { error } = await supabaseAdmin
         .from('convocatorias')
         .update({ convocatoria, tipo_convocatoria, lugar, hora, comentarios, activa })
         .eq('id', id)
@@ -67,7 +72,7 @@ serve(async (req) => {
       })
     }
 
-    // 3. CREAR NUEVA CONVOCATORIA
+    // CREAR NUEVA CONVOCATORIA
     if (action === 'crear') {
       const nuevaConvocatoriaData = {
         convocatoria: "Nuevo Partido",
@@ -79,7 +84,7 @@ serve(async (req) => {
         tipo_convocatoria: "Oficial"
       }
 
-      const { error } = await supabaseClient
+      const { error } = await supabaseAdmin
         .from('convocatorias')
         .insert([nuevaConvocatoriaData])
 
