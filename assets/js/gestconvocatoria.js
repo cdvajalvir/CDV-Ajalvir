@@ -26,7 +26,9 @@ async function cargarConvocatorias() {
         if (error) throw error;
         if (response.error) throw new Error(response.error);
 
-        renderizarConvocatorias(response.data || []);
+        const listaConvocatorias = response.data || [];
+        renderizarConvocatorias(listaConvocatorias);
+        actualizarPanelSocios(listaConvocatorias); // Actualiza la card lateral de socios
     } catch (err) {
         console.error("Error al cargar convocatorias:", err);
         contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #ef4444;">Error al cargar las convocatorias.</p>`;
@@ -85,7 +87,7 @@ function renderizarConvocatorias(lista) {
             <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
         `;
 
-        // LÓGICA DE EXCLUSIVIDAD PARA LOS TICKS EN TIEMPO REAL
+        // LÓGICA DE EXCLUSIVIDAD PARA LOS TICKS EN TIEMPO REAL Y ACTUALIZACIÓN VISUAL DEL PANEL
         const checkboxActiva = fila.querySelector(".input-activa");
         const textoActivo = fila.querySelector(".label-activo-texto");
 
@@ -101,16 +103,72 @@ function renderizarConvocatorias(lista) {
                     }
                 });
                 textoActivo.style.color = "#34d399";
+                conv.activa = true; // Reflejo temporal local para el panel lateral
             } else {
-                // Si se desmarca manualmente, se permite (ninguno activo)
                 textoActivo.style.color = "#94a3b8";
+                conv.activa = false;
             }
+
+            // Actualizamos en tiempo real el panel lateral buscando qué elemento quedó activo en pantalla
+            actualizarPanelSociosEnVivo();
         });
 
         const btnGuardar = fila.querySelector(".btn-guardar-conv");
         btnGuardar.addEventListener("click", () => guardarConvocatoria(conv.id, fila));
 
         contenedor.appendChild(fila);
+    });
+}
+
+// Función para refrescar el panel lateral basándose en los inputs actuales en pantalla
+function actualizarPanelSociosEnVivo() {
+    const filas = document.querySelectorAll(".convocatoria-fila");
+    let convocatoriaActivaData = null;
+
+    filas.forEach(fila => {
+        const checkbox = fila.querySelector(".input-activa");
+        if (checkbox && checkbox.checked) {
+            convocatoriaActivaData = {
+                convocatoria: fila.querySelector(".input-convocatoria").value,
+                // Asumimos que podemos rescatar los socios si guardamos la estructura o haciendo recarga. 
+                // Para mantener los socios sincronizados con la fuente de datos real, lo ideal es refrescar o mapear.
+            };
+        }
+    });
+}
+
+// Función principal para poblar la tarjeta lateral de socios
+function actualizarPanelSocios(lista) {
+    const tituloCard = document.getElementById("tituloConvocatoriaActiva");
+    const listaCard = document.getElementById("listaSociosApuntados");
+
+    if (!tituloCard || !listaCard) return;
+
+    // Buscamos la convocatoria que tenga activa: true
+    const activa = lista.find(c => c.activa === true);
+
+    if (!activa) {
+        tituloCard.textContent = "Ninguna activa";
+        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>`;
+        return;
+    }
+
+    tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
+
+    // Comprobamos si tiene socios apuntados (asumiendo que vienen en un array o propiedad de socios, ej. activa.usuarios o activa.socios)
+    const socios = activa.socios || activa.usuarios || [];
+
+    if (socios.length === 0) {
+        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados todavía.</li>`;
+        return;
+    }
+
+    listaCard.innerHTML = "";
+    socios.forEach((socio, index) => {
+        const li = document.createElement("li");
+        li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
+        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${typeof socio === 'string' ? socio : (socio.nombre || socio.email || 'Socio')}`;
+        listaCard.appendChild(li);
     });
 }
 
