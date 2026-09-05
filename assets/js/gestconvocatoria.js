@@ -40,7 +40,7 @@ function renderizarConvocatorias(lista) {
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
-        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #94a3b8;">No hay convocatorias registradas.</p>`;
+        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #94a3b8;">No hay convocatorias registradas.</p>";
         return;
     }
 
@@ -87,30 +87,35 @@ function renderizarConvocatorias(lista) {
             <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
         `;
 
-        // LÓGICA DE EXCLUSIVIDAD PARA LOS TICKS EN TIEMPO REAL Y ACTUALIZACIÓN VISUAL DEL PANEL
+        // LÓGICA DE EXCLUSIVIDAD Y REFRESCO DEL PANEL DE SOCIOS EN TIEMPO REAL
         const checkboxActiva = fila.querySelector(".input-activa");
         const textoActivo = fila.querySelector(".label-activo-texto");
 
         checkboxActiva.addEventListener("change", () => {
-            if (checkboxActiva.checked) {
-                // Si este se marca, desmarcamos todos los demás visualmente en la pantalla
-                document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
-                    if (otraFila.dataset.id !== conv.id) {
-                        const otroCheckbox = otraFila.querySelector(".input-activa");
-                        const otroTexto = otraFila.querySelector(".label-activo-texto");
-                        if (otroCheckbox) otroCheckbox.checked = false;
-                        if (otroTexto) otroTexto.style.color = "#94a3b8";
-                    }
-                });
-                textoActivo.style.color = "#34d399";
-                conv.activa = true; // Reflejo temporal local para el panel lateral
-            } else {
-                textoActivo.style.color = "#94a3b8";
-                conv.activa = false;
-            }
+            // Actualizamos la propiedad activa en toda la lista localmente
+            lista.forEach(c => {
+                if (c.id === conv.id) {
+                    c.activa = checkboxActiva.checked;
+                } else if (checkboxActiva.checked) {
+                    c.activa = false; // Exclusividad: apagar las demás
+                }
+            });
 
-            // Actualizamos en tiempo real el panel lateral buscando qué elemento quedó activo en pantalla
-            actualizarPanelSociosEnVivo();
+            // Refrescamos visualmente los checkboxes y colores de todas las filas en pantalla
+            document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
+                const otroId = otraFila.dataset.id;
+                const otroCheckbox = otraFila.querySelector(".input-activa");
+                const otroTexto = otraFila.querySelector(".label-activo-texto");
+                
+                const itemData = lista.find(c => c.id === otroId);
+                if (itemData && otroCheckbox && otroTexto) {
+                    otroCheckbox.checked = itemData.activa;
+                    otroTexto.style.color = itemData.activa ? '#34d399' : '#94a3b8';
+                }
+            });
+
+            // Actualizamos inmediatamente el panel lateral con la nueva selección
+            actualizarPanelSocios(lista);
         });
 
         const btnGuardar = fila.querySelector(".btn-guardar-conv");
