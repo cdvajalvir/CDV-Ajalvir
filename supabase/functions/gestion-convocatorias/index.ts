@@ -37,7 +37,6 @@ serve(async (req) => {
 
     // CARGAR CONVOCATORIAS
     if (action === 'cargar') {
-      // 1. Cargamos las convocatorias
       const { data: convocatorias, error } = await supabaseAdmin
         .from('convocatorias')
         .select('*')
@@ -51,7 +50,7 @@ serve(async (req) => {
         })
       }
 
-      // 2. Extraer todos los UUIDs únicos de los arrays 'users' de todas las convocatorias
+      // Extraer todos los UUIDs únicos
       const allUuids: string[] = []
       convocatorias.forEach(conv => {
         if (Array.isArray(conv.users)) {
@@ -63,31 +62,33 @@ serve(async (req) => {
         }
       })
 
-      // 3. Si hay UUIDs, consultamos la tabla de socios para obtener sus nombres
+      // Consultar la tabla socios trayendo solo id, nombre y apellido
       let sociosMap = new Map()
       if (allUuids.length > 0) {
-        // Nota: Cambia 'socios' por el nombre real de tu tabla de usuarios/perfiles si es diferente (ej: 'profiles')
         const { data: sociosData, error: errSocios } = await supabaseAdmin
           .from('socios') 
-          .select('id, nombre, apellidos, email')
+          .select('id, nombre, apellido')
           .in('id', allUuids)
 
         if (!errSocios && sociosData) {
           sociosData.forEach((socio: any) => {
-            sociosMap.set(socio.id, socio)
+            sociosMap.set(socio.id, {
+              ...socio,
+              nombreCompleto: `${socio.nombre || ''} ${socio.apellido || ''}`.trim()
+            })
           })
         }
       }
 
-      // 4. Mapear los UUIDs de cada convocatoria a sus objetos de socio completos
+      // Mapear los UUIDs a los datos del socio
       const convocatoriasConNombres = convocatorias.map(conv => {
         const usuariosCompletos = Array.isArray(conv.users)
-          ? conv.users.map((id: string) => sociosMap.get(id) || { id, nombre: 'Socio', apellidos: '' })
+          ? conv.users.map((id: string) => sociosMap.get(id) || { id, nombreCompleto: 'Socio' })
           : []
 
         return {
           ...conv,
-          users: usuariosCompletos // Reemplazamos el array de UUIDs por el de objetos con nombre
+          users: usuariosCompletos
         }
       })
 
