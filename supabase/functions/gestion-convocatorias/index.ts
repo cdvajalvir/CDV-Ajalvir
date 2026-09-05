@@ -74,12 +74,21 @@ serve(async (req) => {
 
     // CREAR NUEVA CONVOCATORIA
     if (action === 'crear') {
+      // 1. Primero desactivamos todas las demás para que solo quede una activa
+      const { error: errDesactivar } = await supabaseAdmin
+        .from('convocatorias')
+        .update({ activa: false })
+        .neq('id', '00000000-0000-0000-0000-000000000000') // truco para afectar a todas
+
+      if (errDesactivar) throw errDesactivar
+
+      // 2. Creamos la nueva ya marcada como activa
       const nuevaConvocatoriaData = {
         convocatoria: `Nuevo Partido (${new Date().toLocaleDateString()})`,
         lugar: "Por determinar",
         hora: "10:00:00",
         comentarios: "",
-        activa: false,
+        activa: true, // <--- Nace marcada con el tick
         tipo_convocatoria: "Oficial"
       }
 
