@@ -40,7 +40,7 @@ function renderizarConvocatorias(lista) {
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
-        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #94a3b8;">No hay convocatorias registradas.</p>";
+        contenedor.innerHTML = `<p style="text-align: center; padding: 2rem; color: #94a3b8;">No hay convocatorias registradas.</p>`;
         return;
     }
 
@@ -87,34 +87,40 @@ function renderizarConvocatorias(lista) {
             <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
         `;
 
-        // LÓGICA DE EXCLUSIVIDAD Y REFRESCO DEL PANEL DE SOCIOS EN TIEMPO REAL
         const checkboxActiva = fila.querySelector(".input-activa");
         const textoActivo = fila.querySelector(".label-activo-texto");
 
+        // Lógica limpia de exclusividad para los ticks en pantalla
         checkboxActiva.addEventListener("change", () => {
-            // Actualizamos la propiedad activa en toda la lista localmente
-            lista.forEach(c => {
-                if (c.id === conv.id) {
-                    c.activa = checkboxActiva.checked;
-                } else if (checkboxActiva.checked) {
-                    c.activa = false; // Exclusividad: apagar las demás
+            const estaMarcado = checkboxActiva.checked;
+
+            if (estaMarcado) {
+                // Desmarcar visualmente todas las demás filas en pantalla
+                document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
+                    if (otraFila.dataset.id !== conv.id) {
+                        const otroCheckbox = otraFila.querySelector(".input-activa");
+                        const otroTexto = otraFila.querySelector(".label-activo-texto");
+                        if (otroCheckbox) otroCheckbox.checked = false;
+                        if (otroTexto) otroTexto.style.color = "#94a3b8";
+                    }
+                });
+                textoActivo.style.color = "#34d399";
+                conv.activa = true;
+            } else {
+                textoActivo.style.color = "#94a3b8";
+                conv.activa = false;
+            }
+
+            // Sincronizar la propiedad activa en el array global de datos
+            lista.forEach(item => {
+                if (item.id === conv.id) {
+                    item.activa = estaMarcado;
+                } else if (estaMarcado) {
+                    item.activa = false;
                 }
             });
 
-            // Refrescamos visualmente los checkboxes y colores de todas las filas en pantalla
-            document.querySelectorAll(".convocatoria-fila").forEach(otraFila => {
-                const otroId = otraFila.dataset.id;
-                const otroCheckbox = otraFila.querySelector(".input-activa");
-                const otroTexto = otraFila.querySelector(".label-activo-texto");
-                
-                const itemData = lista.find(c => c.id === otroId);
-                if (itemData && otroCheckbox && otroTexto) {
-                    otroCheckbox.checked = itemData.activa;
-                    otroTexto.style.color = itemData.activa ? '#34d399' : '#94a3b8';
-                }
-            });
-
-            // Actualizamos inmediatamente el panel lateral con la nueva selección
+            // Actualizar inmediatamente el panel lateral de socios
             actualizarPanelSocios(lista);
         });
 
@@ -122,6 +128,39 @@ function renderizarConvocatorias(lista) {
         btnGuardar.addEventListener("click", () => guardarConvocatoria(conv.id, fila));
 
         contenedor.appendChild(fila);
+    });
+}
+
+function actualizarPanelSocios(lista) {
+    const tituloCard = document.getElementById("tituloConvocatoriaActiva");
+    const listaCard = document.getElementById("listaSociosApuntados");
+
+    if (!tituloCard || !listaCard) return;
+
+    // Buscar la convocatoria activa actual
+    const activa = lista.find(c => c.activa === true);
+
+    if (!activa) {
+        tituloCard.textContent = "Ninguna activa";
+        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>`;
+        return;
+    }
+
+    tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
+
+    const socios = activa.socios || activa.usuarios || [];
+
+    if (socios.length === 0) {
+        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados todavía.</li>`;
+        return;
+    }
+
+    listaCard.innerHTML = "";
+    socios.forEach((socio, index) => {
+        const li = document.createElement("li");
+        li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
+        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${typeof socio === 'string' ? socio : (socio.nombre || socio.email || 'Socio')}`;
+        listaCard.appendChild(li);
     });
 }
 
