@@ -82,7 +82,7 @@ function renderizarConvocatorias(lista) {
             <!-- Fila Inferior: Fecha/Hora, Comentarios, Activa, Guardar -->
             <div class="convocatoria-fila-bottom">
                 <div class="campo-grupo">
-                    <label>Fecha / Hora (dd/mm/aa - xx:xx)</label>
+                    <label>Fecha (dd/mm/aa - hh:mm)</label>
                     <input type="text" class="input-hora" placeholder="ej. 12/09/26 - 09:00" value="${conv.hora || ''}">
                 </div>
 
