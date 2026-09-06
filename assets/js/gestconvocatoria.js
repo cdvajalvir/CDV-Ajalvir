@@ -54,41 +54,50 @@ function renderizarConvocatorias(lista) {
         fila.dataset.id = conv.id;
 
         fila.innerHTML = `
-            <div class="campo-grupo">
-                <label>Convocatoria</label>
-                <input type="text" class="input-convocatoria" value="${conv.convocatoria || ''}">
+            <!-- Fila Superior: Convocatoria, Tipo, Lugar -->
+            <div class="convocatoria-fila-top">
+                <div class="campo-grupo">
+                    <label>Convocatoria</label>
+                    <input type="text" class="input-convocatoria" value="${conv.convocatoria || ''}">
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Tipo</label>
+                    <select class="select-tipo">
+                        <option value="Oficial" ${conv.tipo_convocatoria === 'Oficial' ? 'selected' : ''}>Oficial</option>
+                        <option value="Amistoso" ${conv.tipo_convocatoria === 'Amistoso' ? 'selected' : ''}>Amistoso</option>
+                        <option value="Entrenamiento" ${conv.tipo_convocatoria === 'Entrenamiento' ? 'selected' : ''}>Entrenamiento</option>
+                    </select>
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Lugar</label>
+                    <input type="text" class="input-lugar" value="${conv.lugar || ''}">
+                </div>
+
+                <div></div>
+                <div></div>
             </div>
 
-            <div class="campo-grupo">
-                <label>Tipo</label>
-                <select class="select-tipo">
-                    <option value="Oficial" ${conv.tipo_convocatoria === 'Oficial' ? 'selected' : ''}>Oficial</option>
-                    <option value="Amistoso" ${conv.tipo_convocatoria === 'Amistoso' ? 'selected' : ''}>Amistoso</option>
-                    <option value="Entrenamiento" ${conv.tipo_convocatoria === 'Entrenamiento' ? 'selected' : ''}>Entrenamiento</option>
-                </select>
-            </div>
+            <!-- Fila Inferior: Fecha/Hora, Comentarios, Activa, Guardar -->
+            <div class="convocatoria-fila-bottom">
+                <div class="campo-grupo">
+                    <label>Fecha / Hora (dd/mm/aa - xx:xx)</label>
+                    <input type="text" class="input-hora" placeholder="ej. 12/09/26 - 09:00" value="${conv.hora || ''}">
+                </div>
 
-            <div class="campo-grupo">
-                <label>Lugar</label>
-                <input type="text" class="input-lugar" value="${conv.lugar || ''}">
-            </div>
+                <div class="campo-grupo">
+                    <label>Comentarios</label>
+                    <input type="text" class="input-comentarios" value="${conv.comentarios || ''}">
+                </div>
 
-            <div class="campo-grupo">
-                <label>Hora</label>
-                <input type="text" class="input-hora" value="${conv.hora || ''}">
-            </div>
+                <div class="toggle-activo-container" title="Marcar como convocatoria activa">
+                    <input type="checkbox" class="input-activa" ${conv.activa ? 'checked' : ''}>
+                    <span class="label-activo-texto" style="color: ${conv.activa ? '#34d399' : '#94a3b8'};">Activa</span>
+                </div>
 
-            <div class="campo-grupo">
-                <label>Comentarios</label>
-                <input type="text" class="input-comentarios" value="${conv.comentarios || ''}">
+                <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
             </div>
-
-            <div class="toggle-activo-container" title="Marcar como convocatoria activa">
-                <input type="checkbox" class="input-activa" ${conv.activa ? 'checked' : ''}>
-                <span class="label-activo-texto" style="color: ${conv.activa ? '#34d399' : '#94a3b8'};">Activa</span>
-            </div>
-
-            <button class="btn-guardar btn-guardar-conv" data-id="${conv.id}">Guardar</button>
         `;
 
         const checkboxActiva = fila.querySelector(".input-activa");
