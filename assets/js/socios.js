@@ -91,9 +91,14 @@ comprobarAcceso([
 
     // 5. Carga de la foto privada desde el bucket 'fotos-socios' de Supabase
     const imgElement = document.getElementById("fotoSocio");
+    
+    console.log("Valor de socio recibido:", socio); // <--- Nos mostrará todos los datos del usuario en la consola
+    console.log("Valor de socio.foto:", socio.foto); // <--- Nos dirá si tiene algo escrito o viene vacío/null
+
     if (socio.foto && imgElement) {
         try {
-            // Genera una URL firmada segura para el archivo (ej: '33.png') válida por 60 segundos
+            console.log("Intentando generar URL firmada para:", socio.foto);
+            
             const { data, error } = await supabaseClient.storage
                 .from("fotos-socios")
                 .createSignedUrl(socio.foto, 60);
@@ -101,12 +106,14 @@ comprobarAcceso([
             if (error) throw error;
 
             if (data && data.signedUrl) {
+                console.log("URL firmada generada con éxito:", data.signedUrl);
                 imgElement.src = data.signedUrl;
             }
         } catch (err) {
             console.error("Error al obtener la imagen privada del socio:", err);
-            // Si hay algún fallo, mantiene automáticamente la imagen por defecto
         }
+    } else {
+        console.warn("No se pudo ejecutar: o falta el elemento HTML 'fotoSocio' o 'socio.foto' está vacío.");
     }
 
 });
