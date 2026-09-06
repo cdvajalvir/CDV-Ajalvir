@@ -77,7 +77,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         data: convo, 
         estaApuntado: estaApuntado,
-        estaNoAsuntado: estaNoApuntado 
+        estaNoApuntado: estaNoApuntado 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
