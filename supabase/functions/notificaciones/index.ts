@@ -35,6 +35,7 @@ serve(async (req) => {
 
     const convo = convocatorias[0];
     const usersApuntados = Array.isArray(convo.users) ? convo.users : [];
+    const usersNook = Array.isArray(convo.users_nook) ? convo.users_nook : []; // <--- NUEVO: Obtenemos el array de no asistencias
 
     // 3. Obtener todas las suscripciones push guardadas
     const { data: suscripciones, error: subError } = await supabaseAdmin
@@ -50,13 +51,13 @@ serve(async (req) => {
       });
     }
 
-    // 4. Filtrar solo los socios que NO se han apuntado todavía
+    // 4. Filtrar los socios que NO se han apuntado Y que TAMPOCO han indicado que no pueden asistir
     const suscripcionesPendientes = suscripciones.filter(
-      (sub) => !usersApuntados.includes(sub.user_id)
+      (sub) => !usersApuntados.includes(sub.user_id) && !usersNook.includes(sub.user_id)
     );
 
     if (suscripcionesPendientes.length === 0) {
-      return new Response(JSON.stringify({ message: "Todos los socios ya han confirmado su asistencia." }), {
+      return new Response(JSON.stringify({ message: "Todos los socios ya han respondido a la convocatoria." }), {
         headers: { "Content-Type": "application/json" },
         status: 200,
       });
@@ -72,7 +73,7 @@ serve(async (req) => {
     const promesasEnvio = suscripcionesPendientes.map(async (item) => {
       try {
         await webpush.sendNotification(item.suscripcion, payload);
-      } catch (err) {
+      } catch (err: any) {
         console.error(`Error enviando push al usuario ${item.user_id}:`, err);
         // Si la suscripción ha expirado o el usuario la ha revocado, podemos limpiar la BD
         if (err.statusCode === 410 || err.statusCode === 404) {
@@ -94,7 +95,7 @@ serve(async (req) => {
       status: 200,
     });
 
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error crítico en la Edge Function:", err);
     return new Response(JSON.stringify({ error: err.message }), {
       headers: { "Content-Type": "application/json" },
