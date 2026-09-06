@@ -68,9 +68,12 @@ async function cargarProximaConvocatoria() {
                             Total jugadores confirmados: <strong id="contadorConfirmados">${usersArray.length}</strong>
                         </p>
                     </div>
-                    <div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                         <button id="btnAsistencia" class="btn ${estaApuntado ? 'btn-secondary' : 'btn-primary'}">
-                            ${estaApuntado ? '❌ No podré asistir / Cancelar' : '✅ Confirmar mi asistencia'}
+                            ${estaApuntado ? '❌ Cancelar asistencia' : '✅ Confirmar mi asistencia'}
+                        </button>
+                        <button id="btnNoAsistencia" class="btn ${estaNoAsuntado ? 'btn-secondary' : 'btn-outline'}" style="${estaNoAsuntado ? '' : 'background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff;'}">
+                            ${estaNoAsuntado ? '↩️ Borrar "No puedo ir"' : '❌ No puedo asistir'}
                         </button>
                     </div>
                 </div>
