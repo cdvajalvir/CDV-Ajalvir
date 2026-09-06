@@ -36,9 +36,6 @@ async function cargarProximaConvocatoria() {
         }
 
         const usersArray = Array.isArray(convo.users) ? convo.users : [];
-        const estaApuntado = response.estaApuntado; // Lo calculamos directamente en el backend de forma segura
-
-        const usersArray = Array.isArray(convo.users) ? convo.users : [];
         const usersNookArray = Array.isArray(convo.users_nook) ? convo.users_nook : [];
         
         const estaApuntado = response.estaApuntado; 
