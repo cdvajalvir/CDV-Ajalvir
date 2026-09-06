@@ -75,7 +75,7 @@ async function cargarProximaConvocatoria() {
                         <button id="btnAsistencia" class="btn ${estaApuntado ? 'btn-secondary' : 'btn-primary'}">
                             ${estaApuntado ? '❌ Cancelar asistencia' : '✅ Confirmar mi asistencia'}
                         </button>
-                        <button id="btnAsistencia" class="btn ${estaNoApuntado ? 'btn-secondary' : 'btn-primary'}">
+                        <button id="btnNoAsistencia" class="btn ${estaNoApuntado ? 'btn-secondary' : 'btn-primary'}">
                             ${estaNoApuntado ? '↩️ Borrar "No puedo ir"' : '❌ No puedo asistir'}
                         </button>
                     </div>
