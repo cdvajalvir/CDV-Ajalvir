@@ -1,5 +1,6 @@
 // assets/js/socios.js
 
+import { supabaseClient } from "./supabase.js"; // <--- Importante para conectar con el storage
 import { inicializarControlNotificaciones } from "./notificaciones.js";
 
 // Ejecutamos la función de las notificaciones al cargar el script
@@ -25,7 +26,7 @@ comprobarAcceso([
     "administrador",
     "directiva",
     "socio"
-], (socio) => {
+], async (socio) => { // <--- Añadido 'async' para permitir await
 
     document.getElementById("nombreSocio").textContent =
         socio.nombre ||
@@ -52,7 +53,6 @@ comprobarAcceso([
 
     // Si viene como un objeto único en lugar de array (por el tipo jsonb de la tabla)
     if (cuotasArray && !Array.isArray(cuotasArray) && typeof cuotasArray === "object") {
-        // Lo convertimos en un array de los valores del objeto
         cuotasArray = Object.values(cuotasArray);
     }
 
@@ -73,10 +73,8 @@ comprobarAcceso([
     const cuotaPendienteElem = document.getElementById("cuotaPendiente");
 
     if (estadoCuotaElem && cuotaPendienteElem) {
-        // Muestra en grande la cantidad pagada (ej: 100 €)
         estadoCuotaElem.querySelector("span").textContent = `${pagado} €`;
         
-        // Muestra al día o el importe pendiente calculado
         if (pendiente > 0) {
             cuotaPendienteElem.textContent = `(${pendiente} € pendiente)`;
             cuotaPendienteElem.style.color = "#d9534f"; // Rojo alerta
@@ -91,10 +89,24 @@ comprobarAcceso([
     document.getElementById("dorsalSocio").textContent =
         dorsalTexto !== "" ? dorsalTexto : "-";
 
-    // 5. Foto personalizada del socio
+    // 5. Carga de la foto privada desde el bucket 'fotos-socios' de Supabase
     const imgElement = document.getElementById("fotoSocio");
     if (socio.foto && imgElement) {
-        imgElement.src = `../assets/img/${socio.foto}`;
+        try {
+            // Genera una URL firmada segura para el archivo (ej: '33.png') válida por 60 segundos
+            const { data, error } = await supabaseClient.storage
+                .from("fotos-socios")
+                .createSignedUrl(socio.foto, 60);
+
+            if (error) throw error;
+
+            if (data && data.signedUrl) {
+                imgElement.src = data.signedUrl;
+            }
+        } catch (err) {
+            console.error("Error al obtener la imagen privada del socio:", err);
+            // Si hay algún fallo, mantiene automáticamente la imagen por defecto
+        }
     }
 
 });
