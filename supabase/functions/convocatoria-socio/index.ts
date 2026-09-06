@@ -62,7 +62,7 @@ serve(async (req) => {
       if (error) throw error
 
       if (!convocatorias || convocatorias.length === 0) {
-        return new Response(JSON.stringify({ data: null, estaApuntado: false, estaNoAsuntado: false }), {
+        return new Response(JSON.stringify({ data: null, estaApuntado: false, estaNoApuntado: false }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })
       }
@@ -72,12 +72,12 @@ serve(async (req) => {
       const usersNookArray = Array.isArray(convo.users_nook) ? convo.users_nook : []
       
       const estaApuntado = usersArray.includes(userId)
-      const estaNoAsuntado = usersNookArray.includes(userId)
+      const estaNoApuntado = usersNookArray.includes(userId)
 
       return new Response(JSON.stringify({ 
         data: convo, 
         estaApuntado: estaApuntado,
-        estaNoAsuntado: estaNoAsuntado 
+        estaNoAsuntado: estaNoApuntado 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
