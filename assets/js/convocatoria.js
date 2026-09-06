@@ -39,7 +39,7 @@ async function cargarProximaConvocatoria() {
         const usersNookArray = Array.isArray(convo.users_nook) ? convo.users_nook : [];
         
         const estaApuntado = response.estaApuntado; 
-        const estaNoApuntado = response.estaNoApuntado; // <--- Añadido aquí para que no de error
+        const estaNoApuntado = response.estaNoApuntado;
 
         contenedor.innerHTML = `
             <article class="convocatoria-card">
@@ -85,14 +85,16 @@ async function cargarProximaConvocatoria() {
         `;
 
         const btnAsistencia = document.getElementById("btnAsistencia");
+        const btnNoAsistencia = document.getElementById("btnNoAsistencia");
         const mensajeAsistencia = document.getElementById("mensajeAsistencia");
 
+        // Evento para Confirmar Asistencia (Sí voy)
         btnAsistencia.addEventListener("click", async () => {
             btnAsistencia.disabled = true;
+            btnNoAsistencia.disabled = true;
             btnAsistencia.textContent = "Actualizando...";
 
             try {
-                // Llamamos a la Edge Function para alternar la asistencia del socio de forma segura
                 const { data: updateResp, error: updateError } = await supabaseClient.functions.invoke('convocatoria-socio', {
                     body: { 
                         action: 'toggle_asistencia',
@@ -115,7 +117,42 @@ async function cargarProximaConvocatoria() {
                 mensajeAsistencia.style.color = "#ef4444";
                 mensajeAsistencia.textContent = `Error: ${err.message}`;
                 btnAsistencia.disabled = false;
-                btnAsistencia.textContent = estaApuntado ? '❌ No podré asistir / Cancelar' : '✅ Confirmar mi asistencia';
+                btnNoAsistencia.disabled = false;
+                btnAsistencia.textContent = estaApuntado ? '❌ Cancelar asistencia' : '✅ Confirmar mi asistencia';
+            }
+        });
+
+        // Evento para No Asistencia (No puedo ir) - <--- ESTO ES LO QUE FALTABA
+        btnNoAsistencia.addEventListener("click", async () => {
+            btnAsistencia.disabled = true;
+            btnNoAsistencia.disabled = true;
+            btnNoAsistencia.textContent = "Actualizando...";
+
+            try {
+                const { data: updateResp, error: updateError } = await supabaseClient.functions.invoke('convocatoria-socio', {
+                    body: { 
+                        action: 'toggle_no_asistencia',
+                        payload: { convocatoriaId: convo.id }
+                    }
+                });
+
+                if (updateError) throw updateError;
+                if (updateResp && updateResp.error) throw new Error(updateResp.error);
+
+                mensajeAsistencia.style.color = "#34d399";
+                mensajeAsistencia.textContent = updateResp.noApuntado ? "Registrado: No podrás asistir." : "Has borrado tu estado de no asistencia.";
+
+                setTimeout(() => {
+                    cargarProximaConvocatoria();
+                }, 1000);
+
+            } catch (err) {
+                console.error("Error al actualizar no asistencia:", err);
+                mensajeAsistencia.style.color = "#ef4444";
+                mensajeAsistencia.textContent = `Error: ${err.message}`;
+                btnAsistencia.disabled = false;
+                btnNoAsistencia.disabled = false;
+                btnNoAsistencia.textContent = estaNoApuntado ? '↩️ Borrar "No puedo ir"' : '❌ No puedo asistir';
             }
         });
 
