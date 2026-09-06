@@ -38,6 +38,12 @@ async function cargarProximaConvocatoria() {
         const usersArray = Array.isArray(convo.users) ? convo.users : [];
         const estaApuntado = response.estaApuntado; // Lo calculamos directamente en el backend de forma segura
 
+        const usersArray = Array.isArray(convo.users) ? convo.users : [];
+        const usersNookArray = Array.isArray(convo.users_nook) ? convo.users_nook : [];
+        
+        const estaApuntado = response.estaApuntado; 
+        const estaNoApuntado = response.estaNoApuntado; // <--- Añadido aquí para que no de error
+
         contenedor.innerHTML = `
             <article class="convocatoria-card">
                 <h2 style="margin-top: 0; color: #fff; font-size: 1.5rem; margin-bottom: 1rem;">
@@ -72,7 +78,7 @@ async function cargarProximaConvocatoria() {
                         <button id="btnAsistencia" class="btn ${estaApuntado ? 'btn-secondary' : 'btn-primary'}">
                             ${estaApuntado ? '❌ Cancelar asistencia' : '✅ Confirmar mi asistencia'}
                         </button>
-                        <button id="btnNoAsistencia" class="btn ${estaNoAsuntado ? 'btn-secondary' : 'btn-outline'}" style="${estaNoAsuntado ? '' : 'background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff;'}">
+                        <button id="btnNoAsistencia" class="btn ${estaNoApuntado ? 'btn-secondary' : 'btn-outline'}" style="${estaNoApuntado ? '' : 'background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff;'}">
                             ${estaNoAsuntado ? '↩️ Borrar "No puedo ir"' : '❌ No puedo asistir'}
                         </button>
                     </div>
