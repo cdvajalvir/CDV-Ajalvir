@@ -33,8 +33,15 @@
         }
 
         //* Empuja los botones de gestión completamente a la derecha */
+        .btn-prox-evento,
+        .btn-gest-cuotas,
+        .btn-gest-socios {
+            margin-left: 0; /* Sin empuje a la derecha */
+        }
+
+        /* Pequeña separación opcional entre ellos si lo deseas */
         .btn-prox-evento {
-            margin-left: auto;
+            margin-left: 0.5rem; 
         }
 
         .btn-gest-cuotas {
@@ -46,6 +53,9 @@
         }
 
         @media (max-width: 600px) {
+            .form-actions {
+                flex-wrap: wrap;
+            }
             .btn-prox-evento,
             .btn-gest-cuotas,
             .btn-gest-socios {
