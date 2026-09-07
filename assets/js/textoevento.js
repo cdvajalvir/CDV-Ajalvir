@@ -35,23 +35,22 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    let eventoId = null;
+    // ID fijo del registro único en la tabla p_evento
+    const EVENTO_ID = 4;
 
-    // Cargar el texto actual de la tabla p_evento
+    // 1. Cargar el texto actual al abrir la página
     async function cargarTextoActual() {
         try {
             const { data, error } = await supabaseClient
                 .from("p_evento")
-                .select("id, texto")
-                .limit(1);
+                .select("texto")
+                .eq("id", EVENTO_ID)
+                .single();
 
             if (error) throw error;
 
-            if (data && data.length > 0) {
-                eventoId = data[0].id; // <-- ¡Aquí estaba el fallo! Ahora cogemos data[0].id correctamente
-                if (inputTexto) {
-                    inputTexto.value = data[0].texto || ""; // <-- Y aquí data[0].texto
-                }
+            if (data && inputTexto) {
+                inputTexto.value = data.texto || "";
             }
         } catch (err) {
             console.error("Error al cargar el texto:", err);
@@ -60,7 +59,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await cargarTextoActual();
 
-    // Actualizar siempre el registro único existente
+    // 2. Al pulsar publicar, actualizamos directamente el registro con ID 4
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -70,14 +69,10 @@ window.addEventListener("DOMContentLoaded", async () => {
             try {
                 mostrarMensaje("Publicando cambios...");
 
-                if (!eventoId) {
-                    throw new Error("No se encuentra el registro del evento en la base de datos.");
-                }
-
                 const { error } = await supabaseClient
                     .from("p_evento")
                     .update({ texto: textoPublicar })
-                    .eq("id", eventoId);
+                    .eq("id", EVENTO_ID);
 
                 if (error) throw error;
 
