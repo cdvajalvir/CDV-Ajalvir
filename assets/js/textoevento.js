@@ -23,5 +23,10 @@ async function verificarPermisoAdmin() {
 verificarPermisoAdmin();
 
 window.addEventListener("DOMContentLoaded", () => {
-    // Lógica que programaremos a continuación
+    const navLinksContainer = document.querySelector("[data-nav-links]");
+    if (navLinksContainer) {
+        navLinksContainer.innerHTML = `
+            <a href="administracion.html" style="font-weight: bold; color: var(--color-primary, #fbbf24);">Administración</a>
+        `;
+    }
 });
