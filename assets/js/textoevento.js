@@ -48,9 +48,9 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (error) throw error;
 
             if (data && data.length > 0) {
-                eventoId = data.id; // <-- Corregido aquí para apuntar al primer elemento del array
+                eventoId = data[0].id; // <-- ¡Aquí estaba el fallo! Ahora cogemos data[0].id correctamente
                 if (inputTexto) {
-                    inputTexto.value = data.texto || "";
+                    inputTexto.value = data[0].texto || ""; // <-- Y aquí data[0].texto
                 }
             }
         } catch (err) {
