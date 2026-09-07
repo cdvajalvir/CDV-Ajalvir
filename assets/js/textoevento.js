@@ -36,18 +36,22 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Cargar el texto actual de la tabla p_evento
+    let eventoId = null;
+
     async function cargarTextoActual() {
         try {
             const { data, error } = await supabaseClient
                 .from("p_evento")
-                .select("texto")
-                .order("created_at", { ascending: false })
+                .select("id, texto")
                 .limit(1);
 
             if (error) throw error;
 
-            if (data && data.length > 0 && inputTexto) {
-                inputTexto.value = data[0].texto || "";
+            if (data && data.length > 0) {
+                eventoId = data.id; // Guardamos el ID del registro único
+                if (inputTexto) {
+                    inputTexto.value = data.texto || "";
+                }
             }
         } catch (err) {
             console.error("Error al cargar el texto:", err);
@@ -56,7 +60,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await cargarTextoActual();
 
-    // Guardar / Publicar nuevo texto
+    // Actualizar el texto existente en lugar de insertar
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -66,9 +70,23 @@ window.addEventListener("DOMContentLoaded", async () => {
             try {
                 mostrarMensaje("Publicando cambios...");
 
-                const { error } = await supabaseClient
-                    .from("p_evento")
-                    .insert([{ texto: textoPublicar }]);
+                let query = supabaseClient.from("p_evento");
+
+                if (eventoId) {
+                    // Si ya existe el registro único, actualizamos por ID
+                    var { error } = await query
+                        .update({ texto: textoPublicar })
+                        .eq("id", eventoId);
+                } else {
+                    // Si por algún motivo la tabla estuviera vacía, insertamos la primera vez
+                    var { data: newData, error } = await query
+                        .insert([{ texto: textoPublicar }])
+                        .select();
+                    
+                    if (newData && newData.length > 0) {
+                        eventoId = newData.id;
+                    }
+                }
 
                 if (error) throw error;
 
