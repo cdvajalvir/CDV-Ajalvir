@@ -48,9 +48,9 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (error) throw error;
 
             if (data && data.length > 0) {
-                eventoId = data[0].id; // Capturamos el ID del registro único
+                eventoId = data.id; // <-- Corregido aquí para apuntar al primer elemento del array
                 if (inputTexto) {
-                    inputTexto.value = data[0].texto || "";
+                    inputTexto.value = data.texto || "";
                 }
             }
         } catch (err) {
@@ -74,7 +74,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                     throw new Error("No se encuentra el registro del evento en la base de datos.");
                 }
 
-                // Ejecutamos el UPDATE respaldado por la política RLS que tienes en Supabase
                 const { error } = await supabaseClient
                     .from("p_evento")
                     .update({ texto: textoPublicar })
