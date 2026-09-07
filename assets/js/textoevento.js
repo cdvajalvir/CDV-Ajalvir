@@ -35,9 +35,9 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Cargar el texto actual de la tabla p_evento
     let eventoId = null;
 
+    // Cargar el texto actual de la tabla p_evento
     async function cargarTextoActual() {
         try {
             const { data, error } = await supabaseClient
@@ -48,9 +48,9 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (error) throw error;
 
             if (data && data.length > 0) {
-                eventoId = data.id; // Guardamos el ID del registro único
+                eventoId = data[0].id; // Capturamos el ID del registro único
                 if (inputTexto) {
-                    inputTexto.value = data.texto || "";
+                    inputTexto.value = data[0].texto || "";
                 }
             }
         } catch (err) {
@@ -60,7 +60,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await cargarTextoActual();
 
-    // Actualizar el texto existente en lugar de insertar
+    // Actualizar siempre el registro único existente
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -70,23 +70,15 @@ window.addEventListener("DOMContentLoaded", async () => {
             try {
                 mostrarMensaje("Publicando cambios...");
 
-                let query = supabaseClient.from("p_evento");
-
-                if (eventoId) {
-                    // Si ya existe el registro único, actualizamos por ID
-                    var { error } = await query
-                        .update({ texto: textoPublicar })
-                        .eq("id", eventoId);
-                } else {
-                    // Si por algún motivo la tabla estuviera vacía, insertamos la primera vez
-                    var { data: newData, error } = await query
-                        .insert([{ texto: textoPublicar }])
-                        .select();
-                    
-                    if (newData && newData.length > 0) {
-                        eventoId = newData.id;
-                    }
+                if (!eventoId) {
+                    throw new Error("No se encuentra el registro del evento en la base de datos.");
                 }
+
+                // Ejecutamos el UPDATE respaldado por la política RLS que tienes en Supabase
+                const { error } = await supabaseClient
+                    .from("p_evento")
+                    .update({ texto: textoPublicar })
+                    .eq("id", eventoId);
 
                 if (error) throw error;
 
