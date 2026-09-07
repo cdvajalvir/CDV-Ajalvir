@@ -52,6 +52,8 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
         } else if (pathName.includes("cuotas.html")) {
             renderizarMenuUnicoCuotas(contenedorNav, basePath);
+        } else if (pathName.includes("textoevento.html")) {
+            renderizarMenuUnicoTextoEvento(contenedorNav, basePath);
         } else if (pathName.includes("activasocio.html")) { // <--- FALTA ESTE BLOQUE
             renderizarMenuUnicoActivaSocios(contenedorNav, basePath); // <---
         } else if (pathName.includes("administracion.html")) {
@@ -172,6 +174,13 @@ function configurarBotonLogout(basePath) {
 }
 
 function renderizarMenuUnicoCuotas(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="${basePath}admin/administracion.html">Administración</a>
+    `;
+    configurarBotonLogout(basePath);
+}
+
+function renderizarMenuUnicoTextoEvento(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="${basePath}admin/administracion.html">Administración</a>
     `;
