@@ -34,7 +34,31 @@
             <p class="lead">Configura el mensaje en Proximo evento de la pagina inicial.</p>
         </section>
 
-        <!-- Aquí añadiremos el contenido que me digas en el siguiente paso -->
+        <section class="app-layout-single">
+            <div class="content-grid">
+                <article class="card wide">
+                    <h3>Texto del Próximo Evento</h3>
+
+                    <form class="form" id="formTextoEvento" style="display: flex; flex-direction: column; gap: 1.25rem;">
+
+                        <div class="form-group" style="display: flex; flex-direction: column; gap: 0.35rem;">
+                            <label for="texto_evento">Mensaje / Anuncio del Próximo Evento *</label>
+                            <textarea class="input" id="texto_evento" rows="7" required placeholder="Escribe aquí el texto detallado para el próximo evento de la página de inicio..."></textarea>
+                        </div>
+
+                        <div class="form-actions" style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                            <a class="btn btn-secondary" href="administracion.html">Volver a Administración</a>
+                            <button class="btn btn-primary" type="submit" style="margin-left: auto;">Publicar</button>
+                        </div>
+
+                        <div>
+                            <p id="mensajeEstadoEvento"></p>
+                        </div>
+
+                    </form>
+                </article>
+            </div>
+        </section>
 
     </main>
 
