@@ -35,22 +35,24 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // ID fijo del registro único en la tabla p_evento
-    const EVENTO_ID = 4;
+    let eventoId = null;
 
-    // 1. Cargar el texto actual al abrir la página
+    // 1. Cargar el texto actual de forma segura sin .single() para evitar el error PGRST116
     async function cargarTextoActual() {
         try {
             const { data, error } = await supabaseClient
                 .from("p_evento")
-                .select("texto")
-                .eq("id", EVENTO_ID)
-                .single();
+                .select("id, texto")
+                .order("id", { ascending: false })
+                .limit(1);
 
             if (error) throw error;
 
-            if (data && inputTexto) {
-                inputTexto.value = data.texto || "";
+            if (data && data.length > 0) {
+                eventoId = data[0].id; // Capturamos el ID real que venga de la base de datos
+                if (inputTexto) {
+                    inputTexto.value = data[0].texto || "";
+                }
             }
         } catch (err) {
             console.error("Error al cargar el texto:", err);
@@ -59,7 +61,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     await cargarTextoActual();
 
-    // 2. Al pulsar publicar, actualizamos directamente el registro con ID 4
+    // 2. Al pulsar publicar, actualizamos el registro usando el ID capturado
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -69,10 +71,14 @@ window.addEventListener("DOMContentLoaded", async () => {
             try {
                 mostrarMensaje("Publicando cambios...");
 
+                if (!eventoId) {
+                    throw new Error("No se ha detectado ningún registro en la tabla p_evento.");
+                }
+
                 const { error } = await supabaseClient
                     .from("p_evento")
                     .update({ texto: textoPublicar })
-                    .eq("id", EVENTO_ID);
+                    .eq("id", eventoId);
 
                 if (error) throw error;
 
