@@ -7,32 +7,29 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Forzamos que el body permita apilar el login y el footer correctamente en móviles */
         body.login-body {
             display: flex;
             flex-direction: column;
-            min-height: 100dvh; /* Usa dvh para evitar el salto de la barra de Safari en iPhone */
-            justify-content: space-between;
+            min-height: 100dvh;
+            justify-content: space-between; /* Distribuye espacio */
             align-items: center;
             margin: 0;
-            padding: 1.5rem 1rem; /* Añadimos padding para que nunca pegue contra los bordes */
+            padding: 2rem 1rem 1.5rem 1rem; /* Margen superior holgado para que empiece arriba */
             box-sizing: border-box;
         }
         .login-card {
             width: 100%;
-            max-width: 400px; /* Asegura un ancho óptimo en móviles */
-            margin-top: auto;
-            margin-bottom: auto; /* Centra la tarjeta si sobra espacio vertical */
+            max-width: 400px;
+            margin-top: 1rem; /* Posiciona la tarjeta en la parte alta en lugar de centrarla a la fuerza */
+            margin-bottom: auto; 
         }
         .site-footer {
             width: 100%; 
-            margin-top: 2rem; /* Separación prudente respecto a la tarjeta */
+            margin-top: 2rem; 
         }
     </style>
 </head>
 <body class="login-body">
-
-    <div></div> <!-- Espaciador superior invisible para equilibrar el centrado de la tarjeta -->
 
     <main class="login-card">
         <img class="login-logo" src="assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
