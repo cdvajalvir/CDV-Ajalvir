@@ -72,24 +72,32 @@ form.addEventListener("submit", async (event) => {
       return;
     }
 
-    // --- INCREMENTAR VISITAS AL HACER LOGIN EXITOSO ---
+    // --- INCREMENTAR VISITAS DE FORMA BLINDADA ---
     try {
-        // Obtenemos las visitas actuales (si es null o undefined, partimos de 0)
-        const visitasActuales = socio.visitas ? socio.visitas : 0;
-        
-        // Actualizamos la tabla socios sumando 1
-        const { error: visitaError } = await supabaseClient
+        // 1. Consultamos el valor real directamente de la tabla socios
+        const { data: socioDb, error: fetchError } = await supabaseClient
             .from("socios")
-            .update({ visitas: visitasActuales + 1 })
-            .eq("id", data.user.id);
+            .select("visitas")
+            .eq("id", data.user.id)
+            .single();
 
-        if (visitaError) {
-            console.error("No se pudo actualizar el contador de visitas:", visitaError);
+        if (!fetchError && socioDb) {
+            const visitasActuales = socioDb.visitas ? socioDb.visitas : 0;
+            
+            // 2. Actualizamos sumando 1 al valor real obtenido
+            const { error: visitaError } = await supabaseClient
+                .from("socios")
+                .update({ visitas: visitasActuales + 1 })
+                .eq("id", data.user.id);
+
+            if (visitaError) {
+                console.error("No se pudo actualizar el contador de visitas:", visitaError);
+            }
         }
     } catch (visitaErr) {
         console.error("Error en el proceso de incremento de visitas:", visitaErr);
     }
-    // --------------------------------------------------
+    // ---------------------------------------------
 
     if (socio.rol === "administrador") 
       window.location.href = "admin/administracion.html";
