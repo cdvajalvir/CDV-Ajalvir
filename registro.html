@@ -15,6 +15,7 @@
             padding: 1.5rem 1rem 3rem 1rem;
             box-sizing: border-box;
             background-color: #f4f6f8;
+            overscroll-behavior-y: none; /* Frena el rebote elástico en móviles */
         }
 
         /* Tarjeta compacta y centrada */
@@ -52,7 +53,7 @@
             text-align: left;
         }
 
-        /* Estilo para las filas dobles (Nombre / Apellidos) */
+        /* Estilo para las filas dobles (Nombre/Apellidos y DNI/Teléfono) */
         .form-row {
             display: flex;
             gap: 0.5rem;
@@ -73,6 +74,8 @@
         .login-form input {
             padding: 0.45rem 0.5rem;
             font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .login-form button {
@@ -115,14 +118,21 @@
                 </div>
             </div>
 
-            <label for="dni">DNI o NIE</label>
-            <input type="text" id="dni" required placeholder="00000000X" autocomplete="off">
+            <!-- Fila doble para DNI y Teléfono -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dni">DNI o NIE</label>
+                    <input type="text" id="dni" required placeholder="00000000X" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" required placeholder="600000000" autocomplete="tel">
+                </div>
+            </div>
 
             <label for="email">Email</label>
             <input type="email" id="email" required placeholder="correo@ejemplo.com" autocomplete="email">
-
-            <label for="telefono">Teléfono</label>
-            <input type="tel" id="telefono" required placeholder="600000000" autocomplete="tel">
 
             <label for="password">Contraseña</label>
             <input type="password" id="password" required placeholder="Contraseña" autocomplete="new-password">
