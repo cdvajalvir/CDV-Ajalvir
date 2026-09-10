@@ -72,6 +72,25 @@ form.addEventListener("submit", async (event) => {
       return;
     }
 
+    // --- INCREMENTAR VISITAS AL HACER LOGIN EXITOSO ---
+    try {
+        // Obtenemos las visitas actuales (si es null o undefined, partimos de 0)
+        const visitasActuales = socio.visitas ? socio.visitas : 0;
+        
+        // Actualizamos la tabla socios sumando 1
+        const { error: visitaError } = await supabaseClient
+            .from("socios")
+            .update({ visitas: visitasActuales + 1 })
+            .eq("id", data.user.id);
+
+        if (visitaError) {
+            console.error("No se pudo actualizar el contador de visitas:", visitaError);
+        }
+    } catch (visitaErr) {
+        console.error("Error en el proceso de incremento de visitas:", visitaErr);
+    }
+    // --------------------------------------------------
+
     if (socio.rol === "administrador") 
       window.location.href = "admin/administracion.html";
     else if (socio.rol === "directiva") 
