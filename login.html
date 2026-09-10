@@ -7,25 +7,71 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Convertimos el body en un contenedor de flujo normal con scroll nativo fluido */
+        /* Estilos generales del body (los del paso anterior) */
         body.login-body {
-            display: block; /* Quitamos el flex estricto para evitar bloqueos en iOS */
+            display: block;
             min-height: 100dvh;
             margin: 0;
-            padding: 2rem 1rem 3rem 1rem; /* Margen superior e inferior generoso */
+            padding: 1.5rem 1rem 2rem 1rem;
             box-sizing: border-box;
-            background-color: #f4f6f8; /* Asegura un fondo consistente si scrisa */
+            background-color: #f4f6f8;
         }
 
-        /* Centramos la tarjeta horizontalmente y le damos espacio natural */
         .login-card {
             width: 100%;
-            max-width: 400px;
-            margin: 0 auto; /* Centrado horizontal automático */
-            margin-bottom: 3rem; /* Espacio holgado antes del footer */
+            max-width: 380px; /* Ligeramente más estrecha y recogida */
+            margin: 0 auto;
+            margin-bottom: 2rem;
+            text-align: center;
         }
 
-        /* Footer situado de forma natural al final del flujo */
+        /* 1. Reducir el tamaño del escudo a la mitad (ajusta los píxeles a tu gusto) */
+        .login-logo {
+            max-height: 65px; /* Altura máxima reducida */
+            width: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 2. Compactar títulos y textos */
+        .login-card h1 {
+            font-size: 1.3rem;
+            margin: 0 0 0.2rem 0;
+        }
+
+        .login-card > p {
+            font-size: 0.9rem;
+            margin: 0 0 1rem 0;
+            color: #666;
+        }
+
+        /* 3. Juntar los campos del formulario, etiquetas y botones */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem; /* Reduce drásticamente la separación entre elementos del formulario */
+            text-align: left;
+        }
+
+        .login-form label {
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .login-form input {
+            padding: 0.5rem; /* Inputs un poco más compactos en altura */
+            font-size: 0.95rem;
+        }
+
+        .login-form button {
+            margin-top: 0.8rem;
+            padding: 0.6rem;
+        }
+
+        /* Enlaces inferiores más compactos */
+        .login-card p a {
+            font-size: 0.85rem;
+        }
+
         .site-footer {
             width: 100%;
             max-width: 800px;
