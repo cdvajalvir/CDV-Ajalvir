@@ -141,8 +141,13 @@ function renderizarConvocatorias(lista) {
 }
 
 function actualizarPanelSocios(lista) {
+    // Referencias Apuntados
     const tituloCard = document.getElementById("tituloConvocatoriaActiva");
     const listaCard = document.getElementById("listaSociosApuntados");
+
+    // Referencias Indisponibles (NUEVO)
+    const tituloCardNook = document.getElementById("tituloConvocatoriaIndisponibles");
+    const listaCardNook = document.getElementById("listaSociosIndisponibles");
 
     if (!tituloCard || !listaCard) return;
 
@@ -151,33 +156,61 @@ function actualizarPanelSocios(lista) {
     if (!activa) {
         tituloCard.textContent = "Ninguna activa";
         listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>`;
+        
+        if (tituloCardNook) tituloCardNook.textContent = "Ninguna activa";
+        if (listaCardNook) listaCardNook.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los indisponibles.</li>`;
         return;
     }
 
+    // 1. Panel de Apuntados
     tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
-
     const sociosApuntados = activa.users || activa.socios || activa.usuarios || [];
 
     if (sociosApuntados.length === 0) {
         listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados todavía.</li>`;
-        return;
+    } else {
+        listaCard.innerHTML = "";
+        sociosApuntados.forEach((socio, index) => {
+            const li = document.createElement("li");
+            li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
+            
+            let nombreMostrar = "Socio";
+            if (typeof socio === 'string') {
+                nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
+            } else if (socio) {
+                nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
+            }
+
+            li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
+            listaCard.appendChild(li);
+        });
     }
 
-    listaCard.innerHTML = "";
-    sociosApuntados.forEach((socio, index) => {
-        const li = document.createElement("li");
-        li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
-        
-        let nombreMostrar = "Socio";
-        if (typeof socio === 'string') {
-            nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
-        } else if (socio) {
-            nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
-        }
+    // 2. Panel de Indisponibles (NUEVO - users_nook)
+    if (tituloCardNook && listaCardNook) {
+        tituloCardNook.textContent = activa.convocatoria || "Convocatoria Activa";
+        const sociosIndisponibles = activa.users_nook || [];
 
-        li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
-        listaCard.appendChild(li);
-    });
+        if (sociosIndisponibles.length === 0) {
+            listaCardNook.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios indisponibles.</li>`;
+        } else {
+            listaCardNook.innerHTML = "";
+            sociosIndisponibles.forEach((socio, index) => {
+                const li = document.createElement("li");
+                li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
+                
+                let nombreMostrar = "Socio";
+                if (typeof socio === 'string') {
+                    nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
+                } else if (socio) {
+                    nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
+                }
+
+                li.innerHTML = `<span style="color: #f43f5e; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
+                listaCardNook.appendChild(li);
+            });
+        }
+    }
 }
 
 async function guardarConvocatoria(id, filaElement) {
