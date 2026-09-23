@@ -99,8 +99,8 @@
         }
 
         /* ==========================================================
-           ESTILOS PARA LA COLUMNA DE INMO-AJALVIR Y CARRUSEL INFINITO
-           ========================================================== */
+            ESTILOS PARA LA COLUMNA DE INMO-AJALVIR Y CARRUSEL INFINITO
+            ========================================================== */
         .columna-inmo-publicidad {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -191,16 +191,27 @@
             }
         }
 
-        /* Responsivo: se adapta a 2 columnas en pantallas medianas y a 1 en móviles */
+        /* Responsivo adaptado y fluido */
         @media (max-width: 1200px) {
             .hero-grid-4cols {
                 grid-template-columns: repeat(2, 1fr);
-                align-items: center;
+                align-items: stretch;
             }
         }
+
         @media (max-width: 640px) {
             .hero-grid-4cols {
                 grid-template-columns: 1fr;
+            }
+            
+            /* Evitamos que la etiqueta oblicua sobresalga demasiado en pantallas muy estrechas */
+            .columna-fersan {
+                overflow: hidden;
+                padding-top: 1rem;
+            }
+            .etiqueta-colabora {
+                left: -70px;
+                font-size: 1.8rem;
             }
         }
     </style>
