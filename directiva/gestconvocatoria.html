@@ -141,18 +141,30 @@
 
     <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
 
-    <div class="gestion-layout" style="display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start;">
+    <div class="gestion-layout" style="display: grid; grid-template-columns: 1fr 320px 320px; gap: 2rem; align-items: start;">
         
+        <!-- Columna 1: Listado de Convocatorias -->
         <div id="contenedorConvocatoria" class="tabla-convocatorias">
             <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>
         </div>
 
+        <!-- Columna 2: Socios Apuntados -->
         <aside class="card-socios-activa" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
             <h3 style="font-size: 1rem; color: #38bdf8; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Apuntados</h3>
             <p id="tituloConvocatoriaActiva" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
             
             <ul id="listaSociosApuntados" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto;">
                 <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>
+            </ul>
+        </aside>
+
+        <!-- Columna 3: Socios Indisponibles (NUEVA) -->
+        <aside class="card-socios-indisponibles" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
+            <h3 style="font-size: 1rem; color: #f43f5e; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Indisponibles</h3>
+            <p id="tituloConvocatoriaIndisponibles" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
+            
+            <ul id="listaSociosIndisponibles" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto;">
+                <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los indisponibles.</li>
             </ul>
         </aside>
 
