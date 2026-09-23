@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="assets/css/styles.css">
     <!-- FontAwesome para los iconos del footer -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
         body {
@@ -21,23 +21,40 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
         }
+
         main.container {
             flex: 1;
             padding-top: 3rem;
             padding-bottom: 4rem;
             max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            margin-left: auto;
+            margin-right: auto;
         }
+
         .page-hero {
             text-align: center;
             margin-bottom: 2.5rem;
         }
+
+        .page-hero h1 {
+            font-size: 2.25rem;
+            margin: 0.5rem 0;
+            word-break: break-word;
+        }
+
         .privacy-card {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 2rem;
             margin-bottom: 2rem;
+            box-sizing: border-box;
         }
+
         .privacy-card h2 {
             color: #38bdf8;
             margin-top: 0;
@@ -46,30 +63,40 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 0.5rem;
         }
+
         .privacy-card h3 {
             color: #e2e8f0;
             font-size: 1.1rem;
             margin-top: 1.5rem;
             margin-bottom: 0.5rem;
         }
-        .privacy-card p, .privacy-card ul {
+
+        .privacy-card p, 
+        .privacy-card ul {
             color: #cbd5e1;
             font-size: 0.95rem;
             margin-bottom: 1rem;
+            word-break: break-word;
         }
+
         .privacy-card ul {
             padding-left: 1.5rem;
         }
+
         .privacy-card li {
             margin-bottom: 0.5rem;
         }
+
+        /* Estilos del Footer idénticos al resto de la web */
         .site-footer {
             width: 100%;
             background: #020617;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding: 1.5rem 0;
             margin-top: auto;
+            box-sizing: border-box;
         }
+
         .footer-grid {
             display: flex;
             justify-content: space-between;
@@ -80,17 +107,45 @@
             margin: 0 auto;
             padding: 0 1.5rem;
         }
+
         .footer-links {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
+            align-items: center;
+            margin: 0;
         }
+
         .social-link {
             color: #94a3b8;
             font-size: 1.2rem;
             transition: color 0.2s;
+            text-decoration: none;
         }
+
         .social-link:hover {
             color: #38bdf8;
+        }
+
+        /* Ajustes responsivos para móviles y pantallas estrechas */
+        @media (max-width: 768px) {
+            main.container {
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .page-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .privacy-card {
+                padding: 1.25rem;
+            }
+
+            .privacy-card h2 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -114,7 +169,7 @@
 
         <section class="page-hero">
             <p class="eyebrow" style="color: #38bdf8; text-transform: uppercase; font-size: 0.85rem; font-weight: bold; letter-spacing: 1px;">Información Legal</p>
-            <h1 style="font-size: 2.25rem; margin: 0.5rem 0;">Aviso Legal, Privacidad y Términos</h1>
+            <h1>Aviso Legal, Privacidad y Términos</h1>
             <p style="color: #94a3b8;">Condiciones de uso y política de protección de datos del área privada del club.</p>
         </section>
 
@@ -166,6 +221,36 @@
         </div>
 
     </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links">
+                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D"
+                       target="_blank"
+                       class="social-link instagram"
+                       aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/"
+                       target="_blank"
+                       class="social-link facebook"
+                       aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="mailto:cdve.ajalvir@gmail.com"
+                       class="social-link mail"
+                       aria-label="Correo electrónico">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <a href="pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
+            </div>
+        </div>
+    </footer>
 
     <script type="module" src="assets/js/nav-auth.js"></script>
     <script type="module" src="assets/js/pprivacidad.js"></script>
