@@ -30,16 +30,16 @@
             gap: 1rem;
             align-items: center;
             margin-top: 1rem;
+            flex-wrap: wrap; /* Permitir ajuste automático en pantallas pequeñas */
         }
 
-        //* Empuja los botones de gestión completamente a la derecha */
+        /* Botones de gestión */
         .btn-prox-evento,
         .btn-gest-cuotas,
         .btn-gest-socios {
-            margin-left: 0; /* Sin empuje a la derecha */
+            margin-left: 0;
         }
 
-        /* Pequeña separación opcional entre ellos si lo deseas */
         .btn-prox-evento {
             margin-left: 0.5rem; 
         }
@@ -50,17 +50,6 @@
 
         .btn-gest-socios {
             margin-left: 0.5rem; 
-        }
-
-        @media (max-width: 600px) {
-            .form-actions {
-                flex-wrap: wrap;
-            }
-            .btn-prox-evento,
-            .btn-gest-cuotas,
-            .btn-gest-socios {
-                margin-left: 0;
-            }
         }
 
         /* Indicador visual de campo solo lectura */
@@ -90,6 +79,7 @@
             -moz-appearance: textfield;
         }
 
+        /* Media Queries adaptadas para total fluidez en móviles */
         @media (max-width: 900px) {
             .form-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
@@ -101,12 +91,16 @@
                 grid-template-columns: 1fr;
             }
             
-            /* En pantallas muy estrechas permitimos que el botón baje si es necesario */
             .form-actions {
-                flex-wrap: wrap;
+                flex-direction: column;
+                align-items: stretch;
             }
-            .btn-gest-cuotas {
-                margin-left: 0;
+
+            .form-actions .btn,
+            .form-actions a.btn {
+                width: 100%;
+                text-align: center;
+                margin-left: 0 !important;
             }
         }
     </style>
@@ -195,15 +189,15 @@
                         </div>
 
                         <!-- ACCIONES -->
-                        <div class="form-actions" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+                        <div class="form-actions">
                             <button class="btn btn-primary" type="submit">Registrar Movimiento</button>
                             <a class="btn btn-secondary" href="registros.html">Ver Registros</a>
                             <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
                             
-                            <!-- Los botones de gestión se empujan automáticamente a la derecha del todo -->
-                            <a class="btn btn-secondary" href="textoevento.html" style="margin-left: auto;">Prox.Evento</a>
-                            <a class="btn btn-secondary" href="activasocio.html">Gest.Socios</a>
-                            <a class="btn btn-secondary" href="cuotas.html">Gest.Cuotas</a>
+                            <!-- Los botones de gestión se empujan automáticamente a la derecha del todo en pantallas grandes -->
+                            <a class="btn btn-secondary btn-prox-evento" href="textoevento.html" style="margin-left: auto;">Prox.Evento</a>
+                            <a class="btn btn-secondary btn-gest-socios" href="activasocio.html">Gest.Socios</a>
+                            <a class="btn btn-secondary btn-gest-cuotas" href="cuotas.html">Gest.Cuotas</a>
                         </div>
 
                         <div style="grid-column: 1 / -1;">
