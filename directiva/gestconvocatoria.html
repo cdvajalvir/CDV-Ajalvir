@@ -24,6 +24,7 @@
             display: grid;
             grid-template-rows: auto auto;
             gap: 0.75rem;
+            width: 100%;
         }
         /* Fila 1: Convocatoria, Tipo, Lugar, etc. */
         .convocatoria-fila-top {
@@ -113,21 +114,28 @@
             margin-top: 2px;
         }
 
-        /* Layout principal abarcando todo el ancho de la pantalla */
+        /* LAYOUT PRINCIPAL A ANCHO TOTAL DE PANTALLA */
         .gestion-layout {
             display: grid;
-            grid-template-columns: 2.2fr 1fr 1fr; /* Da más peso a las convocatorias y reparte espacio a los socios */
+            grid-template-columns: 2.2fr 1fr 1fr; /* Convocatorias domina el ancho, los lados se reparten el resto */
             gap: 1.5rem;
             align-items: start;
             width: 100%;
-            max-width: 100%; /* Ocupa todo el ancho de pantalla */
-            padding: 0 1.5rem; /* Pequeño respiro en los bordes para que no peguen al monitor */
+            max-width: 100% !important; /* Rompe el límite del .container general */
+        }
+
+        /* Evitar saltos de línea extraños en los nombres de los socios */
+        #listaSociosApuntados li, 
+        #listaSociosIndisponibles li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* MEDIA QUERIES PARA RESPONSIVIDAD */
         @media (max-width: 1200px) {
             .gestion-layout {
-                grid-template-columns: 1fr 300px;
+                grid-template-columns: 1fr 1fr;
             }
             .card-socios-indisponibles {
                 grid-column: 1 / -1;
@@ -147,14 +155,6 @@
                 grid-template-columns: 1fr !important;
             }
         }
-
-        /* Asegurar que las listas de nombres no fuercen saltos feos si sobra espacio */
-        #listaSociosApuntados li, 
-        #listaSociosIndisponibles li {
-            white-space: nowrap; /* Evita que el nombre se corte a mitad */
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
     </style>
 </head>
 
@@ -173,7 +173,7 @@
         </nav>
     </header>
 
-    <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+    <main style="width: 100%; max-width: 100%; padding: 2rem 2rem 3rem 2rem; box-sizing: border-box;">
 
         <section class="page-hero" style="text-align: center; margin-bottom: 2rem;">
             <p class="eyebrow">Área privada</p>
