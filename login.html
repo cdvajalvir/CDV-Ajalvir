@@ -7,73 +7,103 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Estilos generales del body (los del paso anterior) */
+        /* Ajustes específicos para la página de login (compacta y limpia) */
         body.login-body {
-            display: block;
-            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            padding: 1.5rem 1rem 2rem 1rem;
+            padding: 1.5rem 1rem 5rem 1rem;
             box-sizing: border-box;
-            background-color: #f4f6f8;
         }
 
         .login-card {
             width: 100%;
-            max-width: 380px; /* Ligeramente más estrecha y recogida */
+            max-width: 380px;
             margin: 0 auto;
-            margin-bottom: 2rem;
             text-align: center;
+            background: #fff;
+            color: var(--text-dark);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-yellow);
         }
 
-        /* 1. Reducir el tamaño del escudo a la mitad (ajusta los píxeles a tu gusto) */
         .login-logo {
-            max-height: 65px; /* Altura máxima reducida */
+            max-height: 65px;
             width: auto;
-            margin-bottom: 0.5rem;
+            margin: 0 auto 0.5rem auto;
+            display: block;
+            object-fit: contain;
         }
 
-        /* 2. Compactar títulos y textos */
         .login-card h1 {
             font-size: 1.3rem;
             margin: 0 0 0.2rem 0;
+            color: var(--text-dark);
         }
 
         .login-card > p {
             font-size: 0.9rem;
             margin: 0 0 1rem 0;
-            color: #666;
+            color: var(--muted-dark);
         }
 
-        /* 3. Juntar los campos del formulario, etiquetas y botones */
         .login-form {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem; /* Reduce drásticamente la separación entre elementos del formulario */
+            gap: 0.4rem;
             text-align: left;
         }
 
         .login-form label {
             font-size: 0.85rem;
             margin-top: 0.3rem;
+            color: var(--text-dark);
+            font-weight: 900;
         }
 
         .login-form input {
-            padding: 0.5rem; /* Inputs un poco más compactos en altura */
+            padding: 0.6rem 0.8rem;
             font-size: 0.95rem;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            background: #fff;
+            color: var(--text-dark);
+            width: 100%;
         }
 
         .login-form button {
             margin-top: 0.8rem;
-            padding: 0.6rem;
+            padding: 0.7rem;
+            width: 100%;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--yellow), #fff176);
+            color: var(--blue-dark);
+            border: none;
+            font-weight: 900;
+            cursor: pointer;
         }
 
-        /* Enlaces inferiores más compactos */
+        .login-links {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
         .login-card p a {
             font-size: 0.85rem;
+            color: var(--blue);
+            font-weight: 900;
+            text-decoration: none;
         }
-
-        .site-footer {
-            width: 100%;
+        
+        .login-card p a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -94,16 +124,19 @@
             <button type="submit">Entrar</button>
         </form>
 
-        <p id="loginError" class="error"></p>
-        <p><a href="index.html">Volver a la página principal</a></p>
-        <p>¿Todavía no eres socio?&nbsp;&nbsp;<a href="registro.html">Solicitar alta</a></p>
+        <p id="loginError" class="error" style="margin-top: 0.5rem;"></p>
+        
+        <div class="login-links">
+            <p><a href="index.html">Volver a la página principal</a></p>
+            <p>¿Todavía no eres socio?&nbsp;&nbsp;<a href="registro.html">Solicitar alta</a></p>
+        </div>
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="container footer-grid">
             <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
-                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
+                <p>© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links">
                     <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D"
                        target="_blank"
                        class="social-link instagram"
