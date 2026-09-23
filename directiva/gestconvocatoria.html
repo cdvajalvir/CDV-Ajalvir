@@ -113,14 +113,15 @@
             margin-top: 2px;
         }
 
-        /* Layout principal con 25% más de ancho en la primera columna */
+        /* Layout principal abarcando todo el ancho de la pantalla */
         .gestion-layout {
             display: grid;
-            grid-template-columns: 1.5fr 300px 300px;
-            gap: 2rem;
+            grid-template-columns: 2.2fr 1fr 1fr; /* Da más peso a las convocatorias y reparte espacio a los socios */
+            gap: 1.5rem;
             align-items: start;
-            max-width: 1450px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 100%; /* Ocupa todo el ancho de pantalla */
+            padding: 0 1.5rem; /* Pequeño respiro en los bordes para que no peguen al monitor */
         }
 
         /* MEDIA QUERIES PARA RESPONSIVIDAD */
@@ -145,6 +146,14 @@
             .convocatoria-fila-bottom {
                 grid-template-columns: 1fr !important;
             }
+        }
+
+        /* Asegurar que las listas de nombres no fuercen saltos feos si sobra espacio */
+        #listaSociosApuntados li, 
+        #listaSociosIndisponibles li {
+            white-space: nowrap; /* Evita que el nombre se corte a mitad */
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
