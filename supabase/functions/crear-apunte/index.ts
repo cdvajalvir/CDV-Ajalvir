@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-
+// test
 serve(async (req) => {
   // 1. Manejar la petición preliminar de CORS (OPTIONS)
   if (req.method === "OPTIONS") {
