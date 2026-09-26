@@ -28,7 +28,7 @@ self.addEventListener('notificationclick', function(event) {
     const targetUrl = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
         : 'https://cdvajalvir.github.io/CDV-Ajalvir/index.html';
-
+    console.log('[Service Worker] Abriendo URL:', targetUrl);
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
             for (var i = 0; i < windowClients.length; i++) {
