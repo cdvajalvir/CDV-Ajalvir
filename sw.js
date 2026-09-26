@@ -29,7 +29,7 @@ self.addEventListener('notificationclick', function(event) {
     const urlToOpen = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
         : '/';
-
+    console.log("Abriendo URL desde la push:", urlToOpen);
     event.waitUntil(
         clients.openWindow(urlToOpen)
     );
