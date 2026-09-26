@@ -10,7 +10,7 @@ self.addEventListener('push', function(event) {
     const options = {
         body: data.body || 'Tienes una nueva notificación.',
         icon: '/assets/img/escudo-cdv-ajalvir.jpg', // Ajusta la ruta a tu escudo si lo necesitas
-        badge: '/assets/img/escudo-cdv-ajalvir.jpg'
+        badge: '/assets/img/escudo-cdv-ajalvir.jpg',
         data: {
             url: data.url 
         }
