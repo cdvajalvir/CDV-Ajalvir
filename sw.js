@@ -21,20 +21,19 @@ self.addEventListener('push', function(event) {
     );
 });
 
-// Maneja el clic en la notificación
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
 
-    // Extraemos la URL que mandas desde Supabase, o usamos la raíz por defecto
+    // Si viene la URL de Supabase la usamos, si no, apuntamos a la raíz completa de GitHub Pages
     const targetUrl = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
-        : '/CDV-Ajalvir/';
+        : 'https://cdvajalvir.github.io/CDV-Ajalvir/';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
-            // Si ya hay una pestaña abierta de la web, la enfocamos y la navegamos
             for (var i = 0; i < windowClients.length; i++) {
                 var client = windowClients[i];
+                // Comprobamos que pertenezca a tu app de GitHub Pages
                 if (client.url.includes('CDV-Ajalvir') && 'focus' in client) {
                     client.focus();
                     if ('navigate' in client) {
@@ -42,7 +41,6 @@ self.addEventListener('notificationclick', function(event) {
                     }
                 }
             }
-            // Si no hay ninguna pestaña abierta, abrimos una nueva ventana
             if (clients.openWindow) {
                 return clients.openWindow(targetUrl);
             }
