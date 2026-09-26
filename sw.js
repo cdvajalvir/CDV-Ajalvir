@@ -28,7 +28,7 @@ self.addEventListener('notificationclick', function(event) {
     // 2. Recuperamos la URL que guardamos en la notificación (o usamos '/' como respaldo)
     const urlToOpen = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
-        : '/';
+        : 'https://cdvajalvir.github.io/CDV-Ajalvir/';
     
     event.waitUntil(
         clients.openWindow(urlToOpen)
