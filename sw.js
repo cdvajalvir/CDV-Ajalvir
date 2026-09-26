@@ -25,12 +25,27 @@ self.addEventListener('push', function(event) {
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
 
-    // 2. Recuperamos la URL que guardamos en la notificación (o usamos '/' como respaldo)
-    const urlToOpen = (event.notification.data && event.notification.data.url) 
+    // Extraemos la URL que mandas desde Supabase, o usamos la raíz por defecto
+    const targetUrl = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
-        : 'https://cdvajalvir.github.io/CDV-Ajalvir/';
-    
+        : '/CDV-Ajalvir/';
+
     event.waitUntil(
-        clients.openWindow(urlToOpen)
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
+            // Si ya hay una pestaña abierta de la web, la enfocamos y la navegamos
+            for (var i = 0; i < windowClients.length; i++) {
+                var client = windowClients[i];
+                if (client.url.includes('CDV-Ajalvir') && 'focus' in client) {
+                    client.focus();
+                    if ('navigate' in client) {
+                        return client.navigate(targetUrl);
+                    }
+                }
+            }
+            // Si no hay ninguna pestaña abierta, abrimos una nueva ventana
+            if (clients.openWindow) {
+                return clients.openWindow(targetUrl);
+            }
+        })
     );
 });
