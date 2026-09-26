@@ -236,7 +236,9 @@ async function cargarHistoricoTemporada(temporada) {
                     
                     // Si cuota - pagado NO es negativo (es decir, >= 0), se considera cubierto/activo
                     if ((cuota - pagado) >= 0) {
-                        esActivo = true;
+                        if (cuota === 0) {
+                            esActivo = true;
+                        }
                     }
                 }
             }
