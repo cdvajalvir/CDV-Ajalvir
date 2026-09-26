@@ -11,6 +11,9 @@ self.addEventListener('push', function(event) {
         body: data.body || 'Tienes una nueva notificación.',
         icon: '/assets/img/escudo-cdv-ajalvir.jpg', // Ajusta la ruta a tu escudo si lo necesitas
         badge: '/assets/img/escudo-cdv-ajalvir.jpg'
+        data: {
+            url: data.url 
+        }
     };
 
     event.waitUntil(
@@ -18,10 +21,16 @@ self.addEventListener('push', function(event) {
     );
 });
 
-// Opcional: permite al usuario hacer clic en la notificación para abrir la web
+// Maneja el clic en la notificación
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
+
+    // 2. Recuperamos la URL que guardamos en la notificación (o usamos '/' como respaldo)
+    const urlToOpen = (event.notification.data && event.notification.data.url) 
+        ? event.notification.data.url 
+        : '/';
+
     event.waitUntil(
-        clients.openWindow('/')
+        clients.openWindow(urlToOpen)
     );
 });
