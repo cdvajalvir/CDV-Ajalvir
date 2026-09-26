@@ -181,7 +181,7 @@ async function cargarSociosPendientes(temporada) {
     }
 }
 
-// --- FLUJO 2: TEMPORADAS PASADAS (Histórico basado en array JSONB de pagos) ---
+// --- FLUJO 2: TEMPORADAS PASADAS (Histórico basado en la diferencia pagado - cuota) ---
 async function cargarHistoricoTemporada(temporada) {
     const gridPendientes = document.getElementById("gridPendientes");
     const mensajeActiva = document.getElementById("mensajeActiva");
@@ -207,8 +207,7 @@ async function cargarHistoricoTemporada(temporada) {
 
         const userIds = tempRecord.users;
 
-        // 2. Cargar los datos de esos socios incluyendo su campo de pagos (ej: columna JSONB 'cantidad_pagada' o la que tengáis configurada con el array de temporadas)
-        // Nota: Asegúrate de que "cantidad_pagada" es el nombre exacto de tu columna JSONB en la tabla socios.
+        // 2. Cargar los datos de esos socios y su array de pagos/cuotas
         const { data: sociosHistorico, error: errSocios } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellido, dni, cantidad_pagada")
@@ -224,20 +223,25 @@ async function cargarHistoricoTemporada(temporada) {
         const sociosActivos = [];
         const sociosNoActivos = [];
 
-        // 3. Clasificar según el array de pagos: pagado > 0 vs pagado == 0 / sin registro
+        // 3. Clasificar comprobando si (pagado - cuota) es negativo
         sociosHistorico.forEach(socio => {
-            let haPagado = false;
-
-            // Verificamos si el socio tiene el array de pagos y buscamos la temporada
+            let esActivo = false;
             const pagosArray = socio.cantidad_pagada;
+
             if (Array.isArray(pagosArray)) {
                 const registroTemp = pagosArray.find(p => p.temporada === temporada);
-                if (registroTemp && Number(registroTemp.pagado) > 0) {
-                    haPagado = true;
+                if (registroTemp) {
+                    const pagado = Number(registroTemp.pagado || 0);
+                    const cuota = Number(registroTemp.cuota || 0);
+                    
+                    // Si pagado - cuota NO es negativo (es decir, >= 0), se considera cubierto/activo
+                    if ((pagado - cuota) >= 0) {
+                        esActivo = true;
+                    }
                 }
             }
 
-            if (haPagado) {
+            if (esActivo) {
                 sociosActivos.push(socio);
             } else {
                 sociosNoActivos.push(socio);
@@ -248,13 +252,13 @@ async function cargarHistoricoTemporada(temporada) {
         gridPendientes.innerHTML = `
             <div style="grid-column: span 5; margin-bottom: 1rem;">
                 <h3 style="color: #fff; border-bottom: 2px solid #2e7d32; padding-bottom: 0.5rem;">
-                    🟢 Socios Activos / Con Cuota Pagada (${sociosActivos.length})
+                    🟢 Socios Activos / Cuota Cubierta (${sociosActivos.length})
                 </h3>
             </div>
         `;
 
         if (sociosActivos.length === 0) {
-            gridPendientes.innerHTML += `<div style="grid-column: span 5; color: #aaa; margin-bottom: 1.5rem; padding-left: 0.5rem;">Ningún socio consta con pagos registrados en esta temporada.</div>`;
+            gridPendientes.innerHTML += `<div style="grid-column: span 5; color: #aaa; margin-bottom: 1.5rem; padding-left: 0.5rem;">Ningún socio cumple con la cuota cubierta en esta temporada.</div>`;
         } else {
             sociosActivos.forEach(socio => {
                 const card = document.createElement("div");
@@ -266,21 +270,21 @@ async function cargarHistoricoTemporada(temporada) {
                         <p>DNI: ${socio.dni || "-"}</p>
                     </div>
                     <div class="socio-action">
-                        <span style="color: #2e7d32; font-weight: bold; font-size: 0.9rem;">Activo (Pagado)</span>
+                        <span style="color: #2e7d32; font-weight: bold; font-size: 0.9rem;">Activo (Al corriente)</span>
                     </div>
                 `;
                 gridPendientes.appendChild(card);
             });
         }
 
-        // Sección de No Activos / No Pagados
+        // Sección de No Activos (pagado - cuota negativo)
         const headerNoActivos = document.createElement("div");
         headerNoActivos.style.gridColumn = "span 5";
         headerNoActivos.style.marginTop = "1.5rem";
         headerNoActivos.style.marginBottom = "1rem";
         headerNoActivos.innerHTML = `
             <h3 style="color: #fff; border-bottom: 2px solid #d9534f; padding-bottom: 0.5rem;">
-                🔴 Socios No Activos / Sin Cuota Pagada (${sociosNoActivos.length})
+                🔴 Socios No Activos / (Pagado - Cuota Negativo) (${sociosNoActivos.length})
             </h3>
         `;
         gridPendientes.appendChild(headerNoActivos);
@@ -290,7 +294,7 @@ async function cargarHistoricoTemporada(temporada) {
             msgVacio.style.gridColumn = "span 5";
             msgVacio.style.color = "#aaa";
             msgVacio.style.paddingLeft = "0.5rem";
-            msgVacio.textContent = "Todos los socios inscritos pagaron en esta temporada.";
+            msgVacio.textContent = "No hay socios con saldo negativo en esta temporada.";
             gridPendientes.appendChild(msgVacio);
         } else {
             sociosNoActivos.forEach(socio => {
@@ -303,7 +307,7 @@ async function cargarHistoricoTemporada(temporada) {
                         <p>DNI: ${socio.dni || "-"}</p>
                     </div>
                     <div class="socio-action">
-                        <span style="color: #d9534f; font-weight: bold; font-size: 0.9rem;">No activado</span>
+                        <span style="color: #d9534f; font-weight: bold; font-size: 0.9rem;">No activado (Pendiente)</span>
                     </div>
                 `;
                 gridPendientes.appendChild(card);
