@@ -27,7 +27,7 @@ self.addEventListener('notificationclick', function(event) {
     // Si viene la URL de Supabase la usamos, si no, apuntamos a la raíz completa de GitHub Pages
     const targetUrl = (event.notification.data && event.notification.data.url) 
         ? event.notification.data.url 
-        : 'https://cdvajalvir.github.io/CDV-Ajalvir/';
+        : 'https://cdvajalvir.github.io/CDV-Ajalvir/index.html';
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
