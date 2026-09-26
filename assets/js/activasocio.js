@@ -234,11 +234,10 @@ async function cargarHistoricoTemporada(temporada) {
                     const pagado = Number(registroTemp.pagado || 0);
                     const cuota = Number(registroTemp.cuota || 0);
                     
-                    // Si cuota - pagado NO es negativo (es decir, >= 0), se considera cubierto/activo
-                    if ((cuota - pagado) >= 0) {
-                        if (cuota - pagado < cuota) {
-                            esActivo = true;
-                        }
+                    if (cuota > 0 && pagado === 0) {
+                        esActivo = false;
+                    } else {
+                        esActivo = true;
                     }
                 }
             }
