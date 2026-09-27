@@ -1,1 +1,110 @@
+<!doctype html>
+<html lang="es">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gestión de Socios · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="directiva.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            
+            <!-- Header simplificado: solo enlace de vuelta a directiva -->
+            <div class="nav-links" style="margin-left: auto;">
+                <a href="directiva.html" class="btn btn-secondary" style="padding: 0.4rem 0.9rem; font-size: 0.9rem;">
+                    <i class="fa-solid fa-arrow-left"></i> Directiva
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="margin-top: 2rem; margin-bottom: 3rem;">
+
+        <section class="page-hero" style="margin-bottom: 1.5rem;">
+            <p class="eyebrow">Panel de Directiva</p>
+            <h1>Gestión y Estado de Socios</h1>
+            <p class="lead">Listado de socios, control de actividad, estado de cuotas e inicios de sesión de la temporada actual.</p>
+        </section>
+
+        <!-- Barra de herramientas superior (Filtro de temporada y buscador rápido) -->
+        <section class="card" style="margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <label for="selectTemporadaSocios" style="font-weight: 500;">Temporada:</label>
+                    <select id="selectTemporadaSocios" class="input" style="width: auto; padding: 0.4rem 0.8rem;">
+                        <!-- Se poblará dinámicamente desde JS -->
+                    </select>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; flex-grow: 1; max-width: 350px;">
+                    <input type="text" id="buscadorSocios" class="input" placeholder="Buscar por nombre o apellido..." style="width: 100%; padding: 0.4rem 0.8rem;">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Tabla principal de socios -->
+        <section class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 style="margin: 0;">Listado de Socios</h3>
+                <span id="contadorSocios" style="font-size: 0.9rem; color: #666;">Cargando socios...</span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="tablaGestSocios" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border-color, #e5e7eb);">
+                            <th style="padding: 0.75rem;">Estado</th>
+                            <th style="padding: 0.75rem;">Socio</th>
+                            <th style="padding: 0.75rem; text-align: center;">Cuota / Pagado</th>
+                            <th style="padding: 0.75rem; text-align: center;">Accesos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas se inyectarán dinámicamente mediante gestsocios.js -->
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 2rem; color: #666;">Cargando datos de socios...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
+                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+            <div>
+                <a href="../pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script principal de la vista -->
+    <script type="module" src="../assets/js/gestsocios.js"></script>
+
+</body>
+
+</html>
