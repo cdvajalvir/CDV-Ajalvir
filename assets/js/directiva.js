@@ -5,8 +5,7 @@ window.cerrarSesion = cerrarSesion;
 
 let chartCuotasInstance = null; // Control de instancia del gráfico de tarta de cuotas
 let chartDetalleGastosInstance = null; // Control de instancia del gráfico de tarta de detalle de gastos
-let chartBarrasInstance = null; // Control de instancia del gráfico de barras (ingresos/gastos)
-let chartLineaInstance = null; // Control de instancia del gráfico de línea (saldo acumulado)
+let chartIngresosGastosInstance = null; // Control de instancia del gráfico de barras
 let globalDirectivos = [];
 let globalMovimientos = [];
 
@@ -131,8 +130,8 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE TARTA DE DETALLE DE GASTOS ---
     procesarYRenderizarDetalleGastos(globalMovimientos, temporadaSeleccionada);
 
-    // --- CÁLCULO Y RENDERIZADO DE LOS GRÁFICOS SUPERPUESTOS (BARRAS Y LÍNEA) ---
-    procesarYRenderizarGraficosSuperpuestos(globalMovimientos, temporadaSeleccionada);
+    // --- CÁLCULO Y RENDERIZADO DEL GRÁFICO DE BARRAS DE INGRESOS Y GASTOS ---
+    procesarYRenderizarGraficoBarras(globalMovimientos, temporadaSeleccionada);
 
     // --- CÁLCULO Y RENDERIZADO DE LA TABLA DE SALDOS ---
     const tbody = document.querySelector("#tablaSaldosDirectiva tbody");
@@ -183,6 +182,8 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     }
 
     // --- CÁLCULO Y RENDERIZADO DE PARTICIPACIÓN DEL SOCIO ---
+    
+    // 1. Contar socios cuya cantidad pagada > 0 en la temporada seleccionada
     let sociosActivosCount = 0;
     globalDirectivos.forEach(socio => {
         if (socio.cantidad_pagada && Array.isArray(socio.cantidad_pagada)) {
@@ -193,23 +194,28 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
         }
     });
 
+    // 2. Filtrar estrictamente por la temporada seleccionada para los movimientos
     const movsTemporadaExacta = globalMovimientos.filter(m => m.temporada === temporadaSeleccionada);
 
     let saldoUltimoRegistro = 0;
     let importeSituacionPartida = 0;
 
     if (movsTemporadaExacta.length > 0) {
+        // Ordenar por create_at (de más antiguo a más moderno) para que el último sea el de fecha de creación mayor
         const movsOrdenadosPorCreacion = [...movsTemporadaExacta].sort((a, b) => new Date(a.create_at) - new Date(b.create_at));
+        
+        // El último movimiento según create_at es el último del array ordenado
         const ultimoMovimiento = movsOrdenadosPorCreacion[movsOrdenadosPorCreacion.length - 1];
         saldoUltimoRegistro = parseFloat(ultimoMovimiento.saldo) || 0;
 
+        // 3. Sumar importes cuyo concepto empiece por "situacion de partida" (normalizando tildes y minúsculas)
         movsTemporadaExacta.forEach(mov => {
             if (mov.concepto) {
                 const conceptoClean = mov.concepto
                     .trim()
                     .toLowerCase()
                     .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, "");
+                    .replace(/[\u0300-\u036f]/g, ""); // Elimina tildes
 
                 if (conceptoClean.startsWith('situacion de partida')) {
                     importeSituacionPartida += parseFloat(mov.importe) || 0;
@@ -218,11 +224,13 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
         });
     }
 
+    // 4. Calcular el valor final de la participación
     let participacionFinal = 0;
     if (sociosActivosCount > 0) {
         participacionFinal = (saldoUltimoRegistro - importeSituacionPartida) / sociosActivosCount;
     }
 
+    // 5. Inyectarlo en la nueva tarjeta HTML
     const elemParticipacionValor = document.getElementById("participacionSocioValor");
     const elemParticipacionLabel = document.getElementById("temporadaParticipacionLabel");
     
@@ -306,10 +314,13 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
 
     movimientosTemporada.forEach(mov => {
         const importe = parseFloat(mov.importe) || 0;
+        
+        // Consideramos gasto si el importe es negativo
         const esGasto = importe < 0;
 
         if (esGasto) {
             const valorGasto = Math.abs(importe);
+            // Agrupamos por el campo tipo real de la base de datos; si viene null o vacío, va a 'Otros'
             const tipoGasto = mov.tipo && mov.tipo.trim() !== '' ? mov.tipo.trim() : 'Otros';
 
             if (!gastosPorTipo[tipoGasto]) {
@@ -362,7 +373,7 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
                 },
                 legend: {
                     position: 'bottom',
-                    align: 'start',
+                    align: 'start', // Leyenda alineada a la izquierda igual que el otro gráfico
                     labels: {
                         color: '#ffffff',
                         font: { size: 11 },
@@ -385,11 +396,10 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
     });
 }
 
-// Función para procesar movimientos y renderizar simultáneamente los dos gráficos superpuestos (barras y línea)
-function procesarYRenderizarGraficosSuperpuestos(movimientos, temporadaSeleccionada) {
-    const canvasBarras = document.getElementById("graficoBarras");
-    const canvasLinea = document.getElementById("graficoLinea");
-    if (!canvasBarras || !canvasLinea) return;
+// Función para procesar movimientos por mes, calcular saldo acumulado y renderizar gráfico mixto (barras + línea)
+function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
+    const canvasElement = document.getElementById("graficoIngresosGastos");
+    if (!canvasElement) return;
 
     const partes = temporadaSeleccionada.split("/");
     if (partes.length !== 2) return;
@@ -447,32 +457,43 @@ function procesarYRenderizarGraficosSuperpuestos(movimientos, temporadaSeleccion
         return saldoAcumulado;
     });
 
-    // --- 1. DESTRUCCIÓN DE INSTANCIAS ANTERIORES ---
-    if (chartBarrasInstance) {
-        chartBarrasInstance.destroy();
-    }
-    if (chartLineaInstance) {
-        chartLineaInstance.destroy();
+    const ctx = canvasElement.getContext("2d");
+
+    if (chartIngresosGastosInstance) {
+        chartIngresosGastosInstance.destroy();
     }
 
-    // --- 2. RENDERIZAR GRÁFICO DE BARRAS (INFERIOR) ---
-    const ctxBarras = canvasBarras.getContext("2d");
-    chartBarrasInstance = new Chart(ctxBarras, {
+    chartIngresosGastosInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labelsMeses,
             datasets: [
                 {
+                    type: 'bar',
                     label: 'Suma de INGRESOS',
                     data: ingresosPorMes,
                     backgroundColor: '#f97316',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    order: 2
                 },
                 {
+                    type: 'bar',
                     label: 'Suma de GASTOS',
                     data: gastosPorMes,
                     backgroundColor: '#fbbf24',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    order: 2
+                },
+                {
+                    type: 'line',
+                    label: 'Evolución Saldo Acumulado',
+                    data: saldoEvolucionPorMes,
+                    borderColor: '#38bdf8',
+                    backgroundColor: '#38bdf8',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.1,
+                    order: 1
                 }
             ]
         },
@@ -494,48 +515,6 @@ function procesarYRenderizarGraficosSuperpuestos(movimientos, temporadaSeleccion
                 legend: {
                     position: 'top',
                     labels: { color: '#ffffff', font: { size: 12 } }
-                }
-            }
-        }
-    });
-
-    // --- 3. RENDERIZAR GRÁFICO DE LÍNEA (SUPERIOR - TRANSPARENTE AL CLIC) ---
-    const ctxLinea = canvasLinea.getContext("2d");
-    chartLineaInstance = new Chart(ctxLinea, {
-        type: 'line',
-        data: {
-            labels: labelsMeses,
-            datasets: [
-                {
-                    label: 'Evolución Saldo Acumulado',
-                    data: saldoEvolucionPorMes,
-                    borderColor: '#38bdf8',
-                    backgroundColor: '#38bdf8',
-                    borderWidth: 3,
-                    fill: false,
-                    tension: 0.1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    display: false // Ocultamos el eje X para que no duplique líneas visuales con el de barras
-                },
-                y: {
-                    display: true,
-                    position: 'right', // Ponemos su eje a la derecha o lo ocultamos si prefieres compartir escala pura
-                    grid: { drawOnChartArea: false }, // Evita duplicar las líneas de la cuadrícula
-                    ticks: { color: '#38bdf8' }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: { color: '#38bdf8', font: { size: 12 } }
                 }
             }
         }
