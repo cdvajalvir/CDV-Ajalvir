@@ -182,8 +182,6 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
     }
 
     // --- CÁLCULO Y RENDERIZADO DE PARTICIPACIÓN DEL SOCIO ---
-    
-    // 1. Contar socios cuya cantidad pagada > 0 en la temporada seleccionada
     let sociosActivosCount = 0;
     globalDirectivos.forEach(socio => {
         if (socio.cantidad_pagada && Array.isArray(socio.cantidad_pagada)) {
@@ -194,28 +192,23 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
         }
     });
 
-    // 2. Filtrar estrictamente por la temporada seleccionada para los movimientos
     const movsTemporadaExacta = globalMovimientos.filter(m => m.temporada === temporadaSeleccionada);
 
     let saldoUltimoRegistro = 0;
     let importeSituacionPartida = 0;
 
     if (movsTemporadaExacta.length > 0) {
-        // Ordenar por create_at (de más antiguo a más moderno) para que el último sea el de fecha de creación mayor
         const movsOrdenadosPorCreacion = [...movsTemporadaExacta].sort((a, b) => new Date(a.create_at) - new Date(b.create_at));
-        
-        // El último movimiento según create_at es el último del array ordenado
         const ultimoMovimiento = movsOrdenadosPorCreacion[movsOrdenadosPorCreacion.length - 1];
         saldoUltimoRegistro = parseFloat(ultimoMovimiento.saldo) || 0;
 
-        // 3. Sumar importes cuyo concepto empiece por "situacion de partida" (normalizando tildes y minúsculas)
         movsTemporadaExacta.forEach(mov => {
             if (mov.concepto) {
                 const conceptoClean = mov.concepto
                     .trim()
                     .toLowerCase()
                     .normalize("NFD")
-                    .replace(/[\u0300-\u036f]/g, ""); // Elimina tildes
+                    .replace(/[\u0300-\u036f]/g, "");
 
                 if (conceptoClean.startsWith('situacion de partida')) {
                     importeSituacionPartida += parseFloat(mov.importe) || 0;
@@ -224,13 +217,11 @@ function actualizarVistaPorTemporada(temporadaSeleccionada) {
         });
     }
 
-    // 4. Calcular el valor final de la participación
     let participacionFinal = 0;
     if (sociosActivosCount > 0) {
         participacionFinal = (saldoUltimoRegistro - importeSituacionPartida) / sociosActivosCount;
     }
 
-    // 5. Inyectarlo en la nueva tarjeta HTML
     const elemParticipacionValor = document.getElementById("participacionSocioValor");
     const elemParticipacionLabel = document.getElementById("temporadaParticipacionLabel");
     
@@ -314,13 +305,10 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
 
     movimientosTemporada.forEach(mov => {
         const importe = parseFloat(mov.importe) || 0;
-        
-        // Consideramos gasto si el importe es negativo
         const esGasto = importe < 0;
 
         if (esGasto) {
             const valorGasto = Math.abs(importe);
-            // Agrupamos por el campo tipo real de la base de datos; si viene null o vacío, va a 'Otros'
             const tipoGasto = mov.tipo && mov.tipo.trim() !== '' ? mov.tipo.trim() : 'Otros';
 
             if (!gastosPorTipo[tipoGasto]) {
@@ -373,7 +361,7 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
                 },
                 legend: {
                     position: 'bottom',
-                    align: 'start', // Leyenda alineada a la izquierda igual que el otro gráfico
+                    align: 'start',
                     labels: {
                         color: '#ffffff',
                         font: { size: 11 },
@@ -396,7 +384,7 @@ function procesarYRenderizarDetalleGastos(movimientos, temporadaSeleccionada) {
     });
 }
 
-// Función para procesar movimientos por mes, calcular saldo acumulado y renderizar gráfico mixto (barras + línea)
+// Función para procesar movimientos por mes, calcular saldo acumulado con puntos por apunte y renderizar gráfico mixto
 function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     const canvasElement = document.getElementById("graficoIngresosGastos");
     if (!canvasElement) return;
@@ -427,7 +415,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
 
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
-    // 1. Calcular barras de ingresos y gastos por mes (igual que antes)
+    // 1. Acumuladores para las barras mensuales
     movimientosTemporada.forEach(mov => {
         if (!mov.fecha_apunte) return;
         const fecha = new Date(mov.fecha_apunte);
@@ -450,8 +438,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    // 2. Calcular la evolución del saldo reflejando los apuntes cronológicamente dentro de los meses
-    // Ordenamos los movimientos por fecha de apunte (y create_at como respaldo) de más antiguo a más moderno
+    // 2. Cálculo detallado de la línea con un punto por cada apunte ordenado cronológicamente
     const movimientosOrdenados = [...movimientosTemporada].sort((a, b) => {
         const fechaA = new Date(a.fecha_apunte || a.create_at);
         const fechaB = new Date(b.fecha_apunte || b.create_at);
@@ -459,8 +446,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     });
 
     let saldoAcumulado = 0;
-    const saldoEvolucionPorMes = new Array(12).fill(null);
-    let ultimoSaldoValido = 0;
+    const datosLineaPorPunto = [];
 
     movimientosOrdenados.forEach(mov => {
         if (!mov.fecha_apunte) return;
@@ -469,27 +455,24 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
 
         const mIndex = fecha.getMonth();
         const fAnio = fecha.getFullYear();
-
         const indexEnTemporada = mesesDefinicion.findIndex(item => item.mesIndex === mIndex && item.anio === fAnio);
 
         if (indexEnTemporada !== -1) {
             const importe = parseFloat(mov.importe) || 0;
             saldoAcumulado += importe;
-            // Actualizamos la posición del mes con el saldo de cada apunte que ocurra en él
-            saldoEvolucionPorMes[indexEnTemporada] = saldoAcumulado;
-            ultimoSaldoValido = saldoAcumulado;
+
+            // Posición decimal exacta dentro del mes (de 0.0 a 0.99)
+            const dia = fecha.getDate();
+            const diasEnMes = new Date(fAnio, mIndex + 1, 0).getDate();
+            const fraccionMes = (dia - 1) / diasEnMes;
+            const posicionXDecimal = indexEnTemporada + fraccionMes;
+
+            datosLineaPorPunto.push({
+                x: posicionXDecimal,
+                y: saldoAcumulado
+            });
         }
     });
-
-    // Rellenar huecos de meses sin movimientos para que la línea no caiga a cero, sino que mantenga el último saldo conocido
-    let saldoArrastrado = 0;
-    for (let i = 0; i < 12; i++) {
-        if (saldoEvolucionPorMes[i] !== null) {
-            saldoArrastrado = saldoEvolucionPorMes[i];
-        } else {
-            saldoEvolucionPorMes[i] = saldoArrastrado;
-        }
-    }
 
     const ctx = canvasElement.getContext("2d");
 
@@ -521,12 +504,12 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                 {
                     type: 'line',
                     label: 'Evolución Saldo Acumulado',
-                    data: saldoEvolucionPorMes,
+                    data: datosLineaPorPunto, // Coordenadas exactas con decimales por día
                     borderColor: '#38bdf8',
                     backgroundColor: '#38bdf8',
                     borderWidth: 3,
                     fill: false,
-                    tension: 0.2, // Ligeramente curvada para que las variaciones se suavicen visualmente
+                    tension: 0.2,
                     order: 1
                 }
             ]
@@ -536,7 +519,16 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    ticks: { color: '#ffffff' },
+                    type: 'linear',
+                    min: 0,
+                    max: 11,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return labelsMeses[value] || '';
+                        },
+                        color: '#ffffff'
+                    },
                     grid: { color: 'rgba(255, 255, 255, 0.1)' }
                 },
                 y: {
