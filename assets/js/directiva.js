@@ -438,7 +438,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    // 2. Cálculo detallado de la línea con un punto por cada apunte ordenado cronológicamente
+    // 2. Cálculo de la línea de saldo acumulado adaptada a índices de categoría (con decimales para la progresión dentro del mes)
     const movimientosOrdenados = [...movimientosTemporada].sort((a, b) => {
         const fechaA = new Date(a.fecha_apunte || a.create_at);
         const fechaB = new Date(b.fecha_apunte || b.create_at);
@@ -461,10 +461,10 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
             const importe = parseFloat(mov.importe) || 0;
             saldoAcumulado += importe;
 
-            // Posición decimal exacta dentro del mes (de 0.0 a 0.99)
             const dia = fecha.getDate();
             const diasEnMes = new Date(fAnio, mIndex + 1, 0).getDate();
             const fraccionMes = (dia - 1) / diasEnMes;
+            // Posición exacta en la escala de categorías (ej: mes 0 + fracción)
             const posicionXDecimal = indexEnTemporada + fraccionMes;
 
             datosLineaPorPunto.push({
@@ -504,12 +504,14 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                 {
                     type: 'line',
                     label: 'Evolución Saldo Acumulado',
-                    data: datosLineaPorPunto, // Coordenadas exactas con decimales por día
+                    data: datosLineaPorPunto,
                     borderColor: '#38bdf8',
                     backgroundColor: '#38bdf8',
                     borderWidth: 3,
                     fill: false,
                     tension: 0.2,
+                    // IMPORTANTE: Indicamos que use el eje lineal interno pero mapeado con las labels
+                    xAxisID: 'x', 
                     order: 1
                 }
             ]
@@ -519,13 +521,17 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    type: 'linear',
-                    min: 0,
-                    max: 11,
+                    type: 'linear', // Mantenemos linear para permitir puntos decimales entre meses
+                    min: -0.5,      // Margen izquierdo para que la primera barra no quede cortada
+                    max: 11.5,      // Margen derecho para que la última barra no se salga
                     ticks: {
                         stepSize: 1,
                         callback: function(value) {
-                            return labelsMeses[value] || '';
+                            // Solo devolvemos la etiqueta si el valor es un entero exacto (el mes correspondiente)
+                            if (Number.isInteger(value) && value >= 0 && value < labelsMeses.length) {
+                                return labelsMeses[value];
+                            }
+                            return '';
                         },
                         color: '#ffffff'
                     },
