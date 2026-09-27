@@ -136,7 +136,7 @@
                         </div>
                     </article>
 
-                    <!-- Detalle de Gastos (Ocupa columna 3) -->
+                    <!-- Detalle de Gastos (Ocupa columna 3 - Borde derecho de referencia) -->
                     <article class="card" style="margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
                         <h3>Detalle Gastos</h3>
                         <div style="position: relative; height: 250px; width: 100%;">
@@ -149,18 +149,17 @@
                          FILA INFERIOR
                     =========================================== -->
 
-                    <!-- Gráfico Evolución (Ocupa las columnas 1 y 2) -->
+                    <!-- Gráfico Evolución (Ocupa las columnas 1 y 2 / Equivalente al 66.6% o tu deseado ancho) -->
                     <article class="card" style="margin: 0; grid-column: span 2; min-width: 0;">
                         <h3>Evolución de Ingresos y Gastos por Mes</h3>
                         <div style="width: 100%; overflow-x: auto;">
                             <div id="contenedorGraficoBarras" style="position: relative; height: 300px; min-width: 500px;">
-                                <canvas id="graficoBarras" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
-                                <canvas id="graficoLinea" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%;"></canvas>
+                                <canvas id="graficoIngresosGastos"></canvas>
                             </div>
                         </div>
                     </article>
 
-                    <!-- Participación del Socio (Ocupa exactamente la columna 3) -->
+                    <!-- Participación del Socio (Ocupa exactamente la columna 3, alineada con Detalle Gastos) -->
                     <article class="card" style="margin: 0; grid-column: span 1; height: 185px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                         <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem; color: #94a3b8;">Participación del Socio</h3>
                         <p id="participacionSocioValor" style="font-size: 2.5rem; font-weight: bold; color: #38bdf8; margin: 0;">
