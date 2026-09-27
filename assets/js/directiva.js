@@ -427,6 +427,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
 
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
 
+    // 1. Calcular barras de ingresos y gastos por mes (igual que antes)
     movimientosTemporada.forEach(mov => {
         if (!mov.fecha_apunte) return;
         const fecha = new Date(mov.fecha_apunte);
@@ -449,13 +450,46 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    let saldoAcumulado = 0;
-    const saldoEvolucionPorMes = mesesDefinicion.map((_, index) => {
-        const ingresoMes = ingresosPorMes[index];
-        const gastoMes = gastosPorMes[index];
-        saldoAcumulado += (ingresoMes - gastoMes);
-        return saldoAcumulado;
+    // 2. Calcular la evolución del saldo reflejando los apuntes cronológicamente dentro de los meses
+    // Ordenamos los movimientos por fecha de apunte (y create_at como respaldo) de más antiguo a más moderno
+    const movimientosOrdenados = [...movimientosTemporada].sort((a, b) => {
+        const fechaA = new Date(a.fecha_apunte || a.create_at);
+        const fechaB = new Date(b.fecha_apunte || b.create_at);
+        return fechaA - fechaB;
     });
+
+    let saldoAcumulado = 0;
+    const saldoEvolucionPorMes = new Array(12).fill(null);
+    let ultimoSaldoValido = 0;
+
+    movimientosOrdenados.forEach(mov => {
+        if (!mov.fecha_apunte) return;
+        const fecha = new Date(mov.fecha_apunte);
+        if (isNaN(fecha)) return;
+
+        const mIndex = fecha.getMonth();
+        const fAnio = fecha.getFullYear();
+
+        const indexEnTemporada = mesesDefinicion.findIndex(item => item.mesIndex === mIndex && item.anio === fAnio);
+
+        if (indexEnTemporada !== -1) {
+            const importe = parseFloat(mov.importe) || 0;
+            saldoAcumulado += importe;
+            // Actualizamos la posición del mes con el saldo de cada apunte que ocurra en él
+            saldoEvolucionPorMes[indexEnTemporada] = saldoAcumulado;
+            ultimoSaldoValido = saldoAcumulado;
+        }
+    });
+
+    // Rellenar huecos de meses sin movimientos para que la línea no caiga a cero, sino que mantenga el último saldo conocido
+    let saldoArrastrado = 0;
+    for (let i = 0; i < 12; i++) {
+        if (saldoEvolucionPorMes[i] !== null) {
+            saldoArrastrado = saldoEvolucionPorMes[i];
+        } else {
+            saldoEvolucionPorMes[i] = saldoArrastrado;
+        }
+    }
 
     const ctx = canvasElement.getContext("2d");
 
@@ -492,7 +526,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                     backgroundColor: '#38bdf8',
                     borderWidth: 3,
                     fill: false,
-                    tension: 0.1,
+                    tension: 0.2, // Ligeramente curvada para que las variaciones se suavicen visualmente
                     order: 1
                 }
             ]
