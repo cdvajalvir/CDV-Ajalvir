@@ -438,7 +438,22 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
         }
     });
 
-    // 2. Cálculo de la línea de saldo acumulado adaptada a índices de categoría (con decimales para la progresión dentro del mes)
+    // Convertimos los arrays de barras en formato de coordenadas { x, y } para que el eje lineal las renderice bien
+    // Desplazamos ligeramente las barras (ej: ingresos en i + 0.35 y gastos en i + 0.65) o centradas en i + 0.5
+    const datosBarrasIngresos = [];
+    const datosBarrasGastos = [];
+
+    ingresosPorMes.forEach((valor, i) => {
+        if (valor > 0) {
+            datosBarrasIngresos.push({ x: i + 0.35, y: valor });
+            datosBarrasGastos.push({ x: i + 0.65, y: gastosPorMes[i] }); // Mantenemos espacio para ambas
+        } else if (gastosPorMes[i] > 0) {
+            datosBarrasIngresos.push({ x: i + 0.35, y: 0 });
+            datosBarrasGastos.push({ x: i + 0.65, y: gastosPorMes[i] });
+        }
+    });
+
+    // 2. Cálculo detallado de la línea de saldo acumulado por punto (dentro de los límites de cada mes 0 a 11)
     const movimientosOrdenados = [...movimientosTemporada].sort((a, b) => {
         const fechaA = new Date(a.fecha_apunte || a.create_at);
         const fechaB = new Date(b.fecha_apunte || b.create_at);
@@ -463,8 +478,8 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
 
             const dia = fecha.getDate();
             const diasEnMes = new Date(fAnio, mIndex + 1, 0).getDate();
-            const fraccionMes = (dia - 1) / diasEnMes;
-            // Posición exacta en la escala de categorías (ej: mes 0 + fracción)
+            // Restringimos estrictamente la fracción para que oscile de 0.1 a 0.9 dentro del mes actual
+            const fraccionMes = Math.min(Math.max((dia - 1) / diasEnMes, 0.05), 0.95);
             const posicionXDecimal = indexEnTemporada + fraccionMes;
 
             datosLineaPorPunto.push({
@@ -483,21 +498,24 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
     chartIngresosGastosInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labelsMeses,
             datasets: [
                 {
                     type: 'bar',
                     label: 'Suma de INGRESOS',
-                    data: ingresosPorMes,
+                    data: datosBarrasIngresos,
                     backgroundColor: '#f97316',
+                    barPercentage: 0.4,
+                    categoryPercentage: 0.8,
                     borderWidth: 1,
                     order: 2
                 },
                 {
                     type: 'bar',
                     label: 'Suma de GASTOS',
-                    data: gastosPorMes,
+                    data: datosBarrasGastos,
                     backgroundColor: '#fbbf24',
+                    barPercentage: 0.4,
+                    categoryPercentage: 0.8,
                     borderWidth: 1,
                     order: 2
                 },
@@ -510,8 +528,6 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                     borderWidth: 3,
                     fill: false,
                     tension: 0.2,
-                    // IMPORTANTE: Indicamos que use el eje lineal interno pero mapeado con las labels
-                    xAxisID: 'x', 
                     order: 1
                 }
             ]
@@ -521,14 +537,14 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
             maintainAspectRatio: false,
             scales: {
                 x: {
-                    type: 'linear', // Mantenemos linear para permitir puntos decimales entre meses
-                    min: -0.5,      // Margen izquierdo para que la primera barra no quede cortada
-                    max: 11.5,      // Margen derecho para que la última barra no se salga
+                    type: 'linear',
+                    min: 0,
+                    max: 12, // Exactamente de 0 a 12 para abarcar los 12 meses sin desbordarse
                     ticks: {
                         stepSize: 1,
                         callback: function(value) {
-                            // Solo devolvemos la etiqueta si el valor es un entero exacto (el mes correspondiente)
-                            if (Number.isInteger(value) && value >= 0 && value < labelsMeses.length) {
+                            // Mostramos el nombre del mes centrado en la marca entera
+                            if (value >= 0 && value < labelsMeses.length) {
                                 return labelsMeses[value];
                             }
                             return '';
