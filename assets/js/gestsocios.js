@@ -1,6 +1,6 @@
 import { supabaseClient } from "./supabase.js";
 
-// Verificación estricta de permisos de administrador
+// Verificación de permisos para administradores y directiva
 async function verificarPermisoAdmin() {
     const { data: { session } } = await supabaseClient.auth.getSession();
 
@@ -15,8 +15,12 @@ async function verificarPermisoAdmin() {
         .eq("id", session.user.id)
         .single();
 
-    if (!socio || (socio.rol !== "administrador" && socio.rol !== "admin")) {
-        alert("Acceso denegado: Se requieren permisos de administración.");
+    // Comprobamos que el rol sea administrador, admin o directiva
+    const rolUsuario = socio ? socio.rol : "";
+    const rolesPermitidos = ["administrador", "directiva"];
+
+    if (!socio || !rolesPermitidos.includes(rolUsuario)) {
+        alert("Acceso denegado: Se requieren permisos de administración o directiva.");
         window.location.href = "../index.html";
     }
 }
