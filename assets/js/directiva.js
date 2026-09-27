@@ -423,9 +423,10 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
 
     const ingresosPorMes = new Array(12).fill(0);
     const gastosPorMes = new Array(12).fill(0);
-    const labelsMeses = mesesDefinicion.map(m => m.nombre);
 
     const movimientosTemporada = movimientos.filter(m => !m.temporada || m.temporada === temporadaSeleccionada);
+
+    let ultimoIndiceConDatos = -1;
 
     movimientosTemporada.forEach(mov => {
         if (!mov.fecha_apunte) return;
@@ -446,13 +447,30 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
             } else {
                 gastosPorMes[indexEnTemporada] += Math.abs(importe);
             }
+
+            // Actualizamos cuál es el último índice de mes que ha registrado actividad
+            if (indexEnTemporada > ultimoIndiceConDatos) {
+                ultimoIndiceConDatos = indexEnTemporada;
+            }
         }
     });
 
+    // Si no hay ningún movimiento en toda la temporada, por defecto mostramos al menos hasta el primer mes (sep) o salimos
+    if (ultimoIndiceConDatos === -1) {
+        ultimoIndiceConDatos = 0; 
+    }
+
+    // Recortamos los arrays de meses, ingresos y gastos exclusivamente hasta el último mes con datos
+    const mesesFiltrados = mesesDefinicion.slice(0, ultimoIndiceConDatos + 1);
+    const labelsMeses = mesesFiltrados.map(m => m.nombre);
+    const ingresosFiltrados = ingresosPorMes.slice(0, ultimoIndiceConDatos + 1);
+    const gastosFiltrados = gastosPorMes.slice(0, ultimoIndiceConDatos + 1);
+
+    // Calculamos el saldo acumulado solo para los meses recortados
     let saldoAcumulado = 0;
-    const saldoEvolucionPorMes = mesesDefinicion.map((_, index) => {
-        const ingresoMes = ingresosPorMes[index];
-        const gastoMes = gastosPorMes[index];
+    const saldoEvolucionPorMes = mesesFiltrados.map((_, index) => {
+        const ingresoMes = ingresosFiltrados[index];
+        const gastoMes = gastosFiltrados[index];
         saldoAcumulado += (ingresoMes - gastoMes);
         return saldoAcumulado;
     });
@@ -471,7 +489,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                 {
                     type: 'bar',
                     label: 'Suma de INGRESOS',
-                    data: ingresosPorMes,
+                    data: ingresosFiltrados,
                     backgroundColor: '#f97316',
                     borderWidth: 1,
                     order: 2
@@ -479,7 +497,7 @@ function procesarYRenderizarGraficoBarras(movimientos, temporadaSeleccionada) {
                 {
                     type: 'bar',
                     label: 'Suma de GASTOS',
-                    data: gastosPorMes,
+                    data: gastosFiltrados,
                     backgroundColor: '#fbbf24',
                     borderWidth: 1,
                     order: 2
