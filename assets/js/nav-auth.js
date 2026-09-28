@@ -42,12 +42,13 @@ export async function cargarNavegacionDinamica() {
         const rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
 
         // Comportamiento específico según la página o el rol
-        if (pathName.includes("socios.html")) {
+        
+        if (pathName.includes("gestsocios.html")) {
+            renderizarMenuUnicoGestionSocios(contenedorNav, rol, basePath);
+        } else if (pathName.includes("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("gestconvocatoria.html")) {
             renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
-        } else if (pathName.includes("gestsocios.html")) {
-            renderizarMenuUnicoGestionSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("convocatoria.html")) {
             renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
