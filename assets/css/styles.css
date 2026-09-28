@@ -264,3 +264,22 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
         grid-column: span 1 !important;
     }
 }
+
+/* =====================================================
+   CORRECCIÓN DE DESBORDAMIENTO EN MÓVILES
+===================================================== */
+@media (max-width: 768px) {
+    /* Evitamos que cualquier contenedor con min-width fijo se salga de la pantalla */
+    .app-main div[style*="min-width"], 
+    #contenedorGraficoBarras {
+        min-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Aseguramos que las tarjetas y el contenido principal no expanda la pantalla */
+    .app-main, .content-grid, .card {
+        max-width: 100% !important;
+        overflow-x: hidden;
+    }
+}
