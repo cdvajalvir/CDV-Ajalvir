@@ -46,7 +46,7 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("gestconvocatoria.html")) {
             renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
-        } else if (pathName.includes("gestconvocatoria.html")) {
+        } else if (pathName.includes("gestsocios.html")) {
             renderizarMenuUnicoGestionSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("convocatoria.html")) {
             renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
