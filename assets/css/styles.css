@@ -21,6 +21,7 @@
 }
 
 * { box-sizing: border-box; }
+
 html { scroll-behavior: smooth; }
 body {
     margin: 0;
@@ -253,5 +254,13 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 @media (max-width: 768px) {
     .profile-grid.editing {
         grid-template-columns: 1fr;
+    }
+    
+    /* Adaptación móvil específica para el grid de 3 columnas del panel de directiva */
+    .app-main .content-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .app-main .content-grid > article {
+        grid-column: span 1 !important;
     }
 }
