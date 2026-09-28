@@ -46,6 +46,8 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("gestconvocatoria.html")) {
             renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
+        } else if (pathName.includes("gestconvocatoria.html")) {
+            renderizarMenuUnicoGestionSocios(contenedorNav, rol, basePath);
         } else if (pathName.includes("convocatoria.html")) {
             renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
         } else if (pathName.includes("registros.html")) {
@@ -202,6 +204,13 @@ function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
 }
 
 function renderizarMenuUnicoGestionConvocatoria(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="directiva.html">Directiva</a>
+    `;
+    configurarBotonLogout(basePath);
+}
+
+function renderizarMenuUnicoGestionSocios(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="directiva.html">Directiva</a>
     `;
