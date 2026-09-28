@@ -20,20 +20,27 @@
     ======================================================= -->
 
     <header class="site-header">
+
         <nav class="navbar container">
+
             <a class="brand" href="../index.html">
+
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
+
                 <span>CD Veteranos Ajalvir</span>
+
             </a>
 
-            <button class="nav-toggle" data-nav-toggle aria-label="Menú de navegación">
+            <button class="nav-toggle" data-nav-toggle>
                 ☰
             </button>
 
             <div class="nav-links" data-nav-links></div>
+
         </nav>
+
     </header>
 
     <!-- ======================================================
@@ -43,41 +50,64 @@
     <main class="container">
 
         <!-- Cabecera -->
+
         <section class="page-hero">
-            <p class="eyebrow">Área privada</p>
-            <h1>Panel de directiva</h1>
+
+            <p class="eyebrow">
+                Área privada
+            </p>
+
+            <h1>
+                Panel de directiva
+            </h1>
+
         </section>
 
         <!-- Aplicación -->
+
         <section class="app-layout">
 
             <!-- Menú lateral -->
+
             <aside class="app-sidebar">
+
                 <div class="app-sidebar-title">
                     <!-- Selector de temporada dinámico -->
-                    <select id="selectTemporada" class="select-temporada">
+                    <select id="selectTemporada" style="width: 100%; padding: 6px; background: #1e293b; color: #fff; border: 1px solid #475569; border-radius: 4px; font-weight: bold; cursor: pointer;">
                         <option value="">Cargando temporadas...</option>
                     </select>
                 </div>
 
                 <nav class="app-menu">
-                    <a class="active" href="../admin/registros.html">Registros</a>
-                    <a href="../directiva/gestconvocatoria.html">Convocatoria</a>
-                    <a href="../directiva/gestsocios.html">Gest.Socios</a>
+
+                    <a class="active" href="../admin/registros.html">
+                        Registros
+                    </a>
+
+                    <a href="../directiva/gestconvocatoria.html">
+                        Convocatoria
+                    </a>
+
+                    <a href="../directiva/gestsocios.html">
+                        Gest.Socios
+                    </a>
+
                 </nav>
+
             </aside>
 
             <!-- Panel principal -->
+
             <div class="app-main">
 
-                <div class="dashboard-grid">
+                <div class="content-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; width: 100%;">
 
                     <!-- ==========================================
                          FILA SUPERIOR
                     =========================================== -->
                     
-                    <!-- Resumen de saldos -->
-                    <article class="card dashboard-card">
+                    <!-- Resumen de saldos (Ocupa columna 1) -->
+                    <article class="card" style="margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <h3>Resumen de saldos (Directiva y Administradores)</h3>
                             <div class="table-responsive">
@@ -85,12 +115,12 @@
                                     <thead>
                                         <tr>
                                             <th>Nombre y Apellidos</th>
-                                            <th class="text-right">Saldo</th>
+                                            <th style="text-align: right;">Saldo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="2" class="text-center">Cargando saldos...</td>
+                                            <td colspan="2" style="text-align: center;">Cargando saldos...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -98,18 +128,18 @@
                         </div>
                     </article>
 
-                    <!-- Estado de Cuotas -->
-                    <article class="card dashboard-card">
+                    <!-- Estado de Cuotas (Ocupa columna 2) -->
+                    <article class="card" style="margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
                         <h3>Estado de Cuotas (Socios)</h3>
-                        <div class="chart-container">
+                        <div style="position: relative; height: 250px; width: 100%;">
                             <canvas id="graficoCuotas"></canvas>
                         </div>
                     </article>
 
-                    <!-- Detalle de Gastos -->
-                    <article class="card dashboard-card">
+                    <!-- Detalle de Gastos (Ocupa columna 3 - Borde derecho de referencia) -->
+                    <article class="card" style="margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
                         <h3>Detalle Gastos</h3>
-                        <div class="chart-container">
+                        <div style="position: relative; height: 250px; width: 100%;">
                             <canvas id="graficoDetalleGastos"></canvas>
                         </div>
                     </article>
@@ -119,23 +149,23 @@
                          FILA INFERIOR
                     =========================================== -->
 
-                    <!-- Gráfico Evolución (Ocupa 2 columnas en desktop) -->
-                    <article class="card dashboard-card span-2">
+                    <!-- Gráfico Evolución (Ocupa las columnas 1 y 2 / Equivalente al 66.6% o tu deseado ancho) -->
+                    <article class="card" style="margin: 0; grid-column: span 2; min-width: 0;">
                         <h3>Evolución de Ingresos y Gastos por Mes</h3>
-                        <div class="table-responsive">
-                            <div id="contenedorGraficoBarras" class="chart-container-large">
+                        <div style="width: 100%; overflow-x: auto;">
+                            <div id="contenedorGraficoBarras" style="position: relative; height: 300px; min-width: 500px;">
                                 <canvas id="graficoIngresosGastos"></canvas>
                             </div>
                         </div>
                     </article>
 
-                    <!-- Participación del Socio (Ocupa 1 columna) -->
-                    <article class="card dashboard-card span-1 card-metric">
-                        <h3 class="metric-title">Participación del Socio</h3>
-                        <p id="participacionSocioValor" class="metric-value">
+                    <!-- Participación del Socio (Ocupa exactamente la columna 3, alineada con Detalle Gastos) -->
+                    <article class="card" style="margin: 0; grid-column: span 1; height: 185px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem; color: #94a3b8;">Participación del Socio</h3>
+                        <p id="participacionSocioValor" style="font-size: 2.5rem; font-weight: bold; color: #38bdf8; margin: 0;">
                             0.00 €
                         </p>
-                        <small class="metric-subtitle">
+                        <small style="color: #64748b; margin-top: 0.5rem; font-size: 0.85rem;">
                             Temporada <span id="temporadaParticipacionLabel"></span>
                         </small>
                     </article>
@@ -149,10 +179,10 @@
     </main>
 
     <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-left">
-                <p class="footer-copy">© 2026 CD Veteranos Ajalvir</p>
-                <div class="footer-links">
+        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
                     <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D"
                        target="_blank"
                        class="social-link instagram"
@@ -173,7 +203,7 @@
                 </div>
             </div>
             <div>
-                <a href="../pprivacidad.html" class="footer-privacy">Política de privacidad</a>
+                <a href="../pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
             </div>
         </div>
     </footer>
@@ -181,6 +211,7 @@
     <!-- ======================================================
          JAVASCRIPT
     ======================================================= -->
+
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/directiva.js"></script>
 
