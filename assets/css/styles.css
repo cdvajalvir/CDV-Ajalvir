@@ -20,35 +20,21 @@
     --shadow: 0 24px 70px rgba(0, 0, 0, .35);
 }
 
-/* CORREGIDO: Añadido el asterisco para que sea el selector universal real */
-*, *::before, *::after { box-sizing: border-box; }
-
-html {
-    box-sizing: border-box;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto; /* Permite el scroll vertical de forma nativa */
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
     margin: 0;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     color: var(--text);
     line-height: 1.6;
-    
-    /* Usamos background-attachment: fixed para que el fondo cubra toda la página fija 
-       y no se corte ni cambie de color al hacer scroll */
     background:
         radial-gradient(circle at 12% 0%, rgba(15, 94, 173, .76) 0, transparent 36%),
         radial-gradient(circle at 82% 8%, rgba(254, 218, 10, .18) 0, transparent 28%),
-        linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 45%, #020817 100%) fixed;
-    
-    min-height: 100%;
-    height: auto;
-    padding-bottom: 90px; /* Deja espacio para el footer fijo */
-    overflow-x: hidden;
+        linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 45%, #020817 100%);
+    min-height: 100vh;
+    padding-bottom: 90px; /* Protege el espacio del footer fijo */
+    overscroll-behavior-y: none;
 }
-
 a { color: inherit; text-decoration: none; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
@@ -113,7 +99,6 @@ h1, h2, h3 { letter-spacing: -.04em; }
 .card, .hero-card, .side-panel, .app-sidebar, .login-card {
     border: 1px solid var(--border-yellow); border-radius: var(--radius); background: var(--surface);
     box-shadow: 0 14px 40px rgba(0,0,0,.18);
-    max-width: 100%; /* Asegura que la tarjeta no rebase su contenedor */
 }
 .card { padding: 14px; }
 .card h3 { margin: 0 0 6px; font-size: 1.2rem; }
@@ -153,7 +138,7 @@ h1, h2, h3 { letter-spacing: -.04em; }
 .app-menu { display: grid; gap: 8px; }
 .app-menu a { color: var(--muted); padding: 12px 14px; border-radius: 14px; font-weight: 900; }
 .app-menu a:hover, .app-menu a.active { color: var(--yellow); background: rgba(255,255,255,.08); }
-.app-main { min-width: 0; max-width: 100%; }
+.app-main { min-width: 0; }
 
 .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .table { width: 100%; border-collapse: collapse; border-radius: 18px; overflow: hidden; min-width: 500px; }
@@ -214,7 +199,7 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
 /* =====================================================
-    FOOTER REDES SOCIALES
+   FOOTER REDES SOCIALES
 ===================================================== */
 .footer-links { display: flex; align-items: center; gap: 18px; }
 .social-link { display: inline-flex; justify-content: center; align-items: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.08); color: #feda0a; font-size: 1.3rem; transition: .25s; }
@@ -235,7 +220,7 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 }
 
 /* =====================================================
-    MEDIA QUERIES (ADAPTACIÓN MÓVIL / TABLET)
+   MEDIA QUERIES (ADAPTACIÓN MÓVIL / TABLET)
 ===================================================== */
 @media (max-width: 900px) {
     .nav-toggle { display: block; }
@@ -268,32 +253,5 @@ input[type="checkbox"] { width: auto; margin-right: 8px; }
 @media (max-width: 768px) {
     .profile-grid.editing {
         grid-template-columns: 1fr;
-    }
-    
-    /* Adaptación móvil específica para el grid de 3 columnas del panel de directiva */
-    .app-main .content-grid {
-        grid-template-columns: 1fr !important;
-    }
-    .app-main .content-grid > article {
-        grid-column: span 1 !important;
-    }
-}
-
-/* =====================================================
-    CORRECCIÓN DE DESBORDAMIENTO EN MÓVILES
-===================================================== */
-@media (max-width: 768px) {
-    /* Evitamos que cualquier contenedor con min-width fijo se salga de la pantalla */
-    .app-main div[style*="min-width"], 
-    #contenedorGraficoBarras {
-        min-width: 100% !important;
-        width: 100% !important;
-        box-sizing: border-box;
-    }
-
-    /* Aseguramos que las tarjetas y el contenido principal no expanda la pantalla */
-    .app-main, .content-grid, .card {
-        max-width: 100% !important;
-        overflow-x: hidden;
     }
 }
