@@ -12,10 +12,21 @@
         .tabla-convocatorias {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
             width: 100%;
         }
-        /* Estructura de la tarjeta en dos filas con Grid */
+        /* Contenedor específico para la convocatoria activa (Arriba) */
+        #seccionConvocatoriaActiva {
+            width: 100%;
+        }
+        /* Contenedor para el listado histórico */
+        #seccionHistoricoConvocatorias {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        /* Estructura de la tarjeta avanzada activa en dos filas con Grid */
         .convocatoria-fila {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -39,6 +50,18 @@
             grid-template-columns: 150px 1fr auto auto;
             gap: 0.75rem;
             align-items: center;
+        }
+        /* Estilo compacto y limpio para el listado histórico */
+        .convocatoria-historico-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
         }
         .campo-grupo {
             display: flex;
@@ -117,14 +140,13 @@
         /* LAYOUT PRINCIPAL A ANCHO TOTAL DE PANTALLA */
         .gestion-layout {
             display: grid;
-            grid-template-columns: 2.2fr 1fr 1fr; /* Convocatorias domina el ancho, los lados se reparten el resto */
+            grid-template-columns: 2.2fr 1fr 1fr;
             gap: 1.5rem;
             align-items: start;
             width: 100%;
-            max-width: 100% !important; /* Rompe el límite del .container general */
+            max-width: 100% !important;
         }
 
-        /* Evitar saltos de línea extraños en los nombres de los socios */
         #listaSociosApuntados li, 
         #listaSociosIndisponibles li {
             white-space: nowrap;
@@ -178,19 +200,45 @@
         <section class="page-hero" style="text-align: left; margin-bottom: 2rem;">
             <p class="eyebrow">Área privada</p>
             <h1>Gestión de Convocatorias</h1>
-            <p class="lead">Edita y activa las convocatorias con diseño ampliado.</p>
+            <p class="lead">Edita la convocatoria activa y consulta el histórico de la temporada.</p>
         </section>
 
         <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
 
         <div class="gestion-layout">
             
-            <!-- Columna 1: Listado de Convocatorias (Ampliado un 25%) -->
-            <div id="contenedorConvocatoria" class="tabla-convocatorias">
-                <p style="text-align: center; padding: 2rem; color: #fff;">Cargando convocatorias...</p>
+            <!-- Columna 1: Convocatoria Activa Arriba + Histórico Debajo con Filtro -->
+            <div class="tabla-convocatorias">
+                
+                <!-- SECCIÓN 1: Convocatoria Activa (Tarjeta Avanzada) -->
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.75rem;">Convocatoria Activa</h3>
+                    <div id="seccionConvocatoriaActiva">
+                        <p style="color: #fff; padding: 1rem; text-align: center;">Cargando convocatoria activa...</p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: Histórico de Convocatorias de la Temporada -->
+                <div style="margin-top: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">Histórico de Convocatorias</h3>
+                        <!-- Filtro de Temporada -->
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <label for="filtroTemporada" style="font-size: 0.8rem; color: #94a3b8;">Temporada:</label>
+                            <select id="filtroTemporada" style="background: #1e293b; color: #fff; border: 1px solid #475569; border-radius: 4px; padding: 4px 8px; font-size: 0.85rem;">
+                                <!-- Se llenará dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="seccionHistoricoConvocatorias">
+                        <p style="color: #94a3b8; padding: 1rem; text-align: center;">Cargando histórico...</p>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Columna 2: Socios Apuntados -->
+            <!-- Columna 2: Socios Apuntados (Intacta) -->
             <aside class="card-socios-activa" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
                 <h3 style="font-size: 1rem; color: #38bdf8; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Apuntados</h3>
                 <p id="tituloConvocatoriaActiva" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
@@ -200,7 +248,7 @@
                 </ul>
             </aside>
 
-            <!-- Columna 3: Socios Indisponibles -->
+            <!-- Columna 3: Socios Indisponibles (Intacta) -->
             <aside class="card-socios-indisponibles" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
                 <h3 style="font-size: 1rem; color: #f43f5e; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Indisponibles</h3>
                 <p id="tituloConvocatoriaIndisponibles" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
