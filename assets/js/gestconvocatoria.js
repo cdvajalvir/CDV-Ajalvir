@@ -40,6 +40,11 @@ async function cargarConvocatorias() {
 
         listaGlobalConvocatorias = (response && response.data) ? response.data : [];
         
+        // Asignar la temporada calculada a cada convocatoria de forma interna
+        listaGlobalConvocatorias.forEach(c => {
+            c.temporadaCalculada = obtenerTemporadaDesdeFecha(c.hora);
+        });
+
         poblarFiltroTemporadas(listaGlobalConvocatorias);
         renderizarConvocatoriaActiva(listaGlobalConvocatorias);
         renderizarHistorico(listaGlobalConvocatorias);
@@ -50,17 +55,44 @@ async function cargarConvocatorias() {
     }
 }
 
+// Función para calcular la temporada (ej: "2026/2027") basándose en el texto "dd/mm/aaaa - hh:mm"
+function obtenerTemporadaDesdeFecha(textoHora) {
+    if (!textoHora || typeof textoHora !== 'string') return "Sin Temporada";
+    
+    // Extraer la parte de la fecha antes del guion
+    const partesFecha = textoHora.split("-")[0].trim().split("/");
+    if (partesFecha.length < 3) return "Sin Temporada";
+
+    const mes = parseInt(partesFecha[1], 10);
+    let anio = parseInt(partesFecha[2], 10);
+
+    // Ajustar años de dos dígitos si es necesario (ej. "26" -> 2026)
+    if (anio < 100) {
+        anio += 2000;
+    }
+
+    if (isNaN(mes) || isNaN(anio)) return "Sin Temporada";
+
+    // Si el mes es de septiembre (9) en adelante, la temporada es anio / anio+1
+    // Si es de enero a agosto, la temporada es anio-1 / anio
+    if (mes >= 9) {
+        return `${anio}/${anio + 1}`;
+    } else {
+        return `${anio - 1}/${anio}`;
+    }
+}
+
 function poblarFiltroTemporadas(lista) {
     const select = document.getElementById("filtroTemporada");
     if (!select) return;
 
-    const temporadaActualSeleccionada = select.value;
-    
-    // Extraer temporadas únicas (asumiendo que viene una propiedad temporada o extrayéndola del campo fecha/nombre)
-    // Si tus convocatorias tienen campo temporada, úsalo. Si no, agrupamos por defecto.
+    const temporadaSeleccionadaAnterior = select.value;
     const temporadasSet = new Set();
+
     lista.forEach(c => {
-        if (c.temporada) temporadasSet.add(c.temporada);
+        if (c.temporadaCalculada) {
+            temporadasSet.add(c.temporadaCalculada);
+        }
     });
 
     let temporadas = Array.from(temporadasSet).sort().reverse();
@@ -73,9 +105,15 @@ function poblarFiltroTemporadas(lista) {
         const opt = document.createElement("option");
         opt.value = temp;
         opt.textContent = temp;
-        if (temp === temporadaActualSeleccionada) opt.selected = true;
         select.appendChild(opt);
     });
+
+    // Intentar mantener la temporada seleccionada si aún existe, si no, seleccionar la primera (más reciente)
+    if (temporadaSeleccionadaAnterior && temporadas.includes(temporadaSeleccionadaAnterior)) {
+        select.value = temporadaSeleccionadaAnterior;
+    } else if (temporadas.length > 0) {
+        select.value = temporadas[0];
+    }
 }
 
 function renderizarConvocatoriaActiva(lista) {
@@ -157,17 +195,17 @@ function renderizarHistorico(lista) {
 
     const temporadaSeleccionada = filtroTemporada ? filtroTemporada.value : null;
 
-    // Filtrar pasadas (no activas o según temporada)
+    // Filtrar pasadas y que coincidan con la temporada seleccionada en el desplegable
     const historicas = lista.filter(c => {
         if (c.activa) return false; // La activa ya está arriba
-        if (temporadaSeleccionada && temporadaSeleccionada !== "Actual" && c.temporada !== temporadaSeleccionada) {
+        if (temporadaSeleccionada && c.temporadaCalculada !== temporadaSeleccionada) {
             return false;
         }
         return true;
     });
 
     if (historicas.length === 0) {
-        contenedor.innerHTML = `<p style="text-align: center; padding: 1rem; color: #94a3b8; font-size: 0.85rem;">No hay más convocatorias en el histórico.</p>`;
+        contenedor.innerHTML = `<p style="text-align: center; padding: 1rem; color: #94a3b8; font-size: 0.85rem;">No hay más convocatorias en el histórico para esta temporada.</p>`;
         return;
     }
 
@@ -184,7 +222,6 @@ function renderizarHistorico(lista) {
 
         const btnActivar = item.querySelector(".btn-activar-historico");
         btnActivar.addEventListener("click", async () => {
-            // Marcar esta como activa en memoria y guardar
             lista.forEach(item => item.id === conv.id ? item.activa = true : item.activa = false);
             renderizarConvocatoriaActiva(lista);
             renderizarHistorico(lista);
