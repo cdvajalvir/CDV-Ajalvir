@@ -112,8 +112,8 @@
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            display: block;
-            margin: 0 auto 2rem auto;
+            display: inline-block;
+            margin-bottom: 1.5rem; /* Margen inferior para separarlo de la convocatoria activa */
         }
         .btn-nuevo:hover {
             background: #059669;
@@ -205,11 +205,16 @@
 
         <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
 
-        <div class="gestion-layout">
+        <div class="gestion-layout" style="align-items: start;">
             
-            <!-- Columna 1: Convocatoria Activa Arriba + Histórico Debajo con Filtro -->
+            <!-- Columna 1: Botón Nuevo + Convocatoria Activa + Histórico -->
             <div class="tabla-convocatorias">
                 
+                <!-- Botón de Añadir Nueva Convocatoria a la izquierda -->
+                <div>
+                    <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
+                </div>
+
                 <!-- SECCIÓN 1: Convocatoria Activa (Tarjeta Avanzada) -->
                 <div>
                     <h3 style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.75rem;">Convocatoria Activa</h3>
