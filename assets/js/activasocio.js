@@ -43,7 +43,7 @@ async function cargarTemporadasPendientes() {
             }
         });
 
-        // La primera opción (índice 1) es siempre la temporada actual (la más reciente)
+        // La primera opción es siempre la temporada actual (la más reciente)
         const temporadaActualVigente = temporadasData.length > 0 ? temporadasData[0].temporada : null;
 
         // Seleccionar por defecto la primera (la más reciente)
@@ -90,11 +90,11 @@ async function cargarSociosPendientes(temporada) {
     const mensajeActiva = document.getElementById("mensajeActiva");
     if (!gridPendientes) return;
 
-    gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Cargando socios pendientes y bajas...</div>`;
+    gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #fff;">Cargando socios pendientes...</div>`;
     if (mensajeActiva) mensajeActiva.textContent = "";
 
     try {
-        // 1. Cargar socios pendientes de activación de la temporada actual
+        // 1. Obtener registro de la temporada actual
         const { data: tempRecord, error: errTempRecord } = await supabaseClient
             .from("temporada")
             .select("users")
@@ -116,7 +116,7 @@ async function cargarSociosPendientes(temporada) {
             sociosPendientes = sociosData || [];
         }
 
-        // 2. Cargar socios que han solicitado la baja (baja: true en la tabla socios, sin filtrar por temporada)
+        // 2. Cargar socios que han solicitado la baja (baja: true en la tabla socios, independiente de la temporada)
         const { data: sociosBaja, error: errBaja } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellido, dni, comentario")
@@ -124,25 +124,12 @@ async function cargarSociosPendientes(temporada) {
 
         if (errBaja) throw errBaja;
 
-        // Limpiar contenedor
+        // Limpiar grid para pintar ambas secciones de forma independiente
         gridPendientes.innerHTML = "";
 
-        // --- RENDERIZAR SOCIOS PENDIENTES DE ACTIVACIÓN ---
-        const headerPendientes = document.createElement("div");
-        headerPendientes.style.gridColumn = "span 5";
-        headerPendientes.style.marginBottom = "0.5rem";
-        headerPendientes.innerHTML = `
-            <h3 style="color: #fff; border-bottom: 2px solid #337ab7; padding-bottom: 0.4rem; font-size: 1.1rem;">
-                ⏳ Socios Pendientes de Activar (${sociosPendientes.length})
-            </h3>
-        `;
-        gridPendientes.appendChild(headerPendientes);
-
+        // --- RENDERIZAR PENDIENTES DE ACTIVAR (Lógica original intacta) ---
         if (sociosPendientes.length === 0) {
-            const msgVacioPend = document.createElement("div");
-            msgVacioPend.style.cssText = "grid-column: span 5; color: #aaa; margin-bottom: 1.5rem; padding-left: 0.5rem; font-size: 0.9rem;";
-            msgVacioPend.textContent = `¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.`;
-            gridPendientes.appendChild(msgVacioPend);
+            gridPendientes.innerHTML += `<div style="grid-column: span 5; text-align: center; padding: 1.5rem; color: #fff;">¡Genial! No hay socios pendientes de activar para la temporada ${temporada}.</div>`;
         } else {
             sociosPendientes.forEach((socio) => {
                 const card = document.createElement("div");
@@ -161,30 +148,24 @@ async function cargarSociosPendientes(temporada) {
         }
 
         // --- RENDERIZAR SOCIOS CON SOLICITUD DE BAJA ---
-        const headerBajas = document.createElement("div");
-        headerBajas.style.gridColumn = "span 5";
-        headerBajas.style.marginTop = "1rem";
-        headerBajas.style.marginBottom = "0.5rem";
-        headerBajas.innerHTML = `
-            <h3 style="color: #fff; border-bottom: 2px solid #d9534f; padding-bottom: 0.4rem; font-size: 1.1rem;">
-                🔴 Socios con Solicitud de Baja (${sociosBaja ? sociosBaja.length : 0})
-            </h3>
-        `;
-        gridPendientes.appendChild(headerBajas);
+        if (sociosBaja && sociosBaja.length > 0) {
+            const headerBajas = document.createElement("div");
+            headerBajas.style.gridColumn = "span 5";
+            headerBajas.style.marginTop = "1.5rem";
+            headerBajas.style.marginBottom = "0.5rem";
+            headerBajas.innerHTML = `
+                <h3 style="color: #fff; border-bottom: 2px solid #d9534f; padding-bottom: 0.4rem; font-size: 1.1rem;">
+                    🔴 Socios con Solicitud de Baja (${sociosBaja.length})
+                </h3>
+            `;
+            gridPendientes.appendChild(headerBajas);
 
-        if (!sociosBaja || sociosBaja.length === 0) {
-            const msgVacioBaja = document.createElement("div");
-            msgVacioBaja.style.cssText = "grid-column: span 5; color: #aaa; margin-bottom: 1.5rem; padding-left: 0.5rem; font-size: 0.9rem;";
-            msgVacioBaja.textContent = "No hay socios con solicitud de baja registrada.";
-            gridPendientes.appendChild(msgVacioBaja);
-        } else {
             sociosBaja.forEach((socio) => {
                 const card = document.createElement("div");
                 card.className = "socio-card-item";
                 card.style.borderLeft = "4px solid #d9534f";
                 
-                // Si hay comentario, lo mostramos debajo del DNI o adaptamos la info
-                const comentarioTexto = socio.comentario ? `<p style="color: #ffb6b6; font-style: italic;">Comentario: ${socio.comentario}</p>` : "";
+                const comentarioTexto = socio.comentario ? `<p style="color: #ffb6b6; font-style: italic; margin-top: 0.3rem;">Comentario: ${socio.comentario}</p>` : "";
                 
                 card.innerHTML = `
                     <div class="socio-info">
@@ -200,7 +181,7 @@ async function cargarSociosPendientes(temporada) {
             });
         }
 
-        // Eventos para los botones de activar (se mantiene intacto)
+        // Eventos para los botones de activar (idéntico al original)
         document.querySelectorAll(".btn-activar-socio").forEach(btn => {
             btn.addEventListener("click", async (e) => {
                 const socioId = e.target.getAttribute("data-id");
@@ -237,8 +218,8 @@ async function cargarSociosPendientes(temporada) {
         });
 
     } catch (err) {
-        console.error("Error al cargar socios pendientes y bajas:", err);
-        gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #d9534f;">Error al cargar la lista de pendientes y bajas.</div>`;
+        console.error("Error al cargar socios pendientes:", err);
+        gridPendientes.innerHTML = `<div style="grid-column: span 5; text-align: center; padding: 2rem; color: #d9534f;">Error al cargar la lista de pendientes.</div>`;
     }
 }
 
@@ -252,7 +233,6 @@ async function cargarHistoricoTemporada(temporada) {
     if (mensajeActiva) mensajeActiva.textContent = "";
 
     try {
-        // 1. Obtener los usuarios vinculados a esa temporada en la tabla 'temporada'
         const { data: tempRecord, error: errTempRecord } = await supabaseClient
             .from("temporada")
             .select("users")
@@ -268,7 +248,6 @@ async function cargarHistoricoTemporada(temporada) {
 
         const userIds = tempRecord.users;
 
-        // 2. Cargar los datos de esos socios y su array de pagos/cuotas
         const { data: sociosHistorico, error: errSocios } = await supabaseClient
             .from("socios")
             .select("id, nombre, apellido, dni, cantidad_pagada")
@@ -284,7 +263,6 @@ async function cargarHistoricoTemporada(temporada) {
         const sociosActivos = [];
         const sociosNoActivos = [];
 
-        // 3. Clasificar comprobando si (pagado - cuota) es negativo
         sociosHistorico.forEach(socio => {
             let esActivo = false;
             const pagosArray = socio.cantidad_pagada;
@@ -310,7 +288,6 @@ async function cargarHistoricoTemporada(temporada) {
             }
         });
 
-        // 4. Renderizar las dos listas históricas
         gridPendientes.innerHTML = `
             <div style="grid-column: span 5; margin-bottom: 1rem;">
                 <h3 style="color: #fff; border-bottom: 2px solid #2e7d32; padding-bottom: 0.5rem;">
@@ -339,7 +316,6 @@ async function cargarHistoricoTemporada(temporada) {
             });
         }
 
-        // Sección de No Activos (pagado - cuota negativo)
         const headerNoActivos = document.createElement("div");
         headerNoActivos.style.gridColumn = "span 5";
         headerNoActivos.style.marginTop = "1.5rem";
