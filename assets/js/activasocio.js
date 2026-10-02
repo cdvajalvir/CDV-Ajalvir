@@ -174,14 +174,14 @@ async function cargarSociosPendientes(temporada) {
                         ${comentarioTexto}
                     </div>
                     <div class="socio-action">
-                        <span style="color: #d9534f; font-weight: bold; font-size: 0.8rem;">Baja solicitada</span>
+                        <button class="btn btn-danger btn-sm btn-baja-socio" data-id="${socio.id}" data-temporada="${temporada}" style="background-color: #d9534f; border-color: #d9534f; color: #fff;">Procesar Baja</button>
                     </div>
                 `;
                 gridPendientes.appendChild(card);
             });
         }
 
-        // Eventos para los botones de activar (idéntico al original)
+        // Eventos para los botones de activar socios (idéntico al original)
         document.querySelectorAll(".btn-activar-socio").forEach(btn => {
             btn.addEventListener("click", async (e) => {
                 const socioId = e.target.getAttribute("data-id");
@@ -213,6 +213,42 @@ async function cargarSociosPendientes(temporada) {
                     }
                     btn.disabled = false;
                     btn.textContent = "Activar";
+                }
+            });
+        });
+
+        // Eventos para los botones de procesar baja (poner activo a false)
+        document.querySelectorAll(".btn-baja-socio").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const socioId = e.target.getAttribute("data-id");
+                const temporadaActual = e.target.getAttribute("data-temporada");
+
+                btn.disabled = true;
+                btn.textContent = "Procesando...";
+
+                try {
+                    const { error: errUpdate } = await supabaseClient
+                        .from("socios")
+                        .update({ activo: false })
+                        .eq("id", socioId);
+
+                    if (errUpdate) throw errUpdate;
+
+                    if (mensajeActiva) {
+                        mensajeActiva.style.color = "#2e7d32";
+                        mensajeActiva.textContent = "¡Baja procesada correctamente (socio inactivo)!";
+                    }
+
+                    await cargarSociosPendientes(temporadaActual);
+
+                } catch (err) {
+                    console.error("Error al procesar baja:", err);
+                    if (mensajeActiva) {
+                        mensajeActiva.style.color = "#d9534f";
+                        mensajeActiva.textContent = `Error al procesar baja: ${err.message}`;
+                    }
+                    btn.disabled = false;
+                    btn.textContent = "Procesar Baja";
                 }
             });
         });
