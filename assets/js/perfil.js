@@ -69,6 +69,12 @@ const btnEditar = document.getElementById("btnEditar");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const btnLogout = document.getElementById("btnLogout");
+const btnSolicitarBaja = document.getElementById("btnSolicitarBaja");
+const modalBaja = document.getElementById("modalBaja");
+const btnCancelarBaja = document.getElementById("btnCancelarBaja");
+const btnEnviarBaja = document.getElementById("btnEnviarBaja");
+const inputComentarioBaja = document.getElementById("inputComentarioBaja");
+
 
 let socioActual;
 
