@@ -69,11 +69,6 @@ const btnEditar = document.getElementById("btnEditar");
 const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const btnLogout = document.getElementById("btnLogout");
-const btnSolicitarBaja = document.getElementById("btnSolicitarBaja");
-const modalBaja = document.getElementById("modalBaja");
-const btnCancelarBaja = document.getElementById("btnCancelarBaja");
-const btnEnviarBaja = document.getElementById("btnEnviarBaja");
-const inputComentarioBaja = document.getElementById("inputComentarioBaja");
 
 
 let socioActual;
@@ -102,25 +97,6 @@ if (btnCancelar) {
 
 if (btnGuardar) {
     btnGuardar.addEventListener("click", guardarPerfil);
-}
-
-if (btnSolicitarBaja) {
-    btnSolicitarBaja.addEventListener("click", () => {
-        if (modalBaja) {
-            inputComentarioBaja.value = ""; // Limpiar texto previo
-            modalBaja.style.display = "flex";
-        }
-    });
-}
-
-if (btnCancelarBaja) {
-    btnCancelarBaja.addEventListener("click", () => {
-        if (modalBaja) modalBaja.style.display = "none";
-    });
-}
-
-if (btnEnviarBaja) {
-    btnEnviarBaja.addEventListener("click", enviarSolicitudBaja);
 }
 
 
@@ -310,61 +286,3 @@ async function guardarPerfil() {
         alert("Error de conexión");
     }
 }
-
-async function enviarSolicitudBaja() {
-    try {
-        const {
-            data: { session },
-            error
-        } = await supabaseClient.auth.getSession();
-
-        if (error || !session) {
-            alert("Sesión no válida");
-            return;
-        }
-
-        const comentario = inputComentarioBaja ? inputComentarioBaja.value.trim() : "";
-
-        const datosBaja = {
-            baja: true,
-            c_baja: comentario || null
-        };
-
-        // Nota: Asegúrate de que la Edge Function o el endpoint que actualiza el perfil 
-        // permita actualizar estos campos ('baja' y 'c_baja'), o haz la llamada directa a la tabla si procede.
-        const respuesta = await fetch(
-            "https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/actualizar-perfil",
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session.access_token}`
-                },
-                body: JSON.stringify(datosBaja)
-            }
-        );
-
-        const resultado = await respuesta.json();
-
-        if (!respuesta.ok) {
-            alert(resultado.error || "Error al procesar la solicitud de baja");
-            return;
-        }
-
-        // Actualizamos los datos locales del socio
-        socioActual = {
-            ...socioActual,
-            ...datosBaja
-        };
-
-        alert("Solicitud de baja registrada correctamente.");
-        if (modalBaja) modalBaja.style.display = "none";
-        
-        // Opcional: recargar o actualizar la vista si lo consideras necesario
-        mostrarPerfil();
-
-    } catch (error) {
-        console.error("Error al enviar la baja:", error);
-        alert("Error de conexión al enviar la solicitud.");
-    }
-
