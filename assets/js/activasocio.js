@@ -116,10 +116,10 @@ async function cargarSociosPendientes(temporada) {
             sociosPendientes = sociosData || [];
         }
 
-        // 2. Cargar socios que han solicitado la baja (baja: true en la tabla socios, independiente de la temporada)
+        // 2. Cargar socios que han solicitado la baja (baja: true), incluyendo su campo 'activo' para evaluar el estado
         const { data: sociosBaja, error: errBaja } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellido, dni, c_baja")
+            .select("id, nombre, apellido, dni, c_baja, activo")
             .eq("baja", true);
 
         if (errBaja) throw errBaja;
@@ -167,6 +167,14 @@ async function cargarSociosPendientes(temporada) {
                 
                 const comentarioTexto = socio.c_baja ? `<p style="color: #ffb6b6; font-style: italic; margin-top: 0.3rem;">Comentario: ${socio.c_baja}</p>` : "";
                 
+                // Evaluar si ya está procesado (activo === false) o pendiente de procesar (activo === true)
+                let accionHtml = "";
+                if (socio.activo === false) {
+                    accionHtml = `<span style="color: #888; font-weight: bold; font-size: 0.8rem;">Procesado (Inactivo)</span>`;
+                } else {
+                    accionHtml = `<button class="btn btn-danger btn-sm btn-baja-socio" data-id="${socio.id}" data-temporada="${temporada}" style="background-color: #d9534f; border-color: #d9534f; color: #fff;">Procesar Baja</button>`;
+                }
+
                 card.innerHTML = `
                     <div class="socio-info">
                         <h4>${socio.nombre || ""} ${socio.apellido || ""}</h4>
@@ -174,7 +182,7 @@ async function cargarSociosPendientes(temporada) {
                         ${comentarioTexto}
                     </div>
                     <div class="socio-action">
-                        <button class="btn btn-danger btn-sm btn-baja-socio" data-id="${socio.id}" data-temporada="${temporada}" style="background-color: #d9534f; border-color: #d9534f; color: #fff;">Procesar Baja</button>
+                        ${accionHtml}
                     </div>
                 `;
                 gridPendientes.appendChild(card);
