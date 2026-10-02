@@ -104,6 +104,26 @@ if (btnGuardar) {
     btnGuardar.addEventListener("click", guardarPerfil);
 }
 
+if (btnSolicitarBaja) {
+    btnSolicitarBaja.addEventListener("click", () => {
+        if (modalBaja) {
+            inputComentarioBaja.value = ""; // Limpiar texto previo
+            modalBaja.style.display = "flex";
+        }
+    });
+}
+
+if (btnCancelarBaja) {
+    btnCancelarBaja.addEventListener("click", () => {
+        if (modalBaja) modalBaja.style.display = "none";
+    });
+}
+
+if (btnEnviarBaja) {
+    btnEnviarBaja.addEventListener("click", enviarSolicitudBaja);
+}
+
+
 function mostrarPerfil() {
     if (!grid) return;
 
