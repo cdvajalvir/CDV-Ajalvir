@@ -119,7 +119,7 @@ async function cargarSociosPendientes(temporada) {
         // 2. Cargar socios que han solicitado la baja (baja: true en la tabla socios, independiente de la temporada)
         const { data: sociosBaja, error: errBaja } = await supabaseClient
             .from("socios")
-            .select("id, nombre, apellido, dni, comentario")
+            .select("id, nombre, apellido, dni, c_baja")
             .eq("baja", true);
 
         if (errBaja) throw errBaja;
@@ -165,7 +165,7 @@ async function cargarSociosPendientes(temporada) {
                 card.className = "socio-card-item";
                 card.style.borderLeft = "4px solid #d9534f";
                 
-                const comentarioTexto = socio.comentario ? `<p style="color: #ffb6b6; font-style: italic; margin-top: 0.3rem;">Comentario: ${socio.comentario}</p>` : "";
+                const comentarioTexto = socio.c_baja ? `<p style="color: #ffb6b6; font-style: italic; margin-top: 0.3rem;">Comentario: ${socio.c_baja}</p>` : "";
                 
                 card.innerHTML = `
                     <div class="socio-info">
