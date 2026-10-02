@@ -70,6 +70,12 @@ const btnGuardar = document.getElementById("btnGuardar");
 const btnCancelar = document.getElementById("btnCancelar");
 const btnLogout = document.getElementById("btnLogout");
 
+// Elementos del Modal de Baja
+const btnSolicitarBaja = document.getElementById("btnSolicitarBaja");
+const modalBaja = document.getElementById("modalBaja");
+const btnCancelarBaja = document.getElementById("btnCancelarBaja");
+const btnEnviarBaja = document.getElementById("btnEnviarBaja");
+const inputComentarioBaja = document.getElementById("inputComentarioBaja");
 
 let socioActual;
 
@@ -99,6 +105,25 @@ if (btnGuardar) {
     btnGuardar.addEventListener("click", guardarPerfil);
 }
 
+// Eventos del Modal de Baja
+if (btnSolicitarBaja) {
+    btnSolicitarBaja.addEventListener("click", () => {
+        if (modalBaja) {
+            inputComentarioBaja.value = ""; // Limpiar texto previo
+            modalBaja.style.display = "flex";
+        }
+    });
+}
+
+if (btnCancelarBaja) {
+    btnCancelarBaja.addEventListener("click", () => {
+        if (modalBaja) modalBaja.style.display = "none";
+    });
+}
+
+if (btnEnviarBaja) {
+    btnEnviarBaja.addEventListener("click", enviarSolicitudBaja);
+}
 
 function mostrarPerfil() {
     if (!grid) return;
@@ -210,8 +235,6 @@ function editarPerfil() {
                     `
                 );
             } else {
-                // Si es un campo no editable como cantidad_pagada en modo edición, 
-                // podemos mostrar también su valor actual formateado o en texto plano
                 let valorNoEditable = socioActual[campo.campo];
                 if (campo.campo === "cantidad_pagada" && Array.isArray(valorNoEditable)) {
                     valorNoEditable = valorNoEditable.map(p => `${p.temporada}: ${p.pagado}€`).join(", ");
@@ -284,5 +307,59 @@ async function guardarPerfil() {
     } catch (error) {
         console.error("Error al guardar perfil:", error);
         alert("Error de conexión");
+    }
+}
+
+async function enviarSolicitudBaja() {
+    try {
+        const {
+            data: { session },
+            error
+        } = await supabaseClient.auth.getSession();
+
+        if (error || !session) {
+            alert("Sesión no válida");
+            return;
+        }
+
+        const comentario = inputComentarioBaja ? inputComentarioBaja.value.trim() : "";
+
+        const datosBaja = {
+            baja: true,
+            c_baja: comentario || null
+        };
+
+        const respuesta = await fetch(
+            "https://lqqqbiltwrmkjmrmpwpu.supabase.co/functions/v1/actualizar-perfil",
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify(datosBaja)
+            }
+        );
+
+        const resultado = await respuesta.json();
+
+        if (!respuesta.ok) {
+            alert(resultado.error || "Error al procesar la solicitud de baja");
+            return;
+        }
+
+        // Actualizamos los datos locales del socio
+        socioActual = {
+            ...socioActual,
+            ...datosBaja
+        };
+
+        alert("Solicitud de baja registrada correctamente.");
+        if (modalBaja) modalBaja.style.display = "none";
+        mostrarPerfil();
+
+    } catch (error) {
+        console.error("Error al enviar la baja:", error);
+        alert("Error de conexión al enviar la solicitud.");
     }
 }
