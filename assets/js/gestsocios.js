@@ -27,6 +27,19 @@ async function verificarPermisoAdmin() {
 
 verificarPermisoAdmin();
 
+// Función auxiliar para calcular la edad exacta a partir de una fecha de nacimiento (YYYY-MM-DD)
+function calcularEdad(fechaNacimiento) {
+    if (!fechaNacimiento) return null;
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const m = hoy.getMonth() - nacimiento.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    return edad;
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
     const tablaBody = document.querySelector("#tablaGestSocios tbody");
     const contadorSocios = document.getElementById("contadorSocios");
@@ -99,6 +112,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             const colorPago = cuotaPagada >= cuotaTotal && cuotaTotal > 0 ? "#16a34a" : (cuotaPagada > 0 ? "#d97706" : "#dc2626");
 
+            // Cálculo de la edad si existe fecha de nacimiento
+            const edadSocio = calcularEdad(socio.fecha_nacimiento);
+            const edadHtml = edadSocio !== null ? `<span style="font-weight: normal; font-size: 0.85rem; color: #666; margin-left: 6px;">(${edadSocio} años)</span>` : "";
+
             return `
                 <tr style="border-bottom: 1px solid var(--border-color, #e5e7eb);">
                     <td style="padding: 0.75rem; white-space: nowrap;">
@@ -106,7 +123,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         <span style="font-size: 0.85rem; font-weight: 500; color: ${colorEstado};">${textoEstado}</span>
                     </td>
                     <td style="padding: 0.75rem; font-weight: 500;">
-                        ${socio.apellido || ''}, ${socio.nombre || ''}
+                        ${socio.apellido || ''}, ${socio.nombre || ''} ${edadHtml}
                     </td>
                     <td style="padding: 0.75rem; text-align: center; font-weight: 600; color: ${colorPago};">
                         ${cuotaPagada}€ <span style="font-weight: normal; font-size: 0.85rem; color: #666;">/ ${cuotaTotal}€</span>
