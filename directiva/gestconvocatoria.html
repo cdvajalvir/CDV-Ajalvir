@@ -15,9 +15,12 @@
             gap: 1.5rem;
             width: 100%;
         }
-        /* Contenedor específico para la convocatoria activa (Arriba) */
+        /* Contenedor específico para las convocatorias activas (Arriba) */
         #seccionConvocatoriaActiva {
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
         /* Contenedor para el listado histórico */
         #seccionHistoricoConvocatorias {
@@ -113,7 +116,7 @@
             font-weight: bold;
             cursor: pointer;
             display: inline-block;
-            margin-bottom: 1.5rem; /* Margen inferior para separarlo de la convocatoria activa */
+            margin-bottom: 1.5rem;
         }
         .btn-nuevo:hover {
             background: #059669;
@@ -137,40 +140,63 @@
             margin-top: 2px;
         }
 
-        /* LAYOUT PRINCIPAL A ANCHO TOTAL DE PANTALLA */
+        /* LAYOUT PRINCIPAL: 2 Columnas (Izquierda: Convocatorias, Derecha: Paneles apilados) */
         .gestion-layout {
             display: grid;
-            grid-template-columns: 2.2fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 1.5rem;
             align-items: start;
             width: 100%;
             max-width: 100% !important;
         }
 
-        #listaSociosApuntados li, 
-        #listaSociosIndisponibles li {
+        /* Contenedor derecho para las dos tarjetas de socios apiladas */
+        .paneles-derecha {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tarjeta-socio-grupo {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .lista-socios-custom {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .lista-socios-custom li {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         /* MEDIA QUERIES PARA RESPONSIVIDAD */
-        @media (max-width: 1200px) {
-            .gestion-layout {
-                grid-template-columns: 1fr 1fr;
-            }
-            .card-socios-indisponibles {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .gestion-layout {
                 grid-template-columns: 1fr;
-            }
-            .card-socios-activa,
-            .card-socios-indisponibles {
-                position: static !important;
             }
             .convocatoria-fila-top,
             .convocatoria-fila-bottom {
@@ -200,26 +226,26 @@
         <section class="page-hero" style="text-align: left; margin-bottom: 2rem;">
             <p class="eyebrow">Área privada</p>
             <h1>Gestión de Convocatorias</h1>
-            <p class="lead">Edita la convocatoria activa y consulta el histórico de la temporada.</p>
+            <p class="lead">Edita hasta dos convocatorias activas simultáneamente y consulta el histórico.</p>
         </section>
 
         <button id="btnNuevaConvocatoria" class="btn-nuevo">+ Añadir Nueva Convocatoria</button>
 
-        <div class="gestion-layout" style="align-items: start;">
+        <div class="gestion-layout">
             
-            <!-- Columna 1: Botón Nuevo + Convocatoria Activa + Histórico -->
+            <!-- Columna Izquierda: Convocatoria Activa (Edición) + Histórico -->
             <div class="tabla-convocatorias">
 
-                <!-- SECCIÓN 1: Convocatoria Activa (Tarjeta Avanzada) -->
+                <!-- SECCIÓN 1: Convocatorias Activas (Hasta 2) -->
                 <div>
-                    <h3 style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.75rem;">Convocatoria Activa</h3>
+                    <h3 style="font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.75rem;">Convocatorias Activas</h3>
                     <div id="seccionConvocatoriaActiva">
-                        <p style="color: #fff; padding: 1rem; text-align: center;">Cargando convocatoria activa...</p>
+                        <p style="color: #fff; padding: 1rem; text-align: center;">Cargando convocatorias activas...</p>
                     </div>
                 </div>
 
                 <!-- SECCIÓN 2: Histórico de Convocatorias de la Temporada -->
-                <div style="margin-top: 1.5rem;">
+                <div style="margin-top: 1rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
                         <h3 style="font-size: 1.1rem; color: #fff; margin: 0;">Histórico de Convocatorias</h3>
                         <!-- Filtro de Temporada -->
@@ -238,25 +264,58 @@
 
             </div>
 
-            <!-- Columna 2: Socios Apuntados (Intacta) -->
-            <aside class="card-socios-activa" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
-                <h3 style="font-size: 1rem; color: #38bdf8; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Apuntados</h3>
-                <p id="tituloConvocatoriaActiva" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
-                
-                <ul id="listaSociosApuntados" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto;">
-                    <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los socios.</li>
-                </ul>
-            </aside>
+            <!-- Columna Derecha: Paneles de Socios Apuntados e Indisponibles Apilados por Convocatoria -->
+            <div class="paneles-derecha">
 
-            <!-- Columna 3: Socios Indisponibles (Intacta) -->
-            <aside class="card-socios-indisponibles" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 1.25rem; position: sticky; top: 2rem;">
-                <h3 style="font-size: 1rem; color: #f43f5e; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Socios Indisponibles</h3>
-                <p id="tituloConvocatoriaIndisponibles" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.5rem;">Ninguna activa</p>
-                
-                <ul id="listaSociosIndisponibles" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; max-height: 400px; overflow-y: auto;">
-                    <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa para ver los indisponibles.</li>
-                </ul>
-            </aside>
+                <!-- Convocatoria Activa 1 -->
+                <div class="tarjeta-socio-grupo">
+                    <div>
+                        <h3 style="font-size: 0.95rem; color: #38bdf8; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em;">Convocatoria 1</h3>
+                        <p id="tituloConv1" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.4rem;">Ninguna activa</p>
+                    </div>
+
+                    <!-- Apuntados 1 -->
+                    <div>
+                        <span style="font-size: 0.75rem; font-weight: bold; color: #34d399; text-transform: uppercase; display: block; margin-bottom: 0.4rem;">Socios Apuntados</span>
+                        <ul id="listaApuntados1" class="lista-socios-custom">
+                            <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>
+                        </ul>
+                    </div>
+
+                    <!-- Indisponibles 1 -->
+                    <div>
+                        <span style="font-size: 0.75rem; font-weight: bold; color: #f43f5e; text-transform: uppercase; display: block; margin-bottom: 0.4rem;">Socios Indisponibles</span>
+                        <ul id="listaIndisponibles1" class="lista-socios-custom">
+                            <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Convocatoria Activa 2 -->
+                <div class="tarjeta-socio-grupo">
+                    <div>
+                        <h3 style="font-size: 0.95rem; color: #38bdf8; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em;">Convocatoria 2</h3>
+                        <p id="tituloConv2" style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.4rem;">Ninguna activa</p>
+                    </div>
+
+                    <!-- Apuntados 2 -->
+                    <div>
+                        <span style="font-size: 0.75rem; font-weight: bold; color: #34d399; text-transform: uppercase; display: block; margin-bottom: 0.4rem;">Socios Apuntados</span>
+                        <ul id="listaApuntados2" class="lista-socios-custom">
+                            <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>
+                        </ul>
+                    </div>
+
+                    <!-- Indisponibles 2 -->
+                    <div>
+                        <span style="font-size: 0.75rem; font-weight: bold; color: #f43f5e; text-transform: uppercase; display: block; margin-bottom: 0.4rem;">Socios Indisponibles</span>
+                        <ul id="listaIndisponibles2" class="lista-socios-custom">
+                            <li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
