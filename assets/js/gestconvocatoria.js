@@ -40,41 +40,37 @@ async function cargarConvocatorias() {
 
         listaGlobalConvocatorias = (response && response.data) ? response.data : [];
         
-        // Asignar la temporada calculada a cada convocatoria de forma interna
+        // Asignar la temporada calculada a cada convocatoria
         listaGlobalConvocatorias.forEach(c => {
             c.temporadaCalculada = obtenerTemporadaDesdeFecha(c.hora);
         });
 
         poblarFiltroTemporadas(listaGlobalConvocatorias);
-        renderizarConvocatoriaActiva(listaGlobalConvocatorias);
+        renderizarConvocatoriasActivas(listaGlobalConvocatorias);
         renderizarHistorico(listaGlobalConvocatorias);
-        actualizarPanelSocios(listaGlobalConvocatorias);
+        actualizarPanelesSocios(listaGlobalConvocatorias);
     } catch (err) {
         console.error("Error al cargar convocatorias:", err);
         if (contenedorActiva) contenedorActiva.innerHTML = `<p style="text-align: center; color: #ef4444;">Error: ${err.message}</p>`;
     }
 }
 
-// Función para calcular la temporada (ej: "2026/2027") basándose en el texto "dd/mm/aaaa - hh:mm"
+// Función para calcular la temporada (ej: "2026/2027") basándose en la fecha
 function obtenerTemporadaDesdeFecha(textoHora) {
     if (!textoHora || typeof textoHora !== 'string') return "Sin Temporada";
     
-    // Extraer la parte de la fecha antes del guion
     const partesFecha = textoHora.split("-")[0].trim().split("/");
     if (partesFecha.length < 3) return "Sin Temporada";
 
     const mes = parseInt(partesFecha[1], 10);
     let anio = parseInt(partesFecha[2], 10);
 
-    // Ajustar años de dos dígitos si es necesario (ej. "26" -> 2026)
     if (anio < 100) {
         anio += 2000;
     }
 
     if (isNaN(mes) || isNaN(anio)) return "Sin Temporada";
 
-    // Si el mes es de septiembre (9) en adelante, la temporada es anio / anio+1
-    // Si es de enero a agosto, la temporada es anio-1 / anio
     if (mes >= 9) {
         return `${anio}/${anio + 1}`;
     } else {
@@ -108,7 +104,6 @@ function poblarFiltroTemporadas(lista) {
         select.appendChild(opt);
     });
 
-    // Intentar mantener la temporada seleccionada si aún existe, si no, seleccionar la primera (más reciente)
     if (temporadaSeleccionadaAnterior && temporadas.includes(temporadaSeleccionadaAnterior)) {
         select.value = temporadaSeleccionadaAnterior;
     } else if (temporadas.length > 0) {
@@ -116,74 +111,76 @@ function poblarFiltroTemporadas(lista) {
     }
 }
 
-function renderizarConvocatoriaActiva(lista) {
+// Renderiza TODas las convocatorias que tengan activa: true (máximo dos visualmente arriba)
+function renderizarConvocatoriasActivas(lista) {
     const contenedor = document.getElementById("seccionConvocatoriaActiva");
     if (!contenedor) return;
 
     contenedor.innerHTML = "";
 
-    const activa = lista.find(c => c.activa === true);
+    const activas = lista.filter(c => c.activa === true);
 
-    if (!activa) {
+    if (activas.length === 0) {
         contenedor.innerHTML = `<p style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 8px; color: #94a3b8; font-size: 0.9rem;">No hay ninguna convocatoria marcada como activa actualmente.</p>`;
         return;
     }
 
-    const fila = document.createElement("article");
-    fila.className = "convocatoria-fila";
-    fila.dataset.id = activa.id;
+    activas.forEach(activa => {
+        const fila = document.createElement("article");
+        fila.className = "convocatoria-fila";
+        fila.dataset.id = activa.id;
 
-    fila.innerHTML = `
-        <div class="convocatoria-fila-top">
-            <div class="campo-grupo">
-                <label>Convocatoria</label>
-                <input type="text" class="input-convocatoria" value="${activa.convocatoria || ''}">
+        fila.innerHTML = `
+            <div class="convocatoria-fila-top">
+                <div class="campo-grupo">
+                    <label>Convocatoria</label>
+                    <input type="text" class="input-convocatoria" value="${activa.convocatoria || ''}">
+                </div>
+                <div class="campo-grupo">
+                    <label>Tipo</label>
+                    <select class="select-tipo">
+                        <option value="Oficial" ${activa.tipo_convocatoria === 'Oficial' ? 'selected' : ''}>Oficial</option>
+                        <option value="Amistoso" ${activa.tipo_convocatoria === 'Amistoso' ? 'selected' : ''}>Amistoso</option>
+                        <option value="Entrenamiento" ${activa.tipo_convocatoria === 'Entrenamiento' ? 'selected' : ''}>Entrenamiento</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label>Lugar</label>
+                    <input type="text" class="input-lugar" value="${activa.lugar || ''}">
+                </div>
+                <div></div>
+                <div></div>
             </div>
-            <div class="campo-grupo">
-                <label>Tipo</label>
-                <select class="select-tipo">
-                    <option value="Oficial" ${activa.tipo_convocatoria === 'Oficial' ? 'selected' : ''}>Oficial</option>
-                    <option value="Amistoso" ${activa.tipo_convocatoria === 'Amistoso' ? 'selected' : ''}>Amistoso</option>
-                    <option value="Entrenamiento" ${activa.tipo_convocatoria === 'Entrenamiento' ? 'selected' : ''}>Entrenamiento</option>
-                </select>
+            <div class="convocatoria-fila-bottom">
+                <div class="campo-grupo">
+                    <label>Fecha (dd/mm/aa - hh:mm)</label>
+                    <input type="text" class="input-hora" placeholder="ej. 12/09/26 - 09:00" value="${activa.hora || ''}">
+                </div>
+                <div class="campo-grupo">
+                    <label>Comentarios</label>
+                    <input type="text" class="input-comentarios" value="${activa.comentarios || ''}">
+                </div>
+                <div class="toggle-activo-container" title="Marcar como convocatoria activa">
+                    <input type="checkbox" class="input-activa" checked>
+                    <span class="label-activo-texto" style="color: #34d399;">Activa</span>
+                </div>
+                <button class="btn-guardar btn-guardar-conv" data-id="${activa.id}">Guardar</button>
             </div>
-            <div class="campo-grupo">
-                <label>Lugar</label>
-                <input type="text" class="input-lugar" value="${activa.lugar || ''}">
-            </div>
-            <div></div>
-            <div></div>
-        </div>
-        <div class="convocatoria-fila-bottom">
-            <div class="campo-grupo">
-                <label>Fecha (dd/mm/aa - hh:mm)</label>
-                <input type="text" class="input-hora" placeholder="ej. 12/09/26 - 09:00" value="${activa.hora || ''}">
-            </div>
-            <div class="campo-grupo">
-                <label>Comentarios</label>
-                <input type="text" class="input-comentarios" value="${activa.comentarios || ''}">
-            </div>
-            <div class="toggle-activo-container" title="Marcar como convocatoria activa">
-                <input type="checkbox" class="input-activa" checked>
-                <span class="label-activo-texto" style="color: #34d399;">Activa</span>
-            </div>
-            <button class="btn-guardar btn-guardar-conv" data-id="${activa.id}">Guardar</button>
-        </div>
-    `;
+        `;
 
-    const checkboxActiva = fila.querySelector(".input-activa");
-    checkboxActiva.addEventListener("change", () => {
-        if (!checkboxActiva.checked) {
-            activa.activa = false;
-            actualizarPanelSocios(lista);
-            guardarConvocatoria(activa.id, fila);
-        }
+        const checkboxActiva = fila.querySelector(".input-activa");
+        checkboxActiva.addEventListener("change", () => {
+            if (!checkboxActiva.checked) {
+                activa.activa = false;
+                guardarConvocatoriaDirecta(activa.id, false);
+            }
+        });
+
+        const btnGuardar = fila.querySelector(".btn-guardar-conv");
+        btnGuardar.addEventListener("click", () => guardarConvocatoria(activa.id, fila));
+
+        contenedor.appendChild(fila);
     });
-
-    const btnGuardar = fila.querySelector(".btn-guardar-conv");
-    btnGuardar.addEventListener("click", () => guardarConvocatoria(activa.id, fila));
-
-    contenedor.appendChild(fila);
 }
 
 function renderizarHistorico(lista) {
@@ -195,9 +192,8 @@ function renderizarHistorico(lista) {
 
     const temporadaSeleccionada = filtroTemporada ? filtroTemporada.value : null;
 
-    // Filtrar pasadas y que coincidan con la temporada seleccionada en el desplegable
     const historicas = lista.filter(c => {
-        if (c.activa) return false; // La activa ya está arriba
+        if (c.activa) return false; // Las activas están arriba
         if (temporadaSeleccionada && c.temporadaCalculada !== temporadaSeleccionada) {
             return false;
         }
@@ -222,10 +218,10 @@ function renderizarHistorico(lista) {
 
         const btnActivar = item.querySelector(".btn-activar-historico");
         btnActivar.addEventListener("click", async () => {
-            lista.forEach(item => item.id === conv.id ? item.activa = true : item.activa = false);
-            renderizarConvocatoriaActiva(lista);
+            conv.activa = true; 
+            renderizarConvocatoriasActivas(lista);
             renderizarHistorico(lista);
-            actualizarPanelSocios(lista);
+            actualizarPanelesSocios(lista);
             await guardarConvocatoriaDirecta(conv.id, true);
         });
 
@@ -233,74 +229,81 @@ function renderizarHistorico(lista) {
     });
 }
 
-function actualizarPanelSocios(lista) {
-    const tituloCard = document.getElementById("tituloConvocatoriaActiva");
-    const listaCard = document.getElementById("listaSociosApuntados");
+// Rellena los dos paneles laterales derechos con la Convocatoria 1 y la Convocatoria 2 activas
+function actualizarPanelesSocios(lista) {
+    const activas = lista.filter(c => c.activa === true);
 
-    const tituloCardNook = document.getElementById("tituloConvocatoriaIndisponibles");
-    const listaCardNook = document.getElementById("listaSociosIndisponibles");
+    // Elementos Convocatoria 1
+    const titulo1 = document.getElementById("tituloConv1");
+    const listaApuntados1 = document.getElementById("listaApuntados1");
+    const listaIndisponibles1 = document.getElementById("listaIndisponibles1");
 
-    if (!tituloCard || !listaCard) return;
+    // Elementos Convocatoria 2
+    const titulo2 = document.getElementById("tituloConv2");
+    const listaApuntados2 = document.getElementById("listaApuntados2");
+    const listaIndisponibles2 = document.getElementById("listaIndisponibles2");
 
-    const activa = lista.find(c => c.activa === true);
-
-    if (!activa) {
-        tituloCard.textContent = "Ninguna activa";
-        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa.</li>`;
-        
-        if (tituloCardNook) tituloCardNook.textContent = "Ninguna activa";
-        if (listaCardNook) listaCardNook.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">Selecciona o marca una convocatoria como activa.</li>`;
-        return;
+    // --- PANEL 1 ---
+    if (activas.length > 0) {
+        const c1 = activas[0];
+        titulo1.textContent = `${c1.convocatoria || "Sin nombre"} (${c1.hora || "Sin fecha"})`;
+        renderizarListasSociosItem(c1, listaApuntados1, listaIndisponibles1);
+    } else {
+        titulo1.textContent = "Ninguna activa";
+        listaApuntados1.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>`;
+        listaIndisponibles1.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>`;
     }
 
-    // 1. Apuntados
-    tituloCard.textContent = activa.convocatoria || "Convocatoria Activa";
-    const sociosApuntados = activa.users || activa.socios || activa.usuarios || [];
-
-    if (sociosApuntados.length === 0) {
-        listaCard.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios apuntados.</li>`;
+    // --- PANEL 2 ---
+    if (activas.length > 1) {
+        const c2 = activas[1];
+        titulo2.textContent = `${c2.convocatoria || "Sin nombre"} (${c2.hora || "Sin fecha"})`;
+        renderizarListasSociosItem(c2, listaApuntados2, listaIndisponibles2);
     } else {
-        listaCard.innerHTML = "";
-        sociosApuntados.forEach((socio, index) => {
+        titulo2.textContent = "Ninguna segunda convocatoria activa";
+        listaApuntados2.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>`;
+        listaIndisponibles2.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">Sin datos</li>`;
+    }
+}
+
+// Función auxiliar para pintar los ul de apuntados e indisponibles de una convocatoria
+function renderizarListasSociosItem(convocatoria, ulApuntados, ulIndisponibles) {
+    // Apuntados
+    const apuntados = convocatoria.users || convocatoria.socios || convocatoria.usuarios || [];
+    if (apuntados.length === 0) {
+        ulApuntados.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">No hay socios apuntados.</li>`;
+    } else {
+        ulApuntados.innerHTML = "";
+        apuntados.forEach((socio, index) => {
             const li = document.createElement("li");
-            li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
-            
             let nombreMostrar = "Socio";
             if (typeof socio === 'string') {
                 nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
             } else if (socio) {
                 nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
             }
-
             li.innerHTML = `<span style="color: #38bdf8; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
-            listaCard.appendChild(li);
+            ulApuntados.appendChild(li);
         });
     }
 
-    // 2. Indisponibles
-    if (tituloCardNook && listaCardNook) {
-        tituloCardNook.textContent = activa.convocatoria || "Convocatoria Activa";
-        const sociosIndisponibles = activa.users_nook || [];
-
-        if (sociosIndisponibles.length === 0) {
-            listaCardNook.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; padding: 1rem 0;">No hay socios indisponibles.</li>`;
-        } else {
-            listaCardNook.innerHTML = "";
-            sociosIndisponibles.forEach((socio, index) => {
-                const li = document.createElement("li");
-                li.style.cssText = "background: rgba(255, 255, 255, 0.03); padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 0.85rem; color: #fff; border: 1px solid rgba(255, 255, 255, 0.05); display: flex; align-items: center; gap: 0.5rem;";
-                
-                let nombreMostrar = "Socio";
-                if (typeof socio === 'string') {
-                    nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
-                } else if (socio) {
-                    nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
-                }
-
-                li.innerHTML = `<span style="color: #f43f5e; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
-                listaCardNook.appendChild(li);
-            });
-        }
+    // Indisponibles
+    const indisponibles = convocatoria.users_nook || [];
+    if (indisponibles.length === 0) {
+        ulIndisponibles.innerHTML = `<li style="color: #94a3b8; font-size: 0.85rem; text-align: center; justify-content: center; padding: 0.5rem 0;">No hay indisponibles.</li>`;
+    } else {
+        ulIndisponibles.innerHTML = "";
+        indisponibles.forEach((socio, index) => {
+            const li = document.createElement("li");
+            let nombreMostrar = "Socio";
+            if (typeof socio === 'string') {
+                nombreMostrar = `ID: ${socio.substring(0, 8)}...`;
+            } else if (socio) {
+                nombreMostrar = socio.nombreCompleto || `${socio.nombre || ''} ${socio.apellido || ''}`.trim() || "Socio";
+            }
+            li.innerHTML = `<span style="color: #f43f5e; font-weight: bold; font-size: 0.75rem;">${index + 1}.</span> ${nombreMostrar}`;
+            ulIndisponibles.appendChild(li);
+        });
     }
 }
 
