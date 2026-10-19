@@ -18,6 +18,13 @@
             align-items: start;
         }
 
+        /* Fila superior izquierda: Artículo + Stock */
+        .form-row-articulo {
+            display: grid;
+            grid-template-columns: 1fr 110px;
+            gap: 0.75rem;
+        }
+
         /* Sub-grid para los 3 campos de la fila inferior izquierda */
         .form-row-3 {
             display: grid;
@@ -31,7 +38,7 @@
             gap: 0.35rem;
         }
 
-        /* Selector multiselección ajustado a la altura de la columna izquierda */
+        /* Selector multiselección ajustado */
         select[multiple] {
             height: 142px;
             padding: 0.5rem;
@@ -83,7 +90,7 @@
 
         .data-table th,
         .data-table td {
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 0.8rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -96,17 +103,6 @@
             letter-spacing: 0.05em;
         }
 
-        .badge-socios {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin: 0.1rem;
-        }
-
-        /* Estilo para los selectores dentro de la tabla de registros */
         .select-socios-tabla {
             color: #ffffff !important;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -118,6 +114,17 @@
             background-color: #1a2332;
             color: #ffffff;
             padding: 0.3rem;
+        }
+
+        .badge-stock {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background-color: rgba(226, 176, 7, 0.2);
+            color: var(--color-accent, #e2b007);
+            border: 1px solid rgba(226, 176, 7, 0.4);
         }
 
         /* Responsividad */
@@ -132,6 +139,10 @@
         }
 
         @media (max-width: 600px) {
+            .form-row-articulo {
+                grid-template-columns: 1fr;
+            }
+
             .form-row-3 {
                 grid-template-columns: 1fr;
             }
@@ -169,30 +180,34 @@
         <section class="page-hero">
             <p class="eyebrow">Administración</p>
             <h1>Gestión de Equipamiento</h1>
-            <p class="lead">Control de material y prendas asignadas a los <strong>socios</strong>.</p>
+            <p class="lead">Control de pedidos, reservas y entregas de material a los <strong>socios</strong>.</p>
         </section>
 
-        <!-- UNA SOLA TARJETA PRINCIPAL PARA TODO -->
         <section class="content-area">
             <article class="card wide">
-                <h3 id="formTitle" style="margin-top: 0;">Nuevo Artículo de Equipamiento</h3>
+                <h3 id="formTitle" style="margin-top: 0;">Nuevo Pedido / Reserva de Equipamiento</h3>
 
                 <form class="form" id="formEquipamiento">
                     <input type="hidden" id="articulo_id" value="">
 
-                    <!-- DISTRIBUCIÓN INTERNA EN 2 COLUMNAS -->
                     <div class="equipamiento-layout">
 
-                        <!-- COLUMNA IZQUIERDA: CAMPOS DEL ARTÍCULO -->
+                        <!-- COLUMNA IZQUIERDA: DATOS DEL ARTÍCULO -->
                         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
                             
-                            <!-- Arriba: Artículo (ancho completo de la columna izquierda) -->
-                            <div class="form-group">
-                                <label for="articulo">Artículo *</label>
-                                <input class="input" id="articulo" required placeholder="Ej: Camiseta Oficial 1ª Equipación">
+                            <!-- Arriba: Artículo + Stock Calculado -->
+                            <div class="form-row-articulo">
+                                <div class="form-group">
+                                    <label for="articulo">Artículo *</label>
+                                    <input class="input" id="articulo" required placeholder="Ej: Camiseta Oficial 1ª Equipación">
+                                </div>
+                                <div class="form-group">
+                                    <label for="stock">Stock Res.</label>
+                                    <input class="input" id="stock" readonly value="0" style="text-align: center; font-weight: bold; background-color: rgba(0,0,0,0.4); color: var(--color-accent, #e2b007);" title="Unidades reservadas pendientes de entrega">
+                                </div>
                             </div>
 
-                            <!-- Abajo: Talla, Color y Referencia en 3 subcolumnas -->
+                            <!-- Abajo: Talla, Color y Referencia -->
                             <div class="form-row-3">
                                 <div class="form-group">
                                     <label for="talla">Talla</label>
@@ -221,19 +236,19 @@
 
                         <!-- COLUMNA DERECHA: SELECTOR DE SOCIOS -->
                         <div class="form-group">
-                            <label for="socios_select">Socios con este artículo asignado</label>
+                            <label for="socios_select" id="lblSociosSelect">Socios con Reserva Solicitada</label>
                             <select id="socios_select" multiple class="input">
                                 <option value="">Cargando lista de socios...</option>
                             </select>
-                            <p class="help-text">Mantén pulsada la tecla <strong>Ctrl</strong> (o <strong>Cmd</strong> en Mac) para seleccionar varios socios a la vez.</p>
+                            <p class="help-text">Mantén pulsada la tecla <strong>Ctrl</strong> (o <strong>Cmd</strong> en Mac) para seleccionar/desmarcar socios.</p>
                         </div>
 
                     </div>
 
-                    <!-- BOTONES DEL FORMULARIO -->
+                    <!-- BOTONES DE ACCIÓN -->
                     <div class="form-actions">
-                        <button class="btn btn-primary" type="submit" id="btnGuardar">Guardar Artículo</button>
-                        <button class="btn btn-secondary" type="button" id="btnCancelar" style="display: none;">Cancelar Edición</button>
+                        <button class="btn btn-primary" type="button" id="btnReserva">Reserva Articulo</button>
+                        <button class="btn btn-success" type="button" id="btnEntrega" style="display: none; background-color: #28a745; color: #ffffff;">Entrega Articulo</button>
                         <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
                     </div>
 
@@ -246,7 +261,6 @@
 
                 <h3>Artículos Registrados</h3>
 
-                <!-- TABLA DE ARTÍCULOS DENTRO DE LA MISMA TARJETA -->
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
@@ -255,13 +269,15 @@
                                 <th>Ref.</th>
                                 <th>Talla</th>
                                 <th>Color</th>
-                                <th>Socios Asignados</th>
+                                <th style="text-align: center;">Stock Res.</th>
+                                <th>Reservas Pendientes</th>
+                                <th>Socios Entregados</th>
                                 <th style="text-align: center;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tablaEquipamientoBody">
                             <tr>
-                                <td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">Cargando registros...</td>
+                                <td colspan="8" style="text-align: center; color: rgba(255,255,255,0.5);">Cargando registros...</td>
                             </tr>
                         </tbody>
                     </table>
