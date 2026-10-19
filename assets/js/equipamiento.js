@@ -84,7 +84,7 @@ async function cargarEquipamientos() {
     }
 }
 
-// 4. Renderizar la tabla de artículos con sus badges de socios
+// 4. Renderizar la tabla de artículos con un selector desplegable de socios asignados
 function renderizarTablaEquipamientos(items) {
     const tbody = document.getElementById("tablaEquipamientoBody");
     if (!tbody) return;
@@ -97,12 +97,22 @@ function renderizarTablaEquipamientos(items) {
     tbody.innerHTML = items.map((item) => {
         const arraySociosIds = Array.isArray(item.socio) ? item.socio : [];
         
-        const badgesSocios = arraySociosIds.length > 0
-            ? arraySociosIds.map(id => {
+        let selectSociosHtml = "";
+        if (arraySociosIds.length > 0) {
+            const options = arraySociosIds.map(id => {
                 const nombre = mapaSocios.get(id) || "Socio desconocido";
-                return `<span class="badge-socios"><i class="fa-solid fa-user" style="font-size:0.7rem; margin-right:3px;"></i>${nombre}</span>`;
-              }).join(" ")
-            : '<span style="color: rgba(255,255,255,0.4); font-style: italic;">Sin socios asignados</span>';
+                return `<option value="${id}">${nombre}</option>`;
+            }).join("");
+
+            selectSociosHtml = `
+                <select class="input select-socios-tabla" style="padding: 0.3rem 0.5rem; font-size: 0.85rem; width: 100%; background-color: rgba(0,0,0,0.3);">
+                    <option value="" disabled selected>${arraySociosIds.length} socio(s) asignado(s)</option>
+                    ${options}
+                </select>
+            `;
+        } else {
+            selectSociosHtml = '<span style="color: rgba(255,255,255,0.4); font-style: italic; font-size: 0.85rem;">Sin socios asignados</span>';
+        }
 
         return `
             <tr>
@@ -110,8 +120,8 @@ function renderizarTablaEquipamientos(items) {
                 <td>${item.referencia || '-'}</td>
                 <td>${item.talla || '-'}</td>
                 <td>${item.color || '-'}</td>
-                <td>${badgesSocios}</td>
-                <td style="text-align: center;">
+                <td style="min-width: 220px;">${selectSociosHtml}</td>
+                <td style="text-align: center; white-space: nowrap;">
                     <button class="btn btn-secondary btn-sm" onclick="prepararEdicion('${item.id}')" title="Editar">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
