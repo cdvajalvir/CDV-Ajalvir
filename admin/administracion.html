@@ -10,7 +10,47 @@
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Cuadrícula de 3 columnas para los campos del formulario */
+        /* Disposición principal en 2 columnas estilo Dashboard */
+        .admin-dashboard-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr; /* Columna estrecha para botones (260px) y ancha para el formulario */
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* Tarjeta del menú de navegación lateral (columna izquierda) */
+        .sidebar-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sidebar-card h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav .btn {
+            width: 100%;
+            text-align: left;
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
+        }
+
+        /* Cuadrícula de 3 columnas para los campos del formulario dentro del área ancha */
         .form-grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -30,26 +70,7 @@
             gap: 1rem;
             align-items: center;
             margin-top: 1rem;
-            flex-wrap: wrap; /* Permitir ajuste automático en pantallas pequeñas */
-        }
-
-        /* Botones de gestión */
-        .btn-prox-evento,
-        .btn-gest-cuotas,
-        .btn-gest-socios {
-            margin-left: 0;
-        }
-
-        .btn-prox-evento {
-            margin-left: 0.5rem; 
-        }
-
-        .btn-gest-cuotas {
-            margin-left: 0.5rem;
-        }
-
-        .btn-gest-socios {
-            margin-left: 0.5rem; 
+            flex-wrap: wrap;
         }
 
         /* Indicador visual de campo solo lectura */
@@ -58,7 +79,7 @@
             cursor: not-allowed;
         }
 
-        /* Visibilidad y contraste del campo de fecha automática */
+        /* Visibilidad y contraste de campos de solo lectura */
         #fecha_apunte[readonly],
         #saldo[readonly] {
             color: #ffffff !important;
@@ -67,20 +88,37 @@
             cursor: default;
         }
 
-        /* Ocultar las flechas de los campos numéricos (Chrome, Safari, Edge, Opera) */
+        /* Ocultar flechas numéricas */
         input[type=number]::-webkit-outer-spin-button,
         input[type=number]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Ocultar las flechas en Firefox */
         input[type=number] {
             -moz-appearance: textfield;
         }
 
-        /* Media Queries adaptadas para total fluidez en móviles */
-        @media (max-width: 900px) {
+        /* Responsividad en tablet y móvil */
+        @media (max-width: 992px) {
+            .admin-dashboard-grid {
+                grid-template-columns: 1fr; /* Pasa a 1 columna apilada en móviles/tablets */
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-nav .btn {
+                flex: 1;
+                text-align: center;
+                justify-content: center;
+                min-width: 140px;
+            }
+        }
+
+        @media (max-width: 768px) {
             .form-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -90,7 +128,7 @@
             .form-grid-3 {
                 grid-template-columns: 1fr;
             }
-            
+
             .form-actions {
                 flex-direction: column;
                 align-items: stretch;
@@ -100,7 +138,6 @@
             .form-actions a.btn {
                 width: 100%;
                 text-align: center;
-                margin-left: 0 !important;
             }
         }
     </style>
@@ -121,7 +158,7 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
 
         <section class="page-hero">
             <p class="eyebrow">Administración</p>
@@ -129,11 +166,29 @@
             <p class="lead">Alta y registro de apuntes contables para el <strong>club</strong>.</p>
         </section>
 
-        <section class="app-layout-single">
-            <div class="content-grid">
+        <!-- LAYOUT DE 2 COLUMNAS -->
+        <div class="admin-dashboard-grid">
 
-                <article class="card wide">
-                    <h3>Nuevo Movimiento Contable</h3>
+            <!-- COLUMNA IZQUIERDA: MENÚ DE NAVEGACIÓN DE GESTIÓN -->
+            <aside class="sidebar-card">
+                <h4>Menú Gestión</h4>
+                <nav class="sidebar-nav">
+                    <a class="btn btn-secondary" href="textoevento.html">
+                        <i class="fa-solid fa-calendar-days" style="margin-right: 0.5rem;"></i> Prox.Evento
+                    </a>
+                    <a class="btn btn-secondary" href="activasocio.html">
+                        <i class="fa-solid fa-users-gear" style="margin-right: 0.5rem;"></i> Gest.Socios
+                    </a>
+                    <a class="btn btn-secondary" href="cuotas.html">
+                        <i class="fa-solid fa-file-invoice-dollar" style="margin-right: 0.5rem;"></i> Gest.Cuotas
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- COLUMNA DERECHA: REGISTRO DE MOVIMIENTOS -->
+            <section class="content-area">
+                <article class="card wide" style="margin: 0;">
+                    <h3 style="margin-top: 0;">Nuevo Movimiento Contable</h3>
 
                     <form class="form form-grid-3" id="formMovimiento">
 
@@ -189,16 +244,11 @@
                             <input class="input" type="number" step="0.01" id="saldo" placeholder="0.00" readonly>
                         </div>
 
-                        <!-- ACCIONES -->
+                        <!-- ACCIONES DEL FORMULARIO -->
                         <div class="form-actions">
                             <button class="btn btn-primary" type="submit">Registrar Movimiento</button>
                             <a class="btn btn-secondary" href="registros.html">Ver Registros</a>
                             <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
-                            
-                            <!-- Los botones de gestión se empujan automáticamente a la derecha del todo en pantallas grandes -->
-                            <a class="btn btn-secondary btn-prox-evento" href="textoevento.html" style="margin-left: auto;">Prox.Evento</a>
-                            <a class="btn btn-secondary btn-gest-socios" href="activasocio.html">Gest.Socios</a>
-                            <a class="btn btn-secondary btn-gest-cuotas" href="cuotas.html">Gest.Cuotas</a>
                         </div>
 
                         <div style="grid-column: 1 / -1;">
@@ -207,9 +257,9 @@
 
                     </form>
                 </article>
+            </section>
 
-            </div>
-        </section>
+        </div>
 
     </main>
 
@@ -218,21 +268,13 @@
             <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
                 <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
                 <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
-                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D"
-                       target="_blank"
-                       class="social-link instagram"
-                       aria-label="Instagram">
+                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
-                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/"
-                       target="_blank"
-                       class="social-link facebook"
-                       aria-label="Facebook">
+                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook">
                         <i class="fa-brands fa-facebook-f"></i>
                     </a>
-                    <a href="mailto:cdve.ajalvir@gmail.com"
-                       class="social-link mail"
-                       aria-label="Correo electrónico">
+                    <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico">
                         <i class="fa-solid fa-envelope"></i>
                     </a>
                 </div>
