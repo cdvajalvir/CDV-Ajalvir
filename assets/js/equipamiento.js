@@ -126,8 +126,12 @@ function renderizarTablaEquipamientos(items) {
 
 // 5. Función para cargar datos en el formulario para Edición (Expuesta a window)
 window.prepararEdicion = function(id) {
-    const item = listaEquipamientos.find(e => e.id === id);
-    if (!item) return;
+    // Comparamos convirtiendo ambos a String para evitar conflictos de tipo (número vs texto)
+    const item = listaEquipamientos.find(e => String(e.id) === String(id));
+    if (!item) {
+        console.warn("No se encontró el artículo con ID:", id);
+        return;
+    }
 
     document.getElementById("articulo_id").value = item.id;
     document.getElementById("articulo").value = item.articulo || "";
