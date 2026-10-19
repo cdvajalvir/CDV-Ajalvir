@@ -149,3 +149,200 @@
             font-size: 0.8rem;
             margin: 0.1rem;
         }
+
+        /* Responsividad */
+        @media (max-width: 992px) {
+            .admin-dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-nav .btn {
+                flex: 1;
+                text-align: center;
+                justify-content: center;
+                min-width: 140px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links></div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+
+        <section class="page-hero">
+            <p class="eyebrow">Administración</p>
+            <h1>Gestión de Equipamiento</h1>
+            <p class="lead">Control de material y prendas asignadas a los <strong>socios</strong>.</p>
+        </section>
+
+        <!-- LAYOUT DE 2 COLUMNAS -->
+        <div class="admin-dashboard-grid">
+
+            <!-- COLUMNA IZQUIERDA: MENÚ NAVEGACIÓN -->
+            <aside class="sidebar-card">
+                <h4>Menú Gestión</h4>
+                <nav class="sidebar-nav">
+                    <a class="btn btn-secondary" href="administracion.html">
+                        <i class="fa-solid fa-calculator" style="margin-right: 0.5rem;"></i> Movimientos
+                    </a>
+                    <a class="btn btn-secondary" href="textoevento.html">
+                        <i class="fa-solid fa-calendar-days" style="margin-right: 0.5rem;"></i> Prox.Evento
+                    </a>
+                    <a class="btn btn-secondary" href="activasocio.html">
+                        <i class="fa-solid fa-users-gear" style="margin-right: 0.5rem;"></i> Gest.Socios
+                    </a>
+                    <a class="btn btn-secondary" href="cuotas.html">
+                        <i class="fa-solid fa-file-invoice-dollar" style="margin-right: 0.5rem;"></i> Gest.Cuotas
+                    </a>
+                    <a class="btn btn-secondary active" href="equipamiento.html">
+                        <i class="fa-solid fa-shirt" style="margin-right: 0.5rem;"></i> Gest.Equipamiento
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- COLUMNA DERECHA: FORMULARIO Y LISTADO -->
+            <section class="content-area">
+                <article class="card wide" style="margin: 0;">
+                    <h3 id="formTitle" style="margin-top: 0;">Nuevo Artículo de Equipamiento</h3>
+
+                    <form class="form form-grid-2" id="formEquipamiento">
+                        <!-- Campo oculto para ID cuando se edita -->
+                        <input type="hidden" id="articulo_id" value="">
+
+                        <!-- FILA 1 -->
+                        <div class="form-group">
+                            <label for="articulo">Artículo *</label>
+                            <input class="input" id="articulo" required placeholder="Ej: Camiseta Oficial 1ª Equipación">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="referencia">Referencia</label>
+                            <input class="input" id="referencia" placeholder="Ej: REF-2026-01">
+                        </div>
+
+                        <!-- FILA 2 -->
+                        <div class="form-group">
+                            <label for="talla">Talla</label>
+                            <input class="input" id="talla" placeholder="Ej: M, L, XL, XL-Larga">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="color">Color</label>
+                            <input class="input" id="color" placeholder="Ej: Azul / Amarillo">
+                        </div>
+
+                        <!-- FILA 3: MULTISELECCIÓN DE SOCIOS -->
+                        <div class="form-group full-width">
+                            <label for="socios_select">Socios con este artículo asignado</label>
+                            <select id="socios_select" multiple class="input">
+                                <option value="">Cargando lista de socios...</option>
+                            </select>
+                            <p class="help-text">Mantén pulsada la tecla <strong>Ctrl</strong> (o <strong>Cmd</strong> en Mac) para seleccionar varios socios a la vez.</p>
+                        </div>
+
+                        <!-- ACCIONES -->
+                        <div class="form-actions">
+                            <button class="btn btn-primary" type="submit" id="btnGuardar">Guardar Artículo</button>
+                            <button class="btn btn-secondary" type="button" id="btnCancelar" style="display: none;">Cancelar Edición</button>
+                            <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
+                        </div>
+
+                        <div style="grid-column: 1 / -1;">
+                            <p id="mensajeEquipamiento"></p>
+                        </div>
+                    </form>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
+
+                    <h3>Artículos Registrados</h3>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th>Ref.</th>
+                                    <th>Talla</th>
+                                    <th>Color</th>
+                                    <th>Socios Asignados</th>
+                                    <th style="text-align: center;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaEquipamientoBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">Cargando registros...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </article>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
+                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <a href="../pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module" src="../assets/js/equipamiento.js"></script>
+
+</body>
+
+</html>
