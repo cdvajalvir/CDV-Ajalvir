@@ -10,12 +10,19 @@
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Cuadrícula del formulario a 2 columnas */
-        .form-grid-2 {
+        /* Disposición interna de 2 columnas dentro de la tarjeta */
+        .equipamiento-layout {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.25rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
             align-items: start;
+        }
+
+        /* Sub-grid para los 3 campos de la fila inferior izquierda */
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
         }
 
         .form-group {
@@ -24,13 +31,9 @@
             gap: 0.35rem;
         }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        /* Selector multiselección de socios */
+        /* Selector multiselección ajustado a la altura de la columna izquierda */
         select[multiple] {
-            height: 160px;
+            height: 142px;
             padding: 0.5rem;
             background-color: rgba(0, 0, 0, 0.2);
             color: #ffffff;
@@ -53,11 +56,10 @@
         .help-text {
             font-size: 0.8rem;
             color: rgba(255, 255, 255, 0.6);
-            margin-top: 0.2rem;
+            margin-top: 0.25rem;
         }
 
         .form-actions {
-            grid-column: 1 / -1;
             display: flex;
             gap: 1rem;
             align-items: center;
@@ -104,9 +106,19 @@
             margin: 0.1rem;
         }
 
-        /* Responsividad en pantallas pequeñas */
+        /* Responsividad */
+        @media (max-width: 900px) {
+            .equipamiento-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         @media (max-width: 600px) {
-            .form-grid-2 {
+            .form-row-3 {
                 grid-template-columns: 1fr;
             }
 
@@ -146,60 +158,72 @@
             <p class="lead">Control de material y prendas asignadas a los <strong>socios</strong>.</p>
         </section>
 
+        <!-- UNA SOLA TARJETA PRINCIPAL PARA TODO -->
         <section class="content-area">
             <article class="card wide">
                 <h3 id="formTitle" style="margin-top: 0;">Nuevo Artículo de Equipamiento</h3>
 
-                <form class="form form-grid-2" id="formEquipamiento">
-                    <!-- Campo oculto para ID cuando se edita -->
+                <form class="form" id="formEquipamiento">
                     <input type="hidden" id="articulo_id" value="">
 
-                    <!-- FILA 1 -->
-                    <div class="form-group">
-                        <label for="articulo">Artículo *</label>
-                        <input class="input" id="articulo" required placeholder="Ej: Camiseta Oficial 1ª Equipación">
+                    <!-- DISTRIBUCIÓN INTERNA EN 2 COLUMNAS -->
+                    <div class="equipamiento-layout">
+
+                        <!-- COLUMNA IZQUIERDA: CAMPOS DEL ARTÍCULO -->
+                        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            
+                            <!-- Arriba: Artículo (ancho completo de la columna izquierda) -->
+                            <div class="form-group">
+                                <label for="articulo">Artículo *</label>
+                                <input class="input" id="articulo" required placeholder="Ej: Camiseta Oficial 1ª Equipación">
+                            </div>
+
+                            <!-- Abajo: Talla, Color y Referencia en 3 subcolumnas -->
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label for="talla">Talla</label>
+                                    <select class="input" id="talla">
+                                        <option value="">-- Talla --</option>
+                                        <option value="M">M</option>
+                                        <option value="L">L</option>
+                                        <option value="XL">XL</option>
+                                        <option value="XXL">XXL</option>
+                                        <option value="2XL-3XL">2XL-3XL</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="color">Color</label>
+                                    <input class="input" id="color" placeholder="Ej: Azul">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="referencia">Referencia</label>
+                                    <input class="input" id="referencia" placeholder="Ej: REF-2026">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- COLUMNA DERECHA: SELECTOR DE SOCIOS -->
+                        <div class="form-group">
+                            <label for="socios_select">Socios con este artículo asignado</label>
+                            <select id="socios_select" multiple class="input">
+                                <option value="">Cargando lista de socios...</option>
+                            </select>
+                            <p class="help-text">Mantén pulsada la tecla <strong>Ctrl</strong> (o <strong>Cmd</strong> en Mac) para seleccionar varios socios a la vez.</p>
+                        </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="referencia">Referencia</label>
-                        <input class="input" id="referencia" placeholder="Ej: REF-2026-01">
-                    </div>
-
-                   <!-- FILA 2  -->
-                    <div class="form-group">
-                        <label for="talla">Talla</label>
-                        <select class="input" id="talla">
-                            <option value="">-- Seleccionar Talla --</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="2XL-3XL">2XL-3XL</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="color">Color</label>
-                        <input class="input" id="color" placeholder="Ej: Azul / Amarillo">
-                    </div>
-
-                    <!-- FILA 3: MULTISELECCIÓN DE SOCIOS -->
-                    <div class="form-group full-width">
-                        <label for="socios_select">Socios con este artículo asignado</label>
-                        <select id="socios_select" multiple class="input">
-                            <option value="">Cargando lista de socios...</option>
-                        </select>
-                        <p class="help-text">Mantén pulsada la tecla <strong>Ctrl</strong> (o <strong>Cmd</strong> en Mac) para seleccionar varios socios a la vez.</p>
-                    </div>
-
-                    <!-- ACCIONES -->
+                    <!-- BOTONES DEL FORMULARIO -->
                     <div class="form-actions">
                         <button class="btn btn-primary" type="submit" id="btnGuardar">Guardar Artículo</button>
                         <button class="btn btn-secondary" type="button" id="btnCancelar" style="display: none;">Cancelar Edición</button>
                         <button class="btn btn-secondary" type="button" id="btnLimpiar">Limpiar</button>
                     </div>
 
-                    <div style="grid-column: 1 / -1;">
+                    <div>
                         <p id="mensajeEquipamiento"></p>
                     </div>
                 </form>
@@ -208,6 +232,7 @@
 
                 <h3>Artículos Registrados</h3>
 
+                <!-- TABLA DE ARTÍCULOS DENTRO DE LA MISMA TARJETA -->
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
