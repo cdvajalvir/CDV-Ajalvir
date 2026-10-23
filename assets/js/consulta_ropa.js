@@ -2,6 +2,8 @@ import { supabaseClient } from "./supabase.js";
 
 let catalogo = [];
 let indiceActual = 0;
+// Objeto de caché para almacenar las URLs firmadas y evitar peticiones repetidas
+const cacheUrls = {};
 
 // Cargar catálogo vía Edge Function
 async function cargarCatalogoRopa() {
@@ -23,7 +25,10 @@ async function cargarCatalogoRopa() {
         }
 
         indiceActual = 0;
-        mostrarPrenda(indiceActual);
+        await mostrarPrenda(indiceActual);
+
+        // Precargar la siguiente imagen en segundo plano para agilizar la navegación
+        precargarImagenAdyacente(1);
 
     } catch (err) {
         console.error("Error al cargar el catálogo de ropa:", err);
@@ -31,8 +36,20 @@ async function cargarCatalogoRopa() {
     }
 }
 
-// Mostrar imagen e informar los socios correspondientes
-function mostrarPrenda(index) {
+// Función auxiliar para precargar imágenes en segundo plano en el navegador
+function precargarImagenAdyacente(index) {
+    if (index >= 0 && index < catalogo.length && catalogo[index].imagen_url) {
+        const url = catalogo[index].imagen_url;
+        if (!cacheUrls[url]) {
+            const imgPreload = new Image();
+            imgPreload.src = url;
+            cacheUrls[url] = true;
+        }
+    }
+}
+
+// Mostrar imagen e informar los socios correspondientes de forma fluida
+async function mostrarPrenda(index) {
     if (!catalogo || catalogo.length === 0 || index < 0 || index >= catalogo.length) return;
 
     const item = catalogo[index];
@@ -43,30 +60,48 @@ function mostrarPrenda(index) {
     const btnAnterior = document.getElementById("btnAnterior");
     const btnSiguiente = document.getElementById("btnSiguiente");
 
-    // Actualizar botones y contador
+    // Actualizar botones y contador inmediatamente
     contador.textContent = `${index + 1} / ${catalogo.length}`;
     btnAnterior.disabled = index === 0;
     btnSiguiente.disabled = index === catalogo.length - 1;
 
-    // Cargar imagen
-    if (loader) loader.style.display = "block";
-    imgEl.style.display = "none";
+    // Renderizar la lista de socios al instante
+    renderizarSocios(item.socios || []);
 
+    // Gestionar la carga de la imagen
     if (item.imagen_url) {
-        imgEl.src = item.imagen_url;
-        imgEl.onload = () => {
+        // Si ya está en caché o cargada previamente, la mostramos al instante
+        if (imgEl.src === item.imagen_url && imgEl.complete) {
             if (loader) loader.style.display = "none";
             imgEl.style.display = "block";
-        };
-        imgEl.onerror = () => {
-            if (loader) loader.innerHTML = "<p style='color: rgba(255,255,255,0.5);'>Imagen no encontrada en Storage</p>";
-        };
-    } else {
-        if (loader) loader.innerHTML = "<p style='color: rgba(255,255,255,0.5);'>Sin imagen en Storage</p>";
-    }
+        } else {
+            if (loader) loader.style.display = "block";
+            imgEl.style.display = "none";
 
-    // Renderizar SOLAMENTE los nombres de los socios
-    renderizarSocios(item.socios || []);
+            imgEl.src = item.imagen_url;
+            imgEl.onload = () => {
+                if (loader) loader.style.display = "none";
+                imgEl.style.display = "block";
+            };
+            imgEl.onerror = () => {
+                if (loader) {
+                    loader.style.display = "block";
+                    loader.innerHTML = "<p style='color: rgba(255,255,255,0.5);'>No se pudo cargar la imagen</p>";
+                }
+            };
+        }
+
+        // Precargar inteligentemente la anterior y la siguiente en segundo plano
+        precargarImagenAdyacente(index + 1);
+        precargarImagenAdyacente(index - 1);
+
+    } else {
+        imgEl.style.display = "none";
+        if (loader) {
+            loader.style.display = "block";
+            loader.innerHTML = "<p style='color: rgba(255,255,255,0.5);'>Sin imagen en Storage</p>";
+        }
+    }
 }
 
 // Renderizar únicamente nombres de socios
@@ -87,7 +122,7 @@ function renderizarSocios(nombresSocios) {
     `).join("");
 }
 
-// Eventos
+// Eventos de navegación
 document.addEventListener("DOMContentLoaded", async () => {
     await cargarCatalogoRopa();
 
