@@ -8,7 +8,7 @@ async function cargarCatalogoRopa() {
     const loader = document.getElementById("loaderImagen");
 
     try {
-        const { data, error } = await supabaseClient.functions.invoke("consulta_ropa", {
+        const { data, error } = await supabaseClient.functions.invoke("consulta-ropa", {
             body: { action: "obtener_catalogo" }
         });
 
