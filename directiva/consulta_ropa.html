@@ -10,26 +10,25 @@
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Layout de 2 columnas simple a todo el ancho del contenedor */
+        /* Layout de 2 columnas con alineación estirada */
         .consulta-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
-            align-items: start;
+            align-items: stretch; /* Estira ambas cards a la misma altura */
             margin-top: 1.5rem;
         }
-
         /* Columna Izquierda: Galería */
         .gallery-card {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between; /* Distribuye espacio entre visor y botones */
             background: rgba(0, 0, 0, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 1.5rem;
-            min-height: 380px;
+            height: 440px; /* Altura unificada fijada */
+            box-sizing: border-box;
         }
 
         .gallery-viewport {
@@ -53,7 +52,7 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            margin-top: 1.25rem;
+            margin-top: 1rem;
         }
 
         .btn-nav-gallery {
@@ -88,13 +87,16 @@
             font-weight: 600;
         }
 
-        /* Columna Derecha: Lista de Socios y Tallas */
+       /* Columna Derecha: Lista de Socios y Tallas */
         .info-card {
+            display: flex;
+            flex-direction: column;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 1.5rem;
-            min-height: 380px;
+            height: 440px; /* Misma altura exacta que la card de la izquierda */
+            box-sizing: border-box;
         }
 
         .socios-list {
@@ -104,8 +106,8 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            max-height: 340px;
-            overflow-y: auto;
+            height: 100%; /* Aprovecha toda la altura de la card */
+            overflow-y: auto; /* Scroll interno si hay muchos socios */
         }
 
         .socio-item {
