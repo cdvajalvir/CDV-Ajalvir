@@ -1,16 +1,26 @@
 import { supabaseClient } from "./supabase.js";
+import { comprobarAcceso, cerrarSesion } from "./auth.js";
+
+window.cerrarSesion = cerrarSesion;
 
 let catalogo = [];
 let indiceActual = 0;
-// Objeto de caché para almacenar las URLs firmadas y evitar peticiones repetidas
 const cacheUrls = {};
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Protección estricta de la página para administradores y directiva
+    comprobarAcceso(["administrador", "directiva"], async (usuario) => {
+        console.log("Acceso concedido a Consulta de Ropa:", usuario);
+        await cargarCatalogoRopa();
+    });
+});
 
 // Cargar catálogo vía Edge Function
 async function cargarCatalogoRopa() {
     const loader = document.getElementById("loaderImagen");
 
     try {
-        const { data, error } = await supabaseClient.functions.invoke("consulta-ropa", {
+        const { data, error } = await supabaseClient.functions.invoke("consulta_ropa", {
             body: { action: "obtener_catalogo" }
         });
 
@@ -26,8 +36,6 @@ async function cargarCatalogoRopa() {
 
         indiceActual = 0;
         await mostrarPrenda(indiceActual);
-
-        // Precargar la siguiente imagen en segundo plano para agilizar la navegación
         precargarImagenAdyacente(1);
 
     } catch (err) {
@@ -36,7 +44,7 @@ async function cargarCatalogoRopa() {
     }
 }
 
-// Función auxiliar para precargar imágenes en segundo plano en el navegador
+// Precarga invisible en segundo plano para agilizar la navegación entre imágenes
 function precargarImagenAdyacente(index) {
     if (index >= 0 && index < catalogo.length && catalogo[index].imagen_url) {
         const url = catalogo[index].imagen_url;
@@ -48,7 +56,7 @@ function precargarImagenAdyacente(index) {
     }
 }
 
-// Mostrar imagen e informar los socios correspondientes de forma fluida
+// Mostrar imagen e informar los socios y tallas correspondientes de forma fluida
 async function mostrarPrenda(index) {
     if (!catalogo || catalogo.length === 0 || index < 0 || index >= catalogo.length) return;
 
@@ -60,17 +68,13 @@ async function mostrarPrenda(index) {
     const btnAnterior = document.getElementById("btnAnterior");
     const btnSiguiente = document.getElementById("btnSiguiente");
 
-    // Actualizar botones y contador inmediatamente
     contador.textContent = `${index + 1} / ${catalogo.length}`;
     btnAnterior.disabled = index === 0;
     btnSiguiente.disabled = index === catalogo.length - 1;
 
-    // Renderizar la lista de socios al instante
     renderizarSocios(item.socios || []);
 
-    // Gestionar la carga de la imagen
     if (item.imagen_url) {
-        // Si ya está en caché o cargada previamente, la mostramos al instante
         if (imgEl.src === item.imagen_url && imgEl.complete) {
             if (loader) loader.style.display = "none";
             imgEl.style.display = "block";
@@ -91,7 +95,6 @@ async function mostrarPrenda(index) {
             };
         }
 
-        // Precargar inteligentemente la anterior y la siguiente en segundo plano
         precargarImagenAdyacente(index + 1);
         precargarImagenAdyacente(index - 1);
 
@@ -115,7 +118,7 @@ function renderizarSocios(listaSociosInfo) {
     }
 
     contenedor.innerHTML = listaSociosInfo.map(socio => `
-        <li class="socio-item" style="display: flex; justify-content: space-between; align-items: center;">
+        <li class="socio-item">
             <span>
                 <i class="fa-solid fa-user" style="font-size:0.85rem; margin-right:8px; color: var(--color-accent, #e2b007);"></i>
                 ${socio.nombre}
@@ -127,10 +130,8 @@ function renderizarSocios(listaSociosInfo) {
     `).join("");
 }
 
-// Eventos de navegación
-document.addEventListener("DOMContentLoaded", async () => {
-    await cargarCatalogoRopa();
-
+// Eventos de navegación por flechas
+document.addEventListener("DOMContentLoaded", () => {
     const btnAnterior = document.getElementById("btnAnterior");
     const btnSiguiente = document.getElementById("btnSiguiente");
 
