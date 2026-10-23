@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Consulta de Ropa · CD Veteranos Ajalvir</title>
+
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        /* Layout principal de 2 columnas */
+        .consulta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Columna Izquierda: Galería */
+        .gallery-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 380px;
+        }
+
+        .gallery-viewport {
+            width: 100%;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .gallery-viewport img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .gallery-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 1.25rem;
+        }
+
+        .btn-nav-gallery {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-gallery:hover:not(:disabled) {
+            background-color: var(--color-accent, #e2b007);
+            color: #000000;
+            border-color: var(--color-accent, #e2b007);
+        }
+
+        .btn-nav-gallery:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .gallery-counter {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        /* Columna Derecha: Exclusiva para la lista de Socios */
+        .info-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 380px;
+        }
+
+        .socios-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .socio-item {
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        /* Responsividad */
+        @media (max-width: 900px) {
+            .consulta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="site-header">
+        <nav class="navbar container">
+            <a class="brand" href="../index.html">
+                <span class="brand-logo">
+                    <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
+                </span>
+                <span>CD Veteranos Ajalvir</span>
+            </a>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links></div>
+        </nav>
+    </header>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+
+        <section class="page-hero">
+            <p class="eyebrow">Consulta de Material</p>
+            <h1>Consulta de Equipamiento</h1>
+            <p class="lead">Desplaza las prendas para consultar los socios asignados.</p>
+        </section>
+
+        <!-- CONTENIDO A 2 COLUMNAS -->
+        <div class="consulta-grid">
+
+            <!-- COLUMNA IZQUIERDA: IMAGEN CON FLECHAS -->
+            <section class="gallery-card">
+                <div class="gallery-viewport">
+                    <img id="imagenPrenda" src="" alt="Cargando imagen..." style="display: none;">
+                    <div id="loaderImagen" style="color: rgba(255,255,255,0.6);">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.5rem;">Cargando catálogo...</p>
+                    </div>
+                </div>
+
+                <div class="gallery-controls">
+                    <button class="btn-nav-gallery" id="btnAnterior" title="Prenda anterior" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span class="gallery-counter" id="contadorGaleria">0 / 0</span>
+                    <button class="btn-nav-gallery" id="btnSiguiente" title="Siguiente prenda" disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- COLUMNA DERECHA: ÚNICAMENTE LISTA DE NOMBRES DE SOCIOS -->
+            <section class="info-card">
+                <ul class="socios-list" id="listaSocios">
+                    <li style="color: rgba(255,255,255,0.5); text-align: center; padding: 1rem;">Cargando socios...</li>
+                </ul>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
+                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
+                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico">
+                        <i class="fa-solid fa-envelope"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <a href="../pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../assets/js/nav-auth.js"></script>
+    <script type="module" src="../assets/js/consulta_ropa.js"></script>
+
+</body>
+
+</html>
