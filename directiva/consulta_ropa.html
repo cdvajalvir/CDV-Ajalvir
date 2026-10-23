@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="../assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* Layout principal de 2 columnas dentro de la aplicación */
+        /* Layout de 2 columnas simple a todo el ancho del contenedor */
         .consulta-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             align-items: start;
+            margin-top: 1.5rem;
         }
 
         /* Columna Izquierda: Galería */
@@ -87,7 +88,7 @@
             font-weight: 600;
         }
 
-        /* Columna Derecha: Exclusiva para la lista de Socios y Tallas */
+        /* Columna Derecha: Lista de Socios y Tallas */
         .info-card {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -147,59 +148,42 @@
 
         <section class="page-hero">
             <p class="eyebrow">Área privada</p>
-            <h1>Consulta de Ropa</h1>
-            <p class="lead">Explora las prendas del club y consulta los socios y tallas asignados a cada referencia.</p>
+            <h1>Consulta de Equipamiento</h1>
+            <p class="lead">Desplaza las prendas para consultar los socios y tallas asignados a cada referencia.</p>
         </section>
 
-        <section class="app-layout">
+        <!-- CONTENIDO PRINCIPAL A 2 COLUMNAS (SIN SIDEBAR) -->
+        <div class="consulta-grid">
 
-            <!-- Menú lateral idéntico al panel de directiva -->
-            <aside class="app-sidebar">
-                <nav class="app-menu">
-                    <a href="../directiva/directiva.html">Panel Directiva</a>
-                    <a href="../admin/registros.html">Registros</a>
-                    <a href="../directiva/gestconvocatoria.html">Convocatoria</a>
-                    <a href="../directiva/gestsocios.html">Gest.Socios</a>
-                    <a class="active" href="../directiva/consulta_ropa.html">Consulta Ropa</a>
-                </nav>
-            </aside>
-
-            <!-- Panel principal -->
-            <div class="app-main" style="width: 100%;">
-                <div class="consulta-grid">
-
-                    <!-- COLUMNA IZQUIERDA: IMAGEN CON FLECHAS -->
-                    <section class="gallery-card">
-                        <div class="gallery-viewport">
-                            <img id="imagenPrenda" src="" alt="Cargando imagen..." style="display: none;">
-                            <div id="loaderImagen" style="color: rgba(255,255,255,0.6);">
-                                <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-                                <p style="margin-top: 0.5rem;">Cargando catálogo...</p>
-                            </div>
-                        </div>
-
-                        <div class="gallery-controls">
-                            <button class="btn-nav-gallery" id="btnAnterior" title="Prenda anterior" disabled>
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </button>
-                            <span class="gallery-counter" id="contadorGaleria">0 / 0</span>
-                            <button class="btn-nav-gallery" id="btnSiguiente" title="Siguiente prenda" disabled>
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </section>
-
-                    <!-- COLUMNA DERECHA: LISTA DE SOCIOS Y TALLAS -->
-                    <section class="info-card">
-                        <ul class="socios-list" id="listaSocios">
-                            <li style="color: rgba(255,255,255,0.5); text-align: center; padding: 1rem;">Cargando socios...</li>
-                        </ul>
-                    </section>
-
+            <!-- COLUMNA IZQUIERDA: IMAGEN CON FLECHAS -->
+            <section class="gallery-card">
+                <div class="gallery-viewport">
+                    <img id="imagenPrenda" src="" alt="Cargando imagen..." style="display: none;">
+                    <div id="loaderImagen" style="color: rgba(255,255,255,0.6);">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 0.5rem;">Cargando catálogo...</p>
+                    </div>
                 </div>
-            </div>
 
-        </section>
+                <div class="gallery-controls">
+                    <button class="btn-nav-gallery" id="btnAnterior" title="Prenda anterior" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span class="gallery-counter" id="contadorGaleria">0 / 0</span>
+                    <button class="btn-nav-gallery" id="btnSiguiente" title="Siguiente prenda" disabled>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- COLUMNA DERECHA: LISTA DE SOCIOS Y TALLAS -->
+            <section class="info-card">
+                <ul class="socios-list" id="listaSocios">
+                    <li style="color: rgba(255,255,255,0.5); text-align: center; padding: 1rem;">Cargando socios...</li>
+                </ul>
+            </section>
+
+        </div>
 
     </main>
 
