@@ -11,7 +11,8 @@ export const supabaseClient = createClient(
         auth: {
             persistSession: true,
             autoRefreshToken: true,
-            detectSessionUrl: true
+            detectSessionUrl: true,
+            lock: false // <-- Esto desactiva el gestor de bloqueos de pestañas
         }
     }
 );
