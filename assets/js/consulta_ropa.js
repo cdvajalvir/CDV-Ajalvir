@@ -104,20 +104,25 @@ async function mostrarPrenda(index) {
     }
 }
 
-// Renderizar únicamente nombres de socios
-function renderizarSocios(nombresSocios) {
+// Renderizar nombres de socios junto con su talla
+function renderizarSocios(listaSociosInfo) {
     const contenedor = document.getElementById("listaSocios");
     if (!contenedor) return;
 
-    if (!nombresSocios || nombresSocios.length === 0) {
+    if (!listaSociosInfo || listaSociosInfo.length === 0) {
         contenedor.innerHTML = '<li style="color: rgba(255,255,255,0.4); font-style: italic; text-align: center; padding: 1rem;">No hay socios vinculados a esta prenda.</li>';
         return;
     }
 
-    contenedor.innerHTML = nombresSocios.map(nombre => `
-        <li class="socio-item">
-            <i class="fa-solid fa-user" style="font-size:0.85rem; margin-right:10px; color: var(--color-accent, #e2b007);"></i>
-            ${nombre}
+    contenedor.innerHTML = listaSociosInfo.map(socio => `
+        <li class="socio-item" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>
+                <i class="fa-solid fa-user" style="font-size:0.85rem; margin-right:8px; color: var(--color-accent, #e2b007);"></i>
+                ${socio.nombre}
+            </span>
+            <span style="background: rgba(226, 176, 7, 0.15); color: var(--color-accent, #e2b007); border: 1px solid rgba(226, 176, 7, 0.3); padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+                ${socio.talla}
+            </span>
         </li>
     `).join("");
 }
