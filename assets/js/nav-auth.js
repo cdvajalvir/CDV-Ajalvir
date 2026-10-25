@@ -24,7 +24,7 @@ export async function cargarNavegacionDinamica() {
     const basePath = isInSubfolder ? "../" : "./";
 
     // 2. Pintar menú público por defecto inmediatamente
-    // renderizarMenuPublico(contenedorNav, basePath);
+    renderizarMenuPublico(contenedorNav, rol, basePath);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
