@@ -24,7 +24,8 @@ export async function cargarNavegacionDinamica() {
     const basePath = isInSubfolder ? "../" : "./";
 
     // 2. Pintar menú público por defecto inmediatamente
-    renderizarMenuPublico(contenedorNav, "ninguno", basePath);
+    let rol = "vacio";
+    renderizarMenuPublico(contenedorNav, rol, basePath);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
@@ -39,7 +40,7 @@ export async function cargarNavegacionDinamica() {
             .eq("id", user.id)
             .maybeSingle();
 
-        const rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
+        rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
 
         // Comportamiento específico según la página o el rol
         
