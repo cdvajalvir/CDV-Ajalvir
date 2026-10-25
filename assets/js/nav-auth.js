@@ -26,10 +26,15 @@ export async function cargarNavegacionDinamica() {
     // 2. Pintar menú público por defecto inmediatamente
     let rol = "vacio";
     renderizarMenuPublico(contenedorNav, rol, basePath);
-console.log("1-Rol actual detectado:", rol, "Ruta actual:", pathName);
+
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) return;
+        if (!session) {
+            if (pathName.endsWith("calendario.html") || pathName.endsWith("pprivacidad.html")) {
+                renderizarMenuCalendario(contenedorNav, rol, basePath);
+            }
+            return;
+        }
 
         const user = session.user;
 
@@ -41,7 +46,7 @@ console.log("1-Rol actual detectado:", rol, "Ruta actual:", pathName);
             .maybeSingle();
 
         rol = socio && socio.rol ? String(socio.rol).trim().toLowerCase() : "socio";
-console.log("2-Rol actual detectado:", rol, "Ruta actual:", pathName);
+
         // Comportamiento específico según la página o el rol
         
         if (pathName.endsWith("gestsocios.html") || pathName.endsWith("registros.html") || pathName.endsWith("gestconvocatoria.html") || pathName.endsWith("consulta_ropa.html")) {
