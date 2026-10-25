@@ -25,13 +25,14 @@ export async function cargarNavegacionDinamica() {
 
     // 2. Pintar menú público por defecto inmediatamente
     let rol = "vacio";
-    renderizarMenuPublico(contenedorNav, rol, basePath);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) {
             if (pathName.endsWith("calendario.html") || pathName.endsWith("pprivacidad.html")) {
                 renderizarMenuCalendario(contenedorNav, rol, basePath);
+            } else {
+                renderizarMenuPublico(contenedorNav, rol, basePath);
             }
             return;
         }
