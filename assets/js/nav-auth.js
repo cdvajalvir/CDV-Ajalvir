@@ -181,6 +181,7 @@ function renderizarMenuUnicoDesdeDirectiva(contenedor, rol, basePath) {
         `;
     } else {
         contenedor.innerHTML = `
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
         `;
     }
