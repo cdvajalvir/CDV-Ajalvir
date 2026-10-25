@@ -48,7 +48,7 @@ export async function cargarNavegacionDinamica() {
 
         } else if (pathName.endsWith("index.html")) {
             renderizarMenuPublico(contenedorNav, rol, basePath);
-         } else if (pathName.endsWith("calendario.html")) {
+         } else if (pathName.endsWith("calendario.html") || pathName.endsWith("pprivacidad.html")) {
             renderizarMenuCalendario(contenedorNav, rol, basePath);
             
         } else if (pathName.endsWith("socios.html")) {
