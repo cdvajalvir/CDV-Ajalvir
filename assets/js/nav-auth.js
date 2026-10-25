@@ -43,28 +43,26 @@ export async function cargarNavegacionDinamica() {
 
         // Comportamiento específico según la página o el rol
         
-        if (pathName.includes("gestsocios.html")) {
-            renderizarMenuUnicoGestionSocios(contenedorNav, rol, basePath);
-        } else if (pathName.includes("socios.html")) {
+        if (pathName.endsWith("gestsocios.html") || pathName.endsWith("registros.html") || pathName.endsWith("gestconvocatoria.html") || pathName.endsWith("consulta_ropa.html")) {
+            renderizarMenuUnicoDesdeDirectiva(contenedorNav, rol, basePath);
+
+        } else if (pathName.endsWith("index.html")) {
+            renderizarMenuPublico(contenedorNav, rol, basePath);
+         } else if (pathName.endsWith("calendario.html")) {
+            renderizarMenuCalendario(contenedorNav, rol, basePath);
+            
+        } else if (pathName.endsWith("socios.html")) {
             renderizarMenuPaginaSocios(contenedorNav, rol, basePath);
-        } else if (pathName.includes("gestconvocatoria.html")) {
-            renderizarMenuUnicoGestionConvocatoria(contenedorNav, rol, basePath);
-        } else if (pathName.includes("convocatoria.html")) {
+        } else if (pathName.endsWith("convocatoria.html") || pathName.endsWith("perfil.html")) {
             renderizarMenuUnicoConvocatoria(contenedorNav, rol, basePath);
-        } else if (pathName.includes("registros.html")) {
-            renderizarMenuUnicoRegistros(contenedorNav, rol, basePath);
-        } else if (pathName.includes("cuotas.html")) {
-            renderizarMenuUnicoCuotas(contenedorNav, basePath);
-        } else if (pathName.includes("textoevento.html")) {
-            renderizarMenuUnicoTextoEvento(contenedorNav, basePath);
-        } else if (pathName.includes("activasocio.html")) { // <--- FALTA ESTE BLOQUE
-            renderizarMenuUnicoActivaSocios(contenedorNav, basePath); // <---
-        } else if (pathName.includes("administracion.html")) {
+        
+        } else if (pathName.endsWith("cuotas.html") || pathName.endsWith("textoevento.html") || pathName.endsWith("equipamiento.html") || pathName.endsWith("activasocio.html")) {
+            renderizarMenuUnicoDesdeAdministrador(contenedorNav, basePath);
+        
+        } else if (pathName.endsWith("administracion.html")) {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
-        } else if (pathName.includes("directiva")) {
+        } else if (pathName.endsWith("directiva.html")) {
             renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
-        } else {
-            renderizarMenuSegunRol(contenedorNav, rol, basePath);
         }
 
     } catch (err) {
@@ -72,37 +70,63 @@ export async function cargarNavegacionDinamica() {
     }
 }
 
-function renderizarMenuSegunRol(contenedor, rol, basePath) {
+function renderizarMenuPublico(contenedor, rol, basePath) {
     contenedor.innerHTML = "";
 
     if (rol === "socio") {
         contenedor.innerHTML = `
-            <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
             <a href="${basePath}socios/socios.html">Área socio</a>
         `;
-    } else if (rol === "administrador" || rol === "admin") {
+    } else if (rol === "administrador") {
         contenedor.innerHTML = `
-            <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
         `;
     } else if (rol === "directiva") {
         contenedor.innerHTML = `
-            <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}general/calendario.html">Calendario</a>
             <a href="${basePath}directiva/directiva.html">Directiva</a>
         `;
+    } else {
+        contenedor.innerHTML = `
+            <a href="${basePath}general/calendario.html">Calendario</a>
+            <a href="${basePath}login.html">Acceso privado</a>
+    `;
+    }
+}
+
+function renderizarMenuCalendario(contenedor, rol, basePath) {
+    contenedor.innerHTML = "";
+
+    if (rol === "socio") {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}socios/socios.html">Área socio</a>
+        `;
+    } else if (rol === "administrador") {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}admin/administracion.html">Administración</a>
+        `;
+    } else if (rol === "directiva") {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+        `;
+    } else {
+        contenedor.innerHTML = `
+            <a href="${basePath}index.html">Inicio</a>
+    `;
     }
 }
 
 function renderizarMenuPaginaSocios(contenedor, rol, basePath) {
     contenedor.innerHTML = "";
-    if (rol === "administrador" || rol === "admin") {
+    if (rol === "administrador") {
         contenedor.innerHTML = `
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
-            <a href="${basePath}directiva/directiva.html">Directiva</a>
         `;
     } else if (rol === "directiva") {
         contenedor.innerHTML = `
@@ -128,18 +152,6 @@ function renderizarMenuPaginaAdmin(contenedor, basePath) {
     configurarBotonLogout(basePath);
 }
 
-function renderizarMenuUnicoRegistros(contenedor, rol, basePath) {
-    if (rol === "directiva") {
-        contenedor.innerHTML = `
-            <a href="${basePath}directiva/directiva.html">Directiva</a>
-        `;
-    } else {
-        contenedor.innerHTML = `
-            <a href="${basePath}admin/administracion.html">Administración</a>
-        `;
-    }
-}
-
 function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
     if (rol === "directiva") {
         contenedor.innerHTML = `
@@ -153,15 +165,31 @@ function renderizarMenuPaginaDirectiva(contenedor, rol, basePath) {
             <a href="${basePath}index.html">Inicio</a>
             <a href="${basePath}admin/administracion.html">Administración</a>
         `;
-        configurarBotonLogout(basePath);
     }
 }
 
-function renderizarMenuPublico(contenedor, basePath) {
+function renderizarMenuUnicoDesdeDirectiva(contenedor, rol, basePath) {
+    if (rol === "directiva") {
+        contenedor.innerHTML = `
+            <a href="${basePath}directiva/directiva.html">Directiva</a>
+        `;
+    } else {
+        contenedor.innerHTML = `
+            <a href="${basePath}admin/administracion.html">Administración</a>
+        `;
+    }
+}
+
+function renderizarMenuUnicoDesdeAdministrador(contenedor, basePath) {
     contenedor.innerHTML = `
-        <a href="${basePath}index.html">Inicio</a>
-        <a href="${basePath}general/calendario.html">Calendario</a>
-        <a href="${basePath}login.html">Acceso privado</a>
+        <a href="${basePath}admin/administracion.html">Administración</a>
+    `;
+    configurarBotonLogout(basePath);
+}
+
+function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
+    contenedor.innerHTML = `
+        <a href="socios.html">Área socios</a>
     `;
 }
 
@@ -174,48 +202,6 @@ function configurarBotonLogout(basePath) {
             window.location.href = `${basePath}index.html`;
         });
     }
-}
-
-function renderizarMenuUnicoCuotas(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="${basePath}admin/administracion.html">Administración</a>
-    `;
-    configurarBotonLogout(basePath);
-}
-
-function renderizarMenuUnicoTextoEvento(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="${basePath}admin/administracion.html">Administración</a>
-    `;
-    configurarBotonLogout(basePath);
-}
-
-function renderizarMenuUnicoActivaSocios(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="${basePath}admin/administracion.html">Administración</a>
-    `;
-    configurarBotonLogout(basePath);
-}
-
-function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="socios.html">Área socios</a>
-    `;
-    configurarBotonLogout(basePath);
-}
-
-function renderizarMenuUnicoGestionConvocatoria(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="directiva.html">Directiva</a>
-    `;
-    configurarBotonLogout(basePath);
-}
-
-function renderizarMenuUnicoGestionSocios(contenedor, basePath) {
-    contenedor.innerHTML = `
-        <a href="directiva.html">Directiva</a>
-    `;
-    configurarBotonLogout(basePath);
 }
 
 // Inicialización global robusta que controla el menú móvil de forma persistente
