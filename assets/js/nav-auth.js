@@ -5,9 +5,9 @@ export async function cargarNavegacionDinamica() {
     const pathName = window.location.pathname;
 
     // EXCLUSIÓN: Si estamos en la página de perfil, no alteramos el menú estático
-    if (pathName.includes("perfil.html")) {
-        return;
-    }
+    //if (pathName.includes("perfil.html")) {
+        //return;
+    //}
 
     const contenedorNav = document.querySelector("[data-nav-links]");
     if (!contenedorNav) return;
@@ -24,7 +24,7 @@ export async function cargarNavegacionDinamica() {
     const basePath = isInSubfolder ? "../" : "./";
 
     // 2. Pintar menú público por defecto inmediatamente
-    renderizarMenuPublico(contenedorNav, basePath);
+    // renderizarMenuPublico(contenedorNav, basePath);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
