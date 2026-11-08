@@ -214,6 +214,77 @@
                 font-size: 1.8rem;
             }
         }
+
+        /* Estilos específicos para la tarjeta solidaria */
+        .card-solidaria {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Contenedor con scroll vertical controlado */
+        .lista-solidaria-scroll {
+            margin-top: 1rem;
+            max-height: 180px; /* Altura máxima antes de que aparezca el scroll */
+            overflow-y: auto;   /* Habilita el scroll vertical solo si hay muchos elementos */
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-right: 0.5rem; /* Espacio para que la barra de scroll no pegue con el texto */
+        }
+
+        /* Personalización elegante de la barra de scroll para que no sea intrusiva */
+        .lista-solidaria-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .lista-solidaria-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+        }
+
+        .lista-solidaria-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        .lista-solidaria-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 193, 7, 0.5); /* Color corporativo al pasar el ratón */
+        }
+
+        /* Estilo para cada enlace/evento dentro de la lista */
+        .item-solidario {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .item-solidario:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 193, 7, 0.3);
+            transform: translateX(4px); /* Pequeño movimiento lateral sutil */
+        }
+
+        /* Fecha o etiqueta pequeña del evento */
+        .evento-fecha {
+            font-size: 0.75rem;
+            color: #ffc107;
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+
+        /* Título o descripción del evento solidario */
+        .evento-texto {
+            font-size: 0.9rem;
+            line-height: 1.3;
+            color: #e0e0e0;
+        }
+        
     </style>
 </head>
 <body>
@@ -294,13 +365,39 @@
         <section class="section alt">
             <div class="container">
                 <div class="section-heading">
-                    <p class="eyebrow">Servicios</p>
-                    <h2>Una plataforma para el club y mas ...</h2>
+                    <p class="eyebrow">Servicios y Comunidad</p>
+                    <h2>Una plataforma para el club y más...</h2>
                 </div>
                 <div class="cards three">
-                    <article class="card"><div class="icon">👥</div><h3>Socios</h3><p>Consulta de perfil, datos personales, cuotas, documentación y comunicados internos.</p></article>
-                    <article class="card"><div class="icon">🏛️</div><h3>Directiva</h3><p>Panel de gestión para calendario, noticias, documentos y coordinación del club.</p></article>
-                    <article class="card"><div class="icon">⚙️</div><h3>Administración</h3><p>Gestión integral de fichas de socios, roles, estado y cuotas.</p></article>
+                    <!-- Tarjeta 1: Socios -->
+                    <article class="card">
+                        <div class="icon">👥</div>
+                        <h3>Socios</h3>
+                        <p>Consulta de perfil, datos personales, cuotas, documentación y comunicados internos.</p>
+                    </article>
+
+                    <!-- Tarjeta 2: Directiva -->
+                    <article class="card">
+                        <div class="icon">🏛️</div>
+                        <h3>Directiva</h3>
+                        <p>Panel de gestión para calendario, noticias, documentos y coordinación del club.</p>
+                    </article>
+
+                    <!-- Tarjeta 3: Solidaridad y Eventos Solidarios (NUEVA) -->
+                    <article class="card card-solidaria">
+                        <div class="icon">🤝</div>
+                        <h3>Solidaridad</h3>
+                        <p>Nuestra participación en causas benéficas y eventos solidarios:</p>
+                        
+                        <!-- Contenedor con scroll vertical para los enlaces -->
+                        <div class="lista-solidaria-scroll">
+                            <a href="https://www.instagram.com/reel/DfaRj0-DYL6/?vrfl=MW03OGp0YjFrbHU3ZA==" target="_blank" rel="noopener noreferrer" class="item-solidario">
+                                <span class="evento-fecha">10 oct 2026</span>
+                                <span class="evento-texto">Colaboracion desde Liga Veteranos Henares/Alcarria con ASPIMIP</span>
+                            </a>
+                            <!-- Puedes añadir tantos como quieras y el scroll aparecerá automáticamente -->
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>
