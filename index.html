@@ -215,6 +215,24 @@
             }
         }
 
+        /* Alineación en fila para icono y título en las tarjetas */
+        .card-header-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-header-inline h3 {
+            margin: 0;
+        }
+
+        .card-header-inline .icon {
+            margin: 0;
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+        
         /* Estilos específicos para la tarjeta solidaria */
         .card-solidaria {
             display: flex;
@@ -363,44 +381,49 @@
         </section>
 
         <section class="section alt">
-            <div class="container">
-                <div class="section-heading">
-                    <p class="eyebrow">Servicios y Comunidad</p>
-                    <h2>Una plataforma para el club y más...</h2>
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">Servicios y Comunidad</p>
+            <h2>Una plataforma para el club y más...</h2>
+        </div>
+        <div class="cards three">
+            <!-- Tarjeta 1: Socios -->
+            <article class="card">
+                <div class="card-header-inline">
+                    <div class="icon">👥</div>
+                    <h3>Socios</h3>
                 </div>
-                <div class="cards three">
-                    <!-- Tarjeta 1: Socios -->
-                    <article class="card">
-                        <div class="icon">👥</div>
-                        <h3>Socios</h3>
-                        <p>Consulta de perfil, datos personales, cuotas, documentación y comunicados internos.</p>
-                    </article>
+                <p>Consulta de perfil, datos personales, cuotas, documentación y comunicados internos.</p>
+            </article>
 
-                    <!-- Tarjeta 2: Directiva -->
-                    <article class="card">
-                        <div class="icon">🏛️</div>
-                        <h3>Directiva</h3>
-                        <p>Panel de gestión para calendario, noticias, documentos y coordinación del club.</p>
-                    </article>
-
-                    <!-- Tarjeta 3: Solidaridad y Eventos Solidarios (NUEVA) -->
-                    <article class="card card-solidaria">
-                        <div class="icon">🤝</div>
-                        <h3>Solidaridad</h3>
-                        <p>Nuestra participación en causas benéficas y eventos solidarios:</p>
-                        
-                        <!-- Contenedor con scroll vertical para los enlaces -->
-                        <div class="lista-solidaria-scroll">
-                            <a href="https://www.instagram.com/reel/DfaRj0-DYL6/?vrfl=MW03OGp0YjFrbHU3ZA==" target="_blank" rel="noopener noreferrer" class="item-solidario">
-                                <span class="evento-fecha">10 oct 2026</span>
-                                <span class="evento-texto">Colaboracion desde Liga Veteranos Henares/Alcarria con ASPIMIP</span>
-                            </a>
-                            <!-- Puedes añadir tantos como quieras y el scroll aparecerá automáticamente -->
-                        </div>
-                    </article>
+            <!-- Tarjeta 2: Directiva -->
+            <article class="card">
+                <div class="card-header-inline">
+                    <div class="icon">🏛️</div>
+                    <h3>Directiva</h3>
                 </div>
-            </div>
-        </section>
+                <p>Panel de gestión para calendario, noticias, documentos y coordinación del club.</p>
+            </article>
+
+            <!-- Tarjeta 3: Solidaridad y Eventos Solidarios -->
+            <article class="card card-solidaria">
+                <div class="card-header-inline">
+                    <div class="icon">🤝</div>
+                    <h3>Solidaridad y Comunidad</h3>
+                </div>
+                <p>Nuestra participación en causas benéficas y eventos solidarios:</p>
+                
+                <!-- Contenedor con carrusel/scroll vertical para los enlaces -->
+                <div class="lista-solidaria-scroll">
+                    <a href="https://www.instagram.com/reel/DfaRj0-DYL6/?vrfl=MW03OGp0YjFrbHU3ZA==" target="_blank" rel="noopener noreferrer" class="item-solidario">
+                        <span class="evento-fecha">10 oct 2026</span>
+                        <span class="evento-texto">Colaboracion desde Liga Veteranos Henares/Alcarria con ASPIMIP</span>
+                    </a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
     </main>
 
     <footer class="site-footer">
