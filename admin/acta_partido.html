@@ -18,7 +18,7 @@
     <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
     <div class="acta-page">
         <table class="acta-grid-maestra">
-            <!-- FILA 1: LOGO, CAMPEONATO Y JUEGO -->
+            <!-- FILA 1: LOGO, CAMPEONATO, JUEGO Y TIEMPOS SUPERIORES -->
             <tr>
                 <td rowspan="3" class="c-logo">
                     <img src="../assets/img/logo-liga-alcarria.png" alt="Logo" class="img-logo">
@@ -28,6 +28,31 @@
                 </td>
                 <td class="c-juego">
                     Juego: <span id="val-juego"></span>
+                </td>
+                <!-- BLOQUE DE TIEMPOS SUPERIOR DERECHO (Ubicado arriba a la derecha, sin romper filas inferiores) -->
+                <td colspan="2" rowspan="4" style="padding: 0; vertical-align: top; background: #fff;">
+                    <table class="sub-tabla-tiempos-sup">
+                        <tr>
+                            <td style="width: 44%; background: #f9f9f9;"></td>
+                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
+                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">1º Tiempo</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">2º Tiempo</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; font-size: 7.5px;">Tiempo añadido</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
 
@@ -56,39 +81,14 @@
                 <td colspan="2" class="c-fecha">
                     Fecha: <span id="val-fecha"></span>
                 </td>
-                <td class="c-horario">
+                <td colspan="2" class="c-horario">
                     Horario: <span id="val-horario"></span>
-                </td>
-                <!-- BLOQUE DE TIEMPOS AL LADO DE HORARIO -->
-                <td colspan="2" rowspan="2" style="padding: 0; vertical-align: top;">
-                    <table class="sub-tabla-tiempos-sup">
-                        <tr>
-                            <td style="width: 44%; background: #f9f9f9;"></td>
-                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
-                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">1º Tiempo</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">2º Tiempo</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold; font-size: 7.5px;">Tiempo añadido</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </table>
                 </td>
             </tr>
 
             <!-- FILA 5: ARBITRAJE -->
             <tr>
-                <td colspan="6" class="c-arbitraje">
+                <td colspan="7" class="c-arbitraje">
                     <strong>Arbitraje:</strong> <span id="val-arbitraje"></span>
                 </td>
             </tr>
