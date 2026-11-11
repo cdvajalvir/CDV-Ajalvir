@@ -1,27 +1,31 @@
-/* Estilos generales para el modo acta */
-.body-acta {
-    background-color: #525659;
+/* Reseteo total para asegurar control absoluto del espacio */
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    color: #000;
+    padding: 0;
 }
 
-.barra-control-acta {
-    max-width: 1150px;
-    margin: 0 auto 20px auto;
+body.body-acta {
+    background-color: #525659;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    font-size: 10px;
+}
+
+/* Barra de control en pantalla (Se oculta al imprimir) */
+.no-print {
+    max-width: 1120px;
+    margin: 10px auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #ffffff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    padding: 8px 15px;
+    border-radius: 6px;
 }
 
-.barra-control-acta h1 {
-    font-size: 1.2rem;
-    margin: 0;
+.no-print h1 {
+    font-size: 1.1rem;
     color: #333;
 }
 
@@ -29,73 +33,72 @@
     background: #0056b3;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
     text-decoration: none;
     font-weight: bold;
+    font-size: 11px;
 }
 
 .btn-imprimir {
     background: #28a745;
 }
 
-.btn-volver:hover, .btn-imprimir:hover {
-    opacity: 0.9;
-}
-
-/* Contenedor tipo hoja A4 */
+/* Contenedor exacto A4 Apaisado (Landscape: ~1122px x 794px) */
 .acta-container {
-    width: 1120px;
+    width: 1100px;
+    height: 750px;
     background: #ffffff;
     margin: 0 auto;
-    padding: 15px;
-    box-sizing: border-box;
+    padding: 8px;
     box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-/* Tablas generales y bordes estilo acta oficial */
+/* Estilos de todas las tablas y bordes negros limpios */
 .acta-container table {
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid #000;
+    border: 1.5px solid #000;
 }
 
 .acta-container th, .acta-container td {
     border: 1px solid #000;
-    padding: 2px 4px;
-    font-size: 11px;
-    box-sizing: border-box;
+    padding: 1px 3px;
+    font-size: 10px;
 }
 
-/* Cabecera */
+/* ================= CABECERA ================= */
 .acta-tabla-cabecera td {
-    height: 24px;
+    height: 20px;
     vertical-align: middle;
 }
 
 .celda-logo {
-    width: 70px;
+    width: 60px;
     text-align: center;
-    padding: 2px;
+    padding: 1px;
 }
 
 .logo-liga {
-    max-width: 50px;
-    height: auto;
+    max-width: 45px;
+    max-height: 35px;
     display: block;
     margin: 0 auto;
 }
 
 .celda-titulo {
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .linea-campeonato {
     border-bottom: 1px solid #000;
-    padding-bottom: 2px;
-    margin-bottom: 2px;
+    padding-bottom: 1px;
+    margin-bottom: 1px;
 }
 
 .linea-subcabecera {
@@ -107,18 +110,20 @@
 .etiqueta-local-caja {
     border: 1px solid #008080;
     color: #008080;
-    padding: 1px 10px;
+    padding: 0 8px;
     font-weight: bold;
     background: #e6f2f2;
+    font-size: 9px;
 }
 
 .celda-juego, .celda-inicio-final {
     font-weight: bold;
     white-space: nowrap;
+    font-size: 10px;
 }
 
 .celda-sitio-fecha {
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .tabla-tiempos-interna {
@@ -127,82 +132,110 @@
 .tabla-tiempos-interna td {
     border: 1px solid #000;
     text-align: center;
+    height: 14px;
+    font-size: 9px;
 }
 
-/* Cuerpo y distribución */
+/* ================= CUERPO PRINCIPAL ================= */
 .acta-cuerpo {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 6px;
+    flex-grow: 1;
+    margin-top: 4px;
 }
 
 .columna-jugadores {
-    flex: 2;
+    flex: 1.8;
 }
 
 .columna-lateral {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
-/* Tabla de jugadores (30 filas) */
+/* Tabla de 30 Jugadores (Compacta para que entre en altura) */
 .tabla-jugadores-oficial th {
     background-color: #f2f2f2;
     text-align: center;
     font-weight: bold;
+    font-size: 9px;
+    height: 16px;
 }
 
-.col-num { width: 25px; text-align: center; }
+.col-num { width: 22px; text-align: center; }
 .col-jugador { width: auto; }
-.col-dorsal { width: 50px; text-align: center; }
-.col-dni { width: 85px; text-align: center; }
-.col-edad { width: 45px; text-align: center; }
-.col-tarjeta-celda { width: 25px; text-align: center; }
+.col-dorsal { width: 45px; text-align: center; }
+.col-dni { width: 75px; text-align: center; }
+.col-edad { width: 35px; text-align: center; }
+.col-tarjeta-celda { width: 22px; text-align: center; }
 
 .tabla-jugadores-oficial td {
-    height: 18px; /* Altura compacta para que quepan las 30 filas perfectamente en una hoja */
+    height: 16.5px; /* Altura precisa para encajar las 30 filas exactas */
 }
 
-/* Bloque lateral de Goles */
+/* Columna lateral: Goles */
 .tabla-goles th {
     background: #f2f2f2;
     text-align: center;
+    font-size: 9px;
+    height: 15px;
 }
 
 .celda-gol-item {
     text-align: center;
-    font-size: 10px;
-    height: 22px;
+    font-size: 9px;
+    height: 18px;
 }
 
 .num-gol {
     font-weight: bold;
-    margin-right: 4px;
+    margin-right: 2px;
 }
 
-/* Sustituciones y Entrenador */
-.tabla-sustituciones td, .tabla-entrenador-capitan td {
+/* Sustituciones */
+.tabla-sustituciones th {
+    font-size: 9px;
+    height: 15px;
+    background: #f2f2f2;
     text-align: center;
-    height: 20px;
+}
+.tabla-sustituciones td {
+    text-align: center;
+    height: 16px;
+    font-size: 9px;
 }
 
+/* Entrenador y Capitán */
+.tabla-entrenador-capitan td {
+    text-align: left;
+    height: 18px;
+    font-size: 9px;
+    padding-left: 4px;
+}
+.label-box {
+    font-weight: bold;
+    width: 70px;
+    background: #f9f9f9;
+}
+
+/* Comentarios */
 .caja-comentarios {
     border: 1px solid #000;
-    height: 110px;
-    padding: 4px;
-    box-sizing: border-box;
+    flex-grow: 1;
+    padding: 3px;
+    background: #fff;
 }
 
 .titulo-comentarios {
     font-weight: bold;
-    font-size: 11px;
-    margin-bottom: 4px;
+    font-size: 9px;
+    margin-bottom: 2px;
 }
 
 /* ==========================================================
-   CONFIGURACIÓN DE IMPRESIÓN OFICIAL (A4 Apaisado / Landscape)
+   CONFIGURACIÓN DE IMPRESIÓN OFICIAL (DIN A4 Apaisado Perfecto)
    ========================================================== */
 @media print {
     body.body-acta {
@@ -216,14 +249,16 @@
     }
 
     .acta-container {
-        width: 100% !important;
+        width: 100vw !important;
+        height: 100vh !important;
         box-shadow: none;
         padding: 0;
         margin: 0;
+        border: none;
     }
 
     @page {
         size: A4 landscape;
-        margin: 5mm;
+        margin: 0mm; /* Elimina los encabezados y pies de página automáticos del navegador (URL y fecha) */
     }
 }
