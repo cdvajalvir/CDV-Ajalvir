@@ -1,54 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
-    inicializarTablaJugadores();
-    inicializarMatrizGoles();
+    generarFilasJugadores();
+    generarMatrizGoles();
 });
 
-// Genera exactamente las 30 líneas de jugadores de la plantilla oficial
-function inicializarTablaJugadores() {
-    const tbody = document.querySelector("#tabla-jugadores tbody");
-    if (!tbody) return;
+function generarFilasJugadores() {
+    const tabla = document.querySelector(".acta-grid-maestra");
+    if (!tabla) return;
 
-    let html = "";
+    let htmlFilas = "";
     for (let i = 1; i <= 30; i++) {
-        html += `
-            <tr>
-                <td class="col-num">${i}</td>
-                <td class="col-jugador"></td>
-                <td class="col-dorsal"></td>
-                <td class="col-dni"></td>
-                <td class="col-edad"></td>
-                <td class="col-tarjeta-celda"></td>
-                <td class="col-tarjeta-celda"></td>
-                <td class="col-tarjeta-celda"></td>
+        htmlFilas += `
+            <tr style="height: 15.2px;">
+                <td style="text-align: center;">${i}</td>
+                <td></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
             </tr>
         `;
     }
-    tbody.innerHTML = html;
+    // Insertamos las 30 filas después de las cabeceras
+    tabla.insertAdjacentHTML('beforeend', htmlFilas);
 }
 
-// Genera la cuadrícula de goles (del 1 al 28 como en la plantilla original)
-function inicializarMatrizGoles() {
-    const tbodyGoles = document.querySelector("#matriz-goles");
-    if (!tbodyGoles) return;
+function generarMatrizGoles() {
+    const matrizGoles = document.querySelector("#matriz-goles");
+    if (!matrizGoles) return;
 
-    let html = "";
-    // Creamos filas de 7 columnas
+    let html = `<tr><th colspan="14" style="background:#f2f2f2; font-size:8.5px; text-align:center;">GOLES</th></tr>`;
     let golNum = 1;
-    for (let fila = 0; fila < 4; fila++) {
+    for (let f = 0; f < 4; f++) {
         html += "<tr>";
-        // Celda de números de gol y espacio para minútos
-        for (let col = 0; col < 7; col++) {
+        for (let c = 0; c < 7; c++) {
             if (golNum <= 28) {
-                html += `
-                    <td class="celda-gol-item">
-                        <span class="num-gol">${golNum}</span>
-                        <span class="min-gol">:</span>
-                    </td>
-                `;
+                html += `<td style="text-align:center;"><strong>${golNum}</strong>:</td>`;
                 golNum++;
             }
         }
         html += "</tr>";
     }
-    tbodyGoles.innerHTML = html;
+    matrizGoles.innerHTML = html;
 }
