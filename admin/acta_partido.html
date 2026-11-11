@@ -3,136 +3,145 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Acta de Partido - CD Veteranos Ajalvir</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <title>Acta de Partido</title>
     <link rel="stylesheet" href="../assets/css/acta-partido.css">
-    <link rel="icon" type="image/jpeg" href="../assets/img/escudo-cdv-ajalvir.jpg">
 </head>
 <body class="body-acta">
 
-    <!-- Barra de control superior (Solo visible en pantalla, se oculta al imprimir) -->
+    <!-- Barra de control superior (Se oculta al imprimir) -->
     <div class="no-print barra-control-acta">
         <a href="index.html" class="btn-volver">← Volver al Panel</a>
         <h1>Generador de Acta de Partido</h1>
         <button onclick="window.print()" class="btn-imprimir">🖨️ Imprimir Acta</button>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL DEL ACTA (Diseño exacto A4 Apaisado) -->
-    <div class="acta-container">
+    <!-- CONTENEDOR PRINCIPAL (A4 Apaisado Estricto) -->
+    <div class="acta-sheet">
         
-        <!-- CABECERA -->
-        <table class="acta-tabla-cabecera">
+        <!-- CABECERA SUPERIOR COMPLETA -->
+        <table class="tabla-maestra-cabecera">
             <tr>
-                <td class="celda-logo">
+                <td rowspan="4" class="celda-logo-box">
                     <img src="../assets/img/logo-liga-alcarria.png" alt="Logo Liga" class="logo-liga">
                 </td>
-                <td class="celda-titulo">
-                    <div class="linea-campeonato">Nombre del campeonato: "SUPERLIGA HENARES ALCARRIA" 26/27</div>
-                    <div class="linea-subcabecera">
-                        <span class="campo-bloque">Categoría: </span>
-                        <span class="campo-bloque">Fase: 1ª Fase</span>
-                        <div class="etiqueta-local-caja">LOCAL</div>
-                    </div>
+                <td colspan="4" class="celda-campeonato">
+                    Nombre del campeonato: "SUPERLIGA HENARES ALCARRIA" 26/27
                 </td>
-                <td class="celda-juego">
+                <td class="celda-juego-box">
                     Juego: <span id="txt-juego"></span>
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="celda-sitio-fecha">
-                    Sitio: <span id="txt-sitio"></span> &nbsp;|&nbsp; Fecha: <span id="txt-fecha"></span> &nbsp;|&nbsp; Horario: <span id="txt-horario"></span>
+                <td colspan="3" class="celda-categoria">
+                    Categoría: <span id="txt-categoria"></span>
                 </td>
-                <td class="celda-inicio-final">
-                    Inicio: <span id="txt-inicio"></span> | Final: <span id="txt-final"></span>
+                <td colspan="2" class="celda-fase">
+                    Fase: 1ª Fase
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="celda-arbitraje">
-                    Arbitraje: <span id="txt-arbitraje"></span>
+                <td colspan="5" class="celda-local-row">
+                    <div class="etiqueta-local">LOCAL</div>
                 </td>
-                <td class="celda-tiempos">
-                    <table class="tabla-tiempos-interna">
-                        <tr><td>1º Tiempo</td><td></td></tr>
-                        <tr><td>2º Tiempo</td><td></td></tr>
-                        <tr><td>Tiempo añadido</td><td></td></tr>
+            </tr>
+            <tr>
+                <td colspan="3" class="celda-sitio">
+                    Sitio: <span id="txt-sitio"></span>
+                </td>
+                <td class="celda-fecha">
+                    Fecha: <span id="txt-fecha"></span>
+                </td>
+                <td class="celda-horario">
+                    Horario: <span id="txt-horario"></span>
+                </td>
+            </tr>
+        </table>
+
+        <!-- SEGUNDA FRANJA: ARBITRAJE Y TIEMPOS -->
+        <table class="tabla-maestra-arbitraje">
+            <tr>
+                <td class="celda-arbitraje-principal">
+                    <strong>Arbitraje:</strong> <span id="txt-arbitraje"></span>
+                </td>
+                <td class="celda-tiempos-columna">
+                    <table class="tabla-sub-tiempos">
+                        <tr><td>1º Tiempo</td><td class="vacia"></td><td class="vacia"></td></tr>
+                        <tr><td>2º Tiempo</td><td class="vacia"></td><td class="vacia"></td></tr>
+                        <tr><td>Tiempo añadido</td><td class="vacia"></td><td class="vacia"></td></tr>
                     </table>
                 </td>
             </tr>
         </table>
 
-        <!-- CUERPO PRINCIPAL (Doble columna: Jugadores izda / Goles y Susti dcha) -->
-        <div class="acta-cuerpo">
+        <!-- CUERPO PRINCIPAL: TABLA IZQUIERDA (JUGADORES) Y BLOQUE DERECHO -->
+        <div class="cuerpo-contenedor">
             
-            <!-- COLUMNA IZQUIERDA: TABLA DE 30 JUGADORES -->
-            <div class="columna-jugadores">
-                <table class="tabla-jugadores-oficial" id="tabla-jugadores">
-                    <thead>
-                        <tr>
-                            <th class="col-num">#</th>
-                            <th class="col-jugador">JUGADOR</th>
-                            <th class="col-dorsal">DORSAL</th>
-                            <th class="col-dni">DNI</th>
-                            <th class="col-edad">EDAD</th>
-                            <th colspan="3" class="col-tarjetas">TARJETAS</th>
-                        </tr>
-                        <tr class="sub-header-tarjetas">
-                            <th colspan="5"></th>
-                            <th>AMA</th>
-                            <th>AMA</th>
-                            <th>ROJ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Se generará dinámicamente mediante JS las 30 filas -->
-                    </tbody>
-                </table>
-            </div>
+            <!-- COLUMNA IZQUIERDA: 30 JUGADORES -->
+            <table class="tabla-jugadores-oficial" id="tabla-jugadores">
+                <thead>
+                    <tr>
+                        <th class="th-num"></th>
+                        <th class="th-jugador">JUGADOR</th>
+                        <th class="th-dorsal">DORSAL</th>
+                        <th class="th-dni">DNI</th>
+                        <th class="th-edad">EDAD</th>
+                        <th colspan="3" class="th-tarjetas">TARJETAS</th>
+                    </tr>
+                    <tr class="sub-tr-tarjetas">
+                        <th colspan="5"></th>
+                        <th class="sub-t">AMA</th>
+                        <th class="sub-t">AMA</th>
+                        <th class="sub-t">ROJ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Generado por JS: 30 filas exactas -->
+                </tbody>
+            </table>
 
-            <!-- COLUMNA DERECHA: GOLES, SUSTITUCIONES Y COMENTARIOS -->
-            <div class="columna-lateral">
+            <!-- COLUMNA DERECHA: GOLES, SUSTITUCIONES, ENTRENADOR Y COMENTARIOS -->
+            <div class="bloque-derecho-lateral">
                 
-                <!-- Goles (Matriz 4x7 celdas equivalente a 28) -->
-                <table class="tabla-goles">
+                <!-- Goles (Matriz 28 goles) -->
+                <table class="tabla-goles-oficial">
                     <tr><th colspan="14">GOLES</th></tr>
-                    <!-- Generado por JS o maquetado fijo -->
                     <tbody id="matriz-goles">
-                        <!-- Celdas de goles -->
+                        <!-- Generado por JS -->
                     </tbody>
                 </table>
 
                 <!-- Sustituciones -->
-                <table class="tabla-sustituciones">
+                <table class="tabla-sustituciones-oficial">
                     <tr><th colspan="10">Sustituciones</th></tr>
                     <tr>
-                        <td class="sub-col-num"></td>
+                        <td class="s-num"></td>
                         <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
                     </tr>
                     <tr>
-                        <td>Entrado</td>
+                        <td class="s-label">Entrado</td>
                         <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>
                     <tr>
-                        <td>Salió</td>
+                        <td class="s-label">Salió</td>
                         <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>
                 </table>
 
                 <!-- Entrenador y Capitán -->
-                <table class="tabla-entrenador-capitan">
+                <table class="tabla-ent entrenador-capitan">
                     <tr>
-                        <td class="label-box">Entrenador</td>
-                        <td class="input-box"></td>
+                        <td class="lbl-ec">Entrenador</td>
+                        <td class="val-ec"></td>
                     </tr>
                     <tr>
-                        <td class="label-box">Capitán</td>
-                        <td class="input-box"></td>
+                        <td class="lbl-ec">Capitán</td>
+                        <td class="val-ec"></td>
                     </tr>
                 </table>
 
                 <!-- Comentarios -->
-                <div class="caja-comentarios">
-                    <div class="titulo-comentarios"><u>COMENTARIOS</u>:</div>
-                    <div class="contenido-comentarios"></div>
+                <div class="caja-comentarios-oficial">
+                    <div class="titulo-com"><u>COMENTARIOS</u>:</div>
                 </div>
 
             </div>
@@ -141,7 +150,6 @@
 
     </div>
 
-    <!-- Script modular de generación -->
     <script type="module" src="../assets/js/acta_partido.js"></script>
 </body>
 </html>
