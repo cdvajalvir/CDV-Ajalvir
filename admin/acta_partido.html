@@ -18,7 +18,7 @@
     <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
     <div class="acta-page">
         <table class="acta-grid-maestra">
-            <!-- FILA 1: LOGO, CAMPEONATO Y JUEGO -->
+            <!-- FILA 1: LOGO, CAMPEONATO, JUEGO Y TIEMPOS SUPERIORES -->
             <tr>
                 <td rowspan="4" class="c-logo">
                     <img src="../assets/img/logo-liga-alcarria.png" alt="Logo" class="img-logo">
@@ -29,12 +29,29 @@
                 <td class="c-juego">
                     Juego: <span id="val-juego"></span>
                 </td>
-                <!-- BLOQUE DERECHO SUPERIOR (Tiempos al lado de Fecha/Horario) -->
+                <!-- BLOQUE DE TIEMPOS ARRIBA A LA DERECHA (ENCIMA DE GOLES) -->
                 <td colspan="2" rowspan="5" class="c-bloque-tiempos-lateral">
                     <table class="sub-tabla-tiempos-sup">
-                        <tr><td>1º Tiempo</td><td class="t-val"></td><td class="t-lbl-head">Inicio</td><td class="t-val"></td><td class="t-lbl-head">Final</td><td class="t-val"></td></tr>
-                        <tr><td>2º Tiempo</td><td class="t-val"></td><td></td><td class="t-val"></td><td></td><td class="t-val"></td></tr>
-                        <tr><td>Tiempo añadido</td><td class="t-val"></td><td></td><td class="t-val"></td><td></td><td class="t-val"></td></tr>
+                        <tr>
+                            <td style="width: 45%;"></td>
+                            <td style="width: 27.5%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
+                            <td style="width: 27.5%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">1º Tiempo</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">2º Tiempo</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">Tiempo añadido</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -76,7 +93,7 @@
                 </td>
             </tr>
 
-            <!-- CABECERA DE LA TABLA DE JUGADORES Y BLOQUE DERECHO -->
+            <!-- CABECERA DE LA TABLA DE JUGADORES Y BLOQUE DERECHO (Goles, Sustituciones, Comentarios) -->
             <tr class="tr-th-jugadores">
                 <th class="th-n"></th>
                 <th class="th-jug">JUGADOR</th>
@@ -84,15 +101,15 @@
                 <th class="th-dni">DNI</th>
                 <th class="th-eda">EDAD</th>
                 <th colspan="3" class="th-tar">TARJETAS</th>
-                <th colspan="2" class="th-bloque-der-head">G O L E S</th>
             </tr>
             <tr class="tr-th-subtarjetas">
                 <th colspan="5"></th>
                 <th>AMA</th>
                 <th>AMA</th>
                 <th>ROJ</th>
+                
+                <!-- COLUMNA DERECHA INFERIOR (Goles, Sustituciones, Entrenador, Comentarios) -->
                 <th colspan="2" class="rowspan-der-cell" rowspan="31">
-                    <!-- CONTENIDO DE LA COLUMNA DERECHA (Goles, Sustituciones, Comentarios) -->
                     <div class="panel-derecho-interno">
                         <!-- Matriz de Goles -->
                         <table class="sub-goles" id="matriz-goles">
@@ -130,8 +147,7 @@
                 </th>
             </tr>
 
-            <!-- LAS 30 FILAS DE JUGADORES (Se generan con JS pero estructuradas aquí) -->
-            <!-- Fila 1 a 30 se inyectarán manteniendo los rowspan correctos -->
+            <!-- LAS 30 FILAS DE JUGADORES SE INYECTAN MEDIANTE JS -->
         </table>
     </div>
 
