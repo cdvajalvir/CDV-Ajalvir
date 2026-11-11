@@ -167,7 +167,8 @@ body.body-acta {
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 2px;
+    /* Distribuimos el espacio vertical uniformemente para que los elementos fluyan hacia abajo */
+    justify-content: space-between; 
     padding: 2px;
 }
 
