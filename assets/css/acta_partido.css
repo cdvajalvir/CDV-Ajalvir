@@ -44,29 +44,95 @@ body.body-acta {
     vertical-align: middle;
 }
 
-/* Cabecera proporciones */
-.c-logo { width: 50px; text-align: center; }
-.img-logo { max-width: 38px; max-height: 32px; display: block; margin: 0 auto; }
-.c-campeonato { font-weight: bold; font-size: 10.5px; }
-.c-juego { width: 130px; font-weight: bold; }
-.c-categoria, .c-fase { font-weight: bold; }
-.c-local-row { height: 16px; }
+/* --- AJUSTES DE CABECERA Y PARTE SUPERIOR --- */
+
+/* Celda del Logotipo (Cuadrada y compacta) */
+.c-logo { 
+    width: 60px; 
+    height: 55px;
+    text-align: center; 
+    vertical-align: middle;
+    padding: 2px;
+}
+.img-logo { 
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block; 
+}
+
+/* Nombre del campeonato (Altura ajustada y letra más legible) */
+.c-campeonato { 
+    font-weight: bold; 
+    font-size: 11px; 
+    height: 18px;
+}
+
+/* Campo Juego (Compacto) */
+.c-juego { 
+    width: 120px; 
+    font-weight: bold; 
+    font-size: 9.5px;
+}
+
+/* Categoría y Fase (Alturas reducidas) */
+.c-categoria, .c-fase { 
+    font-weight: bold; 
+    font-size: 9px;
+    height: 16px;
+}
+
+/* Fila de la etiqueta Local */
+.c-local-row { 
+    height: 18px; 
+    padding: 2px 4px;
+}
 .badge-local {
     display: inline-block;
     border: 1.5px solid #008080;
     color: #008080;
-    padding: 0 8px;
+    padding: 0 10px;
     font-weight: bold;
     background: #e6f2f2;
     font-size: 8.5px;
 }
-.c-sitio, .c-fecha, .c-horario { font-size: 9px; height: 18px; }
 
-.c-arbitraje { height: 32px; vertical-align: top; padding: 2px; }
-.c-tiempos-box { width: 190px; padding: 0; }
-.sub-tabla-tiempos { width: 100%; border-collapse: collapse; height: 100%; }
-.sub-tabla-tiempos td { border: 1px solid #000; text-align: center; height: 10.6px; font-size: 8.5px; }
-.t-val { width: 35px; }
+/* Sitio, Fecha, Horario */
+.c-sitio, .c-fecha, .c-horario { 
+    font-size: 9px; 
+    height: 16px; 
+}
+
+/* Bloque de arbitraje */
+.c-arbitraje { 
+    height: 32px; 
+    vertical-align: top; 
+    padding: 2px; 
+    font-size: 9px;
+}
+
+/* Cuadrícula lateral de tiempos (situada a la derecha de la cabecera) */
+.c-bloque-tiempos-lateral {
+    width: 290px;
+    padding: 0 !important;
+    vertical-align: top !important;
+}
+.sub-tabla-tiempos-sup {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+.sub-tabla-tiempos-sup td {
+    border: 1px solid #000;
+    text-align: center;
+    height: 17px;
+    font-size: 8.5px;
+    padding: 0 2px;
+}
+.t-val { width: 32px; }
+.t-lbl-head { font-weight: bold; background: #f9f9f9; width: 35px; }
+
+/* --- FIN AJUSTES CABECERA --- */
 
 /* Tabla jugadores cabeceras */
 .tr-th-jugadores th {
