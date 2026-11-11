@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acta de Partido - CD Veteranos Ajalvir</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/acta-partido.css">
+    <link rel="icon" type="image/jpeg" href="../assets/img/escudo-cdv-ajalvir.jpg">
+</head>
+<body class="body-acta">
+
+    <!-- Barra de control superior (Solo visible en pantalla, se oculta al imprimir) -->
+    <div class="no-print barra-control-acta">
+        <a href="index.html" class="btn-volver">← Volver al Panel</a>
+        <h1>Generador de Acta de Partido</h1>
+        <button onclick="window.print()" class="btn-imprimir">🖨️ Imprimir Acta</button>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DEL ACTA (Diseño exacto A4 Apaisado) -->
+    <div class="acta-container">
+        
+        <!-- CABECERA -->
+        <table class="acta-tabla-cabecera">
+            <tr>
+                <td class="celda-logo">
+                    <img src="../assets/img/logo-liga-alcarria.png" alt="Logo Liga" class="logo-liga">
+                </td>
+                <td class="celda-titulo">
+                    <div class="linea-campeonato">Nombre del campeonato: "SUPERLIGA HENARES ALCARRIA" 26/27</div>
+                    <div class="linea-subcabecera">
+                        <span class="campo-bloque">Categoría: </span>
+                        <span class="campo-bloque">Fase: 1ª Fase</span>
+                        <div class="etiqueta-local-caja">LOCAL</div>
+                    </div>
+                </td>
+                <td class="celda-juego">
+                    Juego: <span id="txt-juego"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="celda-sitio-fecha">
+                    Sitio: <span id="txt-sitio"></span> &nbsp;|&nbsp; Fecha: <span id="txt-fecha"></span> &nbsp;|&nbsp; Horario: <span id="txt-horario"></span>
+                </td>
+                <td class="celda-inicio-final">
+                    Inicio: <span id="txt-inicio"></span> | Final: <span id="txt-final"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="celda-arbitraje">
+                    Arbitraje: <span id="txt-arbitraje"></span>
+                </td>
+                <td class="celda-tiempos">
+                    <table class="tabla-tiempos-interna">
+                        <tr><td>1º Tiempo</td><td></td></tr>
+                        <tr><td>2º Tiempo</td><td></td></tr>
+                        <tr><td>Tiempo añadido</td><td></td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- CUERPO PRINCIPAL (Doble columna: Jugadores izda / Goles y Susti dcha) -->
+        <div class="acta-cuerpo">
+            
+            <!-- COLUMNA IZQUIERDA: TABLA DE 30 JUGADORES -->
+            <div class="columna-jugadores">
+                <table class="tabla-jugadores-oficial" id="tabla-jugadores">
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th class="col-jugador">JUGADOR</th>
+                            <th class="col-dorsal">DORSAL</th>
+                            <th class="col-dni">DNI</th>
+                            <th class="col-edad">EDAD</th>
+                            <th colspan="3" class="col-tarjetas">TARJETAS</th>
+                        </tr>
+                        <tr class="sub-header-tarjetas">
+                            <th colspan="5"></th>
+                            <th>AMA</th>
+                            <th>AMA</th>
+                            <th>ROJ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Se generará dinámicamente mediante JS las 30 filas -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- COLUMNA DERECHA: GOLES, SUSTITUCIONES Y COMENTARIOS -->
+            <div class="columna-lateral">
+                
+                <!-- Goles (Matriz 4x7 celdas equivalente a 28) -->
+                <table class="tabla-goles">
+                    <tr><th colspan="14">GOLES</th></tr>
+                    <!-- Generado por JS o maquetado fijo -->
+                    <tbody id="matriz-goles">
+                        <!-- Celdas de goles -->
+                    </tbody>
+                </table>
+
+                <!-- Sustituciones -->
+                <table class="tabla-sustituciones">
+                    <tr><th colspan="10">Sustituciones</th></tr>
+                    <tr>
+                        <td class="sub-col-num"></td>
+                        <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+                    </tr>
+                    <tr>
+                        <td>Entrado</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Salió</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                </table>
+
+                <!-- Entrenador y Capitán -->
+                <table class="tabla-entrenador-capitan">
+                    <tr>
+                        <td class="label-box">Entrenador</td>
+                        <td class="input-box"></td>
+                    </tr>
+                    <tr>
+                        <td class="label-box">Capitán</td>
+                        <td class="input-box"></td>
+                    </tr>
+                </table>
+
+                <!-- Comentarios -->
+                <div class="caja-comentarios">
+                    <div class="titulo-comentarios"><u>COMENTARIOS</u>:</div>
+                    <div class="contenido-comentarios"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script modular de generación -->
+    <script type="module" src="../assets/js/acta_partido.js"></script>
+</body>
+</html>
