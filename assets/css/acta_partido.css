@@ -1,0 +1,229 @@
+/* Estilos generales para el modo acta */
+.body-acta {
+    background-color: #525659;
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #000;
+}
+
+.barra-control-acta {
+    max-width: 1150px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.barra-control-acta h1 {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #333;
+}
+
+.btn-volver, .btn-imprimir {
+    background: #0056b3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-imprimir {
+    background: #28a745;
+}
+
+.btn-volver:hover, .btn-imprimir:hover {
+    opacity: 0.9;
+}
+
+/* Contenedor tipo hoja A4 */
+.acta-container {
+    width: 1120px;
+    background: #ffffff;
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+/* Tablas generales y bordes estilo acta oficial */
+.acta-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #000;
+}
+
+.acta-container th, .acta-container td {
+    border: 1px solid #000;
+    padding: 2px 4px;
+    font-size: 11px;
+    box-sizing: border-box;
+}
+
+/* Cabecera */
+.acta-tabla-cabecera td {
+    height: 24px;
+    vertical-align: middle;
+}
+
+.celda-logo {
+    width: 70px;
+    text-align: center;
+    padding: 2px;
+}
+
+.logo-liga {
+    max-width: 50px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.celda-titulo {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.linea-campeonato {
+    border-bottom: 1px solid #000;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+}
+
+.linea-subcabecera {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.etiqueta-local-caja {
+    border: 1px solid #008080;
+    color: #008080;
+    padding: 1px 10px;
+    font-weight: bold;
+    background: #e6f2f2;
+}
+
+.celda-juego, .celda-inicio-final {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.celda-sitio-fecha {
+    font-size: 11px;
+}
+
+.tabla-tiempos-interna {
+    border: none !important;
+}
+.tabla-tiempos-interna td {
+    border: 1px solid #000;
+    text-align: center;
+}
+
+/* Cuerpo y distribución */
+.acta-cuerpo {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.columna-jugadores {
+    flex: 2;
+}
+
+.columna-lateral {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Tabla de jugadores (30 filas) */
+.tabla-jugadores-oficial th {
+    background-color: #f2f2f2;
+    text-align: center;
+    font-weight: bold;
+}
+
+.col-num { width: 25px; text-align: center; }
+.col-jugador { width: auto; }
+.col-dorsal { width: 50px; text-align: center; }
+.col-dni { width: 85px; text-align: center; }
+.col-edad { width: 45px; text-align: center; }
+.col-tarjeta-celda { width: 25px; text-align: center; }
+
+.tabla-jugadores-oficial td {
+    height: 18px; /* Altura compacta para que quepan las 30 filas perfectamente en una hoja */
+}
+
+/* Bloque lateral de Goles */
+.tabla-goles th {
+    background: #f2f2f2;
+    text-align: center;
+}
+
+.celda-gol-item {
+    text-align: center;
+    font-size: 10px;
+    height: 22px;
+}
+
+.num-gol {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+/* Sustituciones y Entrenador */
+.tabla-sustituciones td, .tabla-entrenador-capitan td {
+    text-align: center;
+    height: 20px;
+}
+
+.caja-comentarios {
+    border: 1px solid #000;
+    height: 110px;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.titulo-comentarios {
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+/* ==========================================================
+   CONFIGURACIÓN DE IMPRESIÓN OFICIAL (A4 Apaisado / Landscape)
+   ========================================================== */
+@media print {
+    body.body-acta {
+        background: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    .acta-container {
+        width: 100% !important;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 5mm;
+    }
+}
