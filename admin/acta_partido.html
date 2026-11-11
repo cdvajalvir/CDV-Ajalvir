@@ -18,7 +18,7 @@
     <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
     <div class="acta-page">
         <table class="acta-grid-maestra">
-            <!-- FILA 1: LOGO, CAMPEONATO, JUEGO Y TIEMPOS SUPERIORES -->
+            <!-- FILA 1: LOGO, CAMPEONATO, JUEGO Y BLOQUE DE TIEMPOS SUPERIOR DERECHO -->
             <tr>
                 <td rowspan="4" class="c-logo">
                     <img src="../assets/img/logo-liga-alcarria.png" alt="Logo" class="img-logo">
@@ -29,13 +29,13 @@
                 <td class="c-juego">
                     Juego: <span id="val-juego"></span>
                 </td>
-                <!-- BLOQUE DE TIEMPOS ARRIBA A LA DERECHA (ENCIMA DE GOLES) -->
-                <td colspan="2" rowspan="5" class="c-bloque-tiempos-lateral">
+                <!-- HUECO SUPERIOR DERECHO: 1º Tiempo, 2º Tiempo, Tiempo añadido (Inicio / Final) -->
+                <td colspan="2" rowspan="4" style="padding: 0; vertical-align: top;">
                     <table class="sub-tabla-tiempos-sup">
                         <tr>
-                            <td style="width: 45%;"></td>
-                            <td style="width: 27.5%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
-                            <td style="width: 27.5%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
+                            <td style="width: 44%;"></td>
+                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
+                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
                         </tr>
                         <tr>
                             <td style="font-weight: bold;">1º Tiempo</td>
@@ -91,25 +91,8 @@
                 <td colspan="6" class="c-arbitraje">
                     <strong>Arbitraje:</strong> <span id="val-arbitraje"></span>
                 </td>
-            </tr>
-
-            <!-- CABECERA DE LA TABLA DE JUGADORES Y BLOQUE DERECHO (Goles, Sustituciones, Comentarios) -->
-            <tr class="tr-th-jugadores">
-                <th class="th-n"></th>
-                <th class="th-jug">JUGADOR</th>
-                <th class="th-dor">DORSAL</th>
-                <th class="th-dni">DNI</th>
-                <th class="th-eda">EDAD</th>
-                <th colspan="3" class="th-tar">TARJETAS</th>
-            </tr>
-            <tr class="tr-th-subtarjetas">
-                <th colspan="5"></th>
-                <th>AMA</th>
-                <th>AMA</th>
-                <th>ROJ</th>
-                
-                <!-- COLUMNA DERECHA INFERIOR (Goles, Sustituciones, Entrenador, Comentarios) -->
-                <th colspan="2" class="rowspan-der-cell" rowspan="31">
+                <!-- Aquí la columna derecha empieza limpia para los Goles -->
+                <td colspan="2" class="rowspan-der-cell" rowspan="31">
                     <div class="panel-derecho-interno">
                         <!-- Matriz de Goles -->
                         <table class="sub-goles" id="matriz-goles">
@@ -144,7 +127,23 @@
                             <strong><u>COMENTARIOS</u>:</strong>
                         </div>
                     </div>
-                </th>
+                </td>
+            </tr>
+
+            <!-- CABECERA DE LA TABLA DE JUGADORES -->
+            <tr class="tr-th-jugadores">
+                <th class="th-n"></th>
+                <th class="th-jug">JUGADOR</th>
+                <th class="th-dor">DORSAL</th>
+                <th class="th-dni">DNI</th>
+                <th class="th-eda">EDAD</th>
+                <th colspan="3" class="th-tar">TARJETAS</th>
+            </tr>
+            <tr class="tr-th-subtarjetas">
+                <th colspan="5"></th>
+                <th>AMA</th>
+                <th>AMA</th>
+                <th>ROJ</th>
             </tr>
 
             <!-- LAS 30 FILAS DE JUGADORES SE INYECTAN MEDIANTE JS -->
