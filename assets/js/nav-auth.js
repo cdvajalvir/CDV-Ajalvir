@@ -207,9 +207,6 @@ function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
 
 function renderizarMenuPaginaActa(contenedor, rol, basePath) {
     contenedor.innerHTML = `
-        <button onclick="window.print()" class="btn-header-custom">
-            <i class="fa-solid fa-print"></i> Imprimir Acta
-        </button>
         <a href="${basePath}admin/administracion.html">Administración</a>
     `;
 }
