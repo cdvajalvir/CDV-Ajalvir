@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/acta_partido.css">
     <style>
-        /* Contenedor principal para alinear el acta manteniendo el tema global */
+        /* Ajuste para alinear el contenido principal respetando el tema global */
         .main-acta-container {
             padding-top: 2rem;
             padding-bottom: 3rem;
@@ -16,45 +16,55 @@
             flex-direction: column;
             align-items: center;
         }
-        /* Barra de control superior para Volver e Imprimir (fuera de la zona de impresión) */
-        .barra-control-acta {
-            width: 1080px;
-            max-width: 100%;
+        /* Estilo limpio para los botones situados a la derecha en el header */
+        .header-acta-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 0.75rem;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-left: auto;
         }
-        .btn-accion-header {
+        .btn-header-custom {
             background-color: var(--color-primary, #008080);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 4px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
-        .btn-accion-header:hover {
+        .btn-header-custom:hover {
             opacity: 0.9;
         }
     </style>
 </head>
-<body class="body-acta">
+<body>
 
-    <!-- HEADER OFICIAL DEL PROYECTO (CON GESTIÓN DE SESIÓN DINÁMICA) -->
+    <!-- HEADER OFICIAL EXACTO AL RESTO DEL PROYECTO -->
     <header class="site-header">
-        <nav class="navbar container">
+        <nav class="navbar container" style="display: flex; align-items: center; width: 100%;">
             <a class="brand" href="../index.html">
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
                 <span>CD Veteranos Ajalvir</span>
             </a>
+            
+            <!-- Botones de Volver e Imprimir integrados a la derecha del header -->
+            <div class="header-acta-actions no-print">
+                <a href="#" id="btn-volver-atras" class="btn-header-custom">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </a>
+                <button onclick="window.print()" class="btn-header-custom">
+                    <i class="fa-solid fa-print"></i> Imprimir Acta
+                </button>
+            </div>
+
+            <!-- Menú dinámico de sesión (Gestionado por nav-auth.js) -->
             <button class="nav-toggle" data-nav-toggle>☰</button>
             <div class="nav-links" data-nav-links></div>
         </nav>
@@ -62,16 +72,6 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="container main-acta-container">
-
-        <!-- BARRA DE CONTROL (VOLVER E IMPRIMIR) -->
-        <div class="no-print barra-control-acta">
-            <a href="#" id="btn-volver-atras" class="btn-accion-header">
-                <i class="fa-solid fa-arrow-left"></i> Volver
-            </a>
-            <button onclick="window.print()" class="btn-accion-header">
-                <i class="fa-solid fa-print"></i> Imprimir Acta
-            </button>
-        </div>
 
         <!-- CONTENEDOR GENERAL EN DOS COLUMNAS (ACTA + PANEL DE GESTIÓN) -->
         <div class="contenedor-principal-layout">
@@ -265,7 +265,7 @@
 
     </main>
 
-    <!-- FOOTER OFICIAL DEL PROYECTO -->
+    <!-- FOOTER OFICIAL EXACTO AL RESTO DEL PROYECTO -->
     <footer class="site-footer">
         <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
