@@ -167,9 +167,9 @@ body.body-acta {
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* Distribuimos el espacio vertical uniformemente para que los elementos fluyan hacia abajo */
-    justify-content: space-between; 
-    padding: 2px;
+    justify-content: flex-start;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 /* Goles y subtablas derechas */
@@ -185,11 +185,13 @@ body.body-acta {
 .e-lbl { font-weight: bold; width: 65px; background: #f9f9f9; }
 
 .sub-comentarios {
-    border: 1px solid #000;
     flex-grow: 1;
-    margin-top: 2px;
-    padding: 2px;
-    min-height: 50px;
+    border: 1px solid #000;
+    border-top: none; /* Opcional si ya enlaza con el borde inferior */
+    padding: 4px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Impresión limpia */
