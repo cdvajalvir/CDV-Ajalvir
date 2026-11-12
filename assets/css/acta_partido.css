@@ -299,12 +299,19 @@
 
 /* Impresión limpia del acta y panel lateral */
 @media print {
+    /* Forzar márgenes a cero para que el navegador no imprima su propia cabecera/pie */
+    @page {
+        size: A4 landscape;
+        margin: 0mm; /* Cero margen elimina los textos automáticos de fecha y URL del navegador */
+    }
+
     body.body-acta { 
         background: none !important; 
         margin: 0 !important;
         padding: 0 !important;
     }
     
+    /* Ocultar elementos que no deben imprimirse */
     .no-print { 
         display: none !important; 
     }
@@ -324,22 +331,17 @@
     .acta-page { 
         width: 100% !important; 
         height: 100vh !important; 
-        max-height: 190mm !important; /* Limita la altura máxima al área imprimible A4 */
+        max-height: 100vh !important;
         box-shadow: none !important; 
         padding: 0 !important; 
         border: none !important; 
         margin: 0 !important;
     }
 
-    /* Forzar al navegador a no generar saltos de página automáticos */
+    /* Evitar saltos de página no deseados */
     * {
         page-break-after: avoid !important;
         page-break-before: avoid !important;
         page-break-inside: avoid !important;
-    }
-
-    @page { 
-        size: A4 landscape; 
-        margin: 5mm; /* Margen de seguridad mínimo de la impresora */
     }
 }
