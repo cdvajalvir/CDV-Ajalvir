@@ -90,7 +90,6 @@ async function cargarSociosActivos() {
     if (!selectSocios) return;
 
     try {
-        // Invocamos la Edge Function utilizando el cliente oficial de Supabase
         const { data, error } = await supabaseClient.functions.invoke('get-socios', {
             body: { temporada: "26/27" }
         });
@@ -119,7 +118,7 @@ async function cargarSociosActivos() {
             option.dataset.nombre = `${socio.nombre || ''} ${socio.apellido || ''}`.trim();
             option.dataset.dni = socio.dni || '';
             option.dataset.edad = edadCalculada;
-            option.dataset.dorsal = socio.dorsal || '';
+            option.dataset.dorsal = socio.numero || ''; // Mapeado correctamente a 'numero'
 
             option.textContent = `${socio.apellido || ''}, ${socio.nombre || ''}`.trim();
             selectSocios.appendChild(option);
