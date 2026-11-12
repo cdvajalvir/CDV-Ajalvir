@@ -10,12 +10,6 @@ body.body-acta {
     color: #000;
 }
 
-.no-print {
-    background: #fff;
-    padding: 8px 15px;
-    border-radius: 4px;
-}
-
 .barra-control {
     width: 1080px;
     margin: 10px auto;
@@ -306,7 +300,7 @@ body.body-acta {
     flex-direction: column;
 }
 
-/* Impresión limpia */
+/* Impresión limpia del acta y panel lateral */
 @media print {
     body.body-acta { background: none; }
     .no-print { display: none !important; }
