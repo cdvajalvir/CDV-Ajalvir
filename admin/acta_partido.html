@@ -8,25 +8,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/acta_partido.css">
     <style>
-        /* Ajustes específicos para integrar header/footer y layout */
-        body.body-acta {
+        /* Contenedor principal para alinear el acta manteniendo el tema global */
+        .main-acta-container {
+            padding-top: 2rem;
+            padding-bottom: 3rem;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            background: #444;
-        }
-        .main-acta-container {
-            flex: 1;
-            padding: 1.5rem 0;
-        }
-        /* Barra de control en el header a la derecha */
-        .header-actions-right {
-            display: flex;
-            gap: 0.75rem;
             align-items: center;
-            margin-left: auto;
         }
-        .btn-header-accion {
+        /* Barra de control superior para Volver e Imprimir (fuera de la zona de impresión) */
+        .barra-control-acta {
+            width: 1080px;
+            max-width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .btn-accion-header {
             background-color: var(--color-primary, #008080);
             color: white;
             border: none;
@@ -40,36 +39,39 @@
             align-items: center;
             gap: 0.4rem;
         }
-        .btn-header-accion:hover {
+        .btn-accion-header:hover {
             opacity: 0.9;
         }
     </style>
 </head>
 <body class="body-acta">
 
-    <!-- HEADER OFICIAL CON BOTONES A LA DERECHA (OCULTO AL IMPRIMIR) -->
-    <header class="site-header no-print">
-        <nav class="navbar container" style="display: flex; align-items: center; width: 100%;">
+    <!-- HEADER OFICIAL DEL PROYECTO (CON GESTIÓN DE SESIÓN DINÁMICA) -->
+    <header class="site-header">
+        <nav class="navbar container">
             <a class="brand" href="../index.html">
                 <span class="brand-logo">
                     <img src="../assets/img/escudo-cdv-ajalvir.jpg" alt="Escudo CD Veteranos Ajalvir">
                 </span>
                 <span>CD Veteranos Ajalvir</span>
             </a>
-            
-            <div class="header-actions-right">
-                <a href="#" id="btn-volver-atras" class="btn-header-accion">
-                    <i class="fa-solid fa-arrow-left"></i> Volver
-                </a>
-                <button onclick="window.print()" class="btn-header-accion">
-                    <i class="fa-solid fa-print"></i> Imprimir Acta
-                </button>
-            </div>
+            <button class="nav-toggle" data-nav-toggle>☰</button>
+            <div class="nav-links" data-nav-links></div>
         </nav>
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="container main-acta-container">
+
+        <!-- BARRA DE CONTROL (VOLVER E IMPRIMIR) -->
+        <div class="no-print barra-control-acta">
+            <a href="#" id="btn-volver-atras" class="btn-accion-header">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+            <button onclick="window.print()" class="btn-accion-header">
+                <i class="fa-solid fa-print"></i> Imprimir Acta
+            </button>
+        </div>
 
         <!-- CONTENEDOR GENERAL EN DOS COLUMNAS (ACTA + PANEL DE GESTIÓN) -->
         <div class="contenedor-principal-layout">
@@ -263,8 +265,8 @@
 
     </main>
 
-    <!-- FOOTER OFICIAL (OCULTO AL IMPRIMIR) -->
-    <footer class="site-footer no-print" style="margin-top: auto;">
+    <!-- FOOTER OFICIAL DEL PROYECTO -->
+    <footer class="site-footer">
         <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
                 <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
@@ -286,6 +288,8 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS -->
+    <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/acta_partido.js"></script>
 </body>
 </html>
