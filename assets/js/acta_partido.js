@@ -181,7 +181,9 @@ async function cargarSociosActivos() {
 async function cargarDatosConvocatoriaActiva() {
     try {
         console.log("-> Iniciando llamada a la Edge Function 'gestion-convocatorias'...");
-        const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias');
+        const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
+            body: {} // Envía un JSON vacío para que el servidor no devuelva error 400 por body ausente
+        });
 
         if (error) throw error;
 
