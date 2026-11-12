@@ -29,22 +29,23 @@ body.body-acta {
     margin: 0 auto;
     padding: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
 }
 
-.acta-grid-maestra {
+/* --- TABLA SUPERIOR (INTACTA Y ESTABLE) --- */
+.acta-tabla-superior {
     width: 100%;
-    height: 100%;
     border-collapse: collapse;
     border: 2px solid #000;
+    border-bottom: none; /* Se une visualmente con el bloque inferior */
 }
 
-.acta-grid-maestra th, .acta-grid-maestra td {
+.acta-tabla-superior th, .acta-tabla-superior td {
     border: 1px solid #000;
     padding: 1px 3px;
     vertical-align: middle;
 }
-
-/* --- AJUSTES DE CABECERA Y PARTE SUPERIOR --- */
 
 .c-logo { 
     width: 60px; 
@@ -117,7 +118,28 @@ body.body-acta {
     padding: 0 2px;
 }
 
-/* --- TABLA JUGADORES Y PANEL DERECHO --- */
+/* --- CONTENEDOR INFERIOR (FLEXBOX PARA SEPARAR JUGADORES Y PANEL DERECHO) --- */
+.contenedor-inferior {
+    display: flex;
+    width: 100%;
+    flex-grow: 1;
+    border: 2px solid #000;
+    border-top: none;
+    background: #fff;
+}
+
+/* Tabla de jugadores (Izquierda) */
+.acta-tabla-jugadores {
+    flex-grow: 1;
+    border-collapse: collapse;
+    border-right: 1px solid #000;
+}
+
+.acta-tabla-jugadores th, .acta-tabla-jugadores td {
+    border: 1px solid #000;
+    padding: 1px 3px;
+    vertical-align: middle;
+}
 
 .tr-th-jugadores th {
     background: #f2f2f2;
@@ -133,35 +155,24 @@ body.body-acta {
     text-align: center;
 }
 
-.th-n { width: 22px; }
-.th-jug { width: 240px; } /* Ensanchado para ganar espacio */
-.th-dor { width: 45px; }
-.th-dni { width: 85px; } /* Ensanchado para ganar espacio */
-.th-eda { width: 35px; }
-.th-tar { width: 66px; }
+/* ANCHOS CONTROLADOS DE LA TABLA INFERIOR (Independientes de arriba) */
+.th-n { width: 20px !important; text-align: center; }
+.th-jug { width: 38% !important; }
+.th-dor { width: 6% !important; }
+.th-dni { width: 15% !important; }
+.th-eda { width: 5% !important; }
+.th-t-col { width: 22px !important; }
 
-/* Forzamos un ancho idéntico a cada una de las 3 columnas de tarjetas */
-.tr-th-subtarjetas th:nth-child(5),
-.tr-th-subtarjetas th:nth-child(6),
-.tr-th-subtarjetas th:nth-child(7) {
-    width: 22px !important;
-    min-width: 22px !important;
-}
-
-.rowspan-der-cell {
-    padding: 0;
-    vertical-align: top;
-    background: #fff;
-    width: 290px;
-}
-
+/* Panel Derecho (Goles, Sustituciones, Comentarios) */
 .panel-derecho-interno {
+    width: 310px;
+    min-width: 310px;
     display: flex;
     flex-direction: column;
-    height: 100%;
     justify-content: flex-start;
     padding: 0;
     box-sizing: border-box;
+    background: #fff;
 }
 
 /* Goles y subtablas derechas */
