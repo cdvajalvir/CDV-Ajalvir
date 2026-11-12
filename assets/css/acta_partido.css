@@ -93,9 +93,22 @@ body.body-acta {
     font-size: 8.5px;
 }
 
-.c-sitio, .c-fecha, .c-horario { 
-    font-size: 9px; 
-    height: 16px; 
+.c-sitio {
+    width: 52%; /* Se queda con todo el espacio sobrante */
+    font-size: 9px;
+    height: 16px;
+}
+
+.c-fecha {
+    width: 24%; /* Mismo tamaño que horario */
+    font-size: 9px;
+    height: 16px;
+}
+
+.c-horario {
+    width: 24%; /* Mismo tamaño que fecha */
+    font-size: 9px;
+    height: 16px;
 }
 
 .c-arbitraje { 
