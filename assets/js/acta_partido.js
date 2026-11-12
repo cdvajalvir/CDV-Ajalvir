@@ -1,11 +1,55 @@
 import { supabaseClient } from "./supabase.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. Verificación estricta de sesión y rol de Administrador
+    const autorizado = await verificarAccesoAdministrador();
+    if (!autorizado) return;
+
+    // 2. Configurar botón de volver atrás
+    const btnVolver = document.getElementById("btn-volver-atras");
+    if (btnVolver) {
+        btnVolver.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.history.back();
+        });
+    }
+
+    // 3. Inicializar componentes del acta
     generarFilasJugadores();
     generarMatrizGoles();
     inicializarListenersControl();
     cargarSociosActivos();
 });
+
+// Función para verificar sesión y rol administrador
+async function verificarAccesoAdministrador() {
+    try {
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError || !session) {
+            window.location.href = "../index.html";
+            return false;
+        }
+
+        const user = session.user;
+        const { data: perfil, error: perfilError } = await supabaseClient
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single();
+
+        if (perfilError || !perfil || perfil.role !== 'administrador') {
+            alert("Acceso denegado. Se requieren privilegios de administrador.");
+            window.location.href = "../index.html";
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Error verificando permisos:", err);
+        window.location.href = "../index.html";
+        return false;
+    }
+}
 
 function generarFilasJugadores() {
     const cuerpoJugadores = document.getElementById("cuerpo-jugadores");
@@ -118,7 +162,7 @@ async function cargarSociosActivos() {
             option.dataset.nombre = `${socio.nombre || ''} ${socio.apellido || ''}`.trim();
             option.dataset.dni = socio.dni || '';
             option.dataset.edad = edadCalculada;
-            option.dataset.dorsal = socio.numero || ''; // Mapeado correctamente a 'numero'
+            option.dataset.dorsal = socio.numero || '';
 
             option.textContent = `${socio.apellido || ''}, ${socio.nombre || ''}`.trim();
             selectSocios.appendChild(option);
