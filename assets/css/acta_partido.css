@@ -93,22 +93,25 @@ body.body-acta {
     font-size: 8.5px;
 }
 
+/* AJUSTE QUIRÚRGICO: Sitio amplio, Fecha y Horario estrechos e iguales */
 .c-sitio {
-    width: 52%; /* Se queda con todo el espacio sobrante */
     font-size: 9px;
     height: 16px;
+    width: auto; 
 }
 
 .c-fecha {
-    width: 24%; /* Mismo tamaño que horario */
     font-size: 9px;
     height: 16px;
+    width: 95px !important;
+    min-width: 95px !important;
 }
 
 .c-horario {
-    width: 24%; /* Mismo tamaño que fecha */
     font-size: 9px;
     height: 16px;
+    width: 95px !important;
+    min-width: 95px !important;
 }
 
 .c-arbitraje { 
