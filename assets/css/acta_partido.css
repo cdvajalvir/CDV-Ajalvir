@@ -44,7 +44,7 @@ body.body-acta {
     vertical-align: middle;
 }
 
-/* --- CABECERA SUPERIOR (ESTRUCTURA ORIGINAL INTACTA) --- */
+/* --- AJUSTES DE CABECERA Y PARTE SUPERIOR --- */
 
 .c-logo { 
     width: 60px; 
@@ -104,7 +104,6 @@ body.body-acta {
     font-size: 9px;
 }
 
-/* Tabla de tiempos superior derecha */
 .sub-tabla-tiempos-sup {
     width: 100%;
     height: 100%;
@@ -118,7 +117,7 @@ body.body-acta {
     padding: 0 2px;
 }
 
-/* --- TABLA DE JUGADORES Y PANEL DERECHO --- */
+/* --- TABLA JUGADORES Y PANEL DERECHO --- */
 
 .tr-th-jugadores th {
     background: #f2f2f2;
@@ -134,38 +133,18 @@ body.body-acta {
     text-align: center;
 }
 
-/* Primera columna de números muy estrecha */
-.acta-grid-maestra th.th-n, 
-.acta-grid-maestra td:first-child {
-    width: 20px !important;
-    min-width: 20px !important;
-    max-width: 20px !important;
-    text-align: center;
-}
+.th-n { width: 22px; }
+.th-jug { width: 220px; }
+.th-dor { width: 45px; }
+.th-dni { width: 75px; }
+.th-eda { width: 35px; }
+.th-tar { width: 66px; }
 
-/* Anchos equilibrados para las columnas de jugadores */
-.acta-grid-maestra th.th-jug { width: 34%; }
-.acta-grid-maestra th.th-dor { width: 6%; }
-.acta-grid-maestra th.th-dni { width: 15%; }
-.acta-grid-maestra th.th-eda { width: 5%; }
-
-/* Estrechamos las 3 columnas de tarjetas (AMA, AMA, ROJ) de forma idéntica */
-.acta-grid-maestra tr.tr-th-subtarjetas th:nth-child(6),
-.acta-grid-maestra tr.tr-th-subtarjetas th:nth-child(7),
-.acta-grid-maestra tr.tr-th-subtarjetas th:nth-child(8) {
-    width: 22px !important;
-    min-width: 22px !important;
-    max-width: 22px !important;
-    padding: 1px !important;
-    font-size: 7.5px;
-}
-
-/* Panel derecho (Goles, Sustituciones, Comentarios) con espacio generoso */
 .rowspan-der-cell {
     padding: 0;
     vertical-align: top;
     background: #fff;
-    width: 310px !important;
+    width: 290px;
 }
 
 .panel-derecho-interno {
