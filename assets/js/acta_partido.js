@@ -32,12 +32,12 @@ async function verificarAccesoAdministrador() {
 
         const user = session.user;
         const { data: perfil, error: perfilError } = await supabaseClient
-            .from('profiles')
-            .select('role')
+            .from('socios')
+            .select('rol')
             .eq('id', user.id)
             .single();
 
-        if (perfilError || !perfil || perfil.role !== 'administrador') {
+        if (perfilError || !perfil || perfil.rol !== 'administrador') {
             alert("Acceso denegado. Se requieren privilegios de administrador.");
             window.location.href = "../index.html";
             return false;
