@@ -134,19 +134,22 @@ async function cargarSociosActivos() {
     if (!selectSocios) return;
 
     try {
-        // Pasamos la temporada exacta que la Edge Function espera para filtrar
         const { data, error } = await supabaseClient.functions.invoke('get-socios', {
-            body: { temporada: "2026/2027" } // Asegúrate de que este texto coincide exactamente con el guardado en la BD
+            body: { temporada: "2026/2027" }
         });
 
         if (error) throw error;
 
-        const socios = data?.data || [];
+        // 🔍 INSPECCIONA ESTO EN LA CONSOLA (F12)
+        console.log("Respuesta de get-socios con '2026/2027':", data);
+
+        // Comprobamos si viene en data.data o directamente en data
+        const socios = data?.data || (Array.isArray(data) ? data : []);
 
         selectSocios.innerHTML = "";
         
         if (socios.length === 0) {
-            console.warn("La Edge Function devolvió 0 socios para esta temporada.");
+            console.warn("La función sigue devolviendo 0 socios. Revisa la consola.");
             return;
         }
 
@@ -154,7 +157,6 @@ async function cargarSociosActivos() {
             const option = document.createElement('option');
             option.value = socio.id;
 
-            // Calcular edad a partir de fecha_nacimiento si existe
             let edadCalculada = "";
             if (socio.fecha_nacimiento) {
                 const hoy = new Date();
