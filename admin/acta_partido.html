@@ -29,7 +29,7 @@
                 <td class="c-juego">
                     Juego: <span id="val-juego"></span>
                 </td>
-                <!-- BLOQUE DE TIEMPOS SUPERIOR DERECHO (Ubicado arriba a la derecha, sin romper filas inferiores) -->
+                <!-- BLOQUE DE TIEMPOS SUPERIOR DERECHO -->
                 <td colspan="2" rowspan="4" style="padding: 0; vertical-align: top; background: #fff;">
                     <table class="sub-tabla-tiempos-sup">
                         <tr>
@@ -93,24 +93,30 @@
                 </td>
             </tr>
 
-            <!-- CABECERA DE LA TABLA DE JUGADORES -->
+            <!-- CABECERA DE LA TABLA DE JUGADORES Y BLOQUE DERECHO -->
             <tr class="tr-th-jugadores" style="height: 14px;">
-                <th class="th-n" rowspan="2"></th>
+                <th class="th-n" rowspan="2" style="width: 22px;"></th>
                 <th colspan="4" style="border: none;"></th>
                 <th colspan="3" class="th-tar" style="font-size: 7.5px;">TARJETAS</th>
+                <th colspan="2" class="th-bloque-der-head" style="display:none;"></th>
             </tr>
             <tr class="tr-th-subtarjetas">
-                <th class="th-jug">JUGADOR</th>
-                <th class="th-dor">DORSAL</th>
-                <th class="th-dni">DNI</th>
-                <th class="th-eda">EDAD</th>
-                <th style="width: 5.5%;">AMA</th>
-                <th style="width: 5.5%;">AMA</th>
-                <th style="width: 5.5%;">ROJ</th>
+                <th class="th-jug" style="width: 35%;">JUGADOR</th>
+                <th class="th-dor" style="width: 6%;">DORSAL</th>
+                <th class="th-dni" style="width: 15%;">DNI</th>
+                <th class="th-eda" style="width: 5%;">EDAD</th>
+                <th style="width: 22px;">AMA</th>
+                <th style="width: 22px;">AMA</th>
+                <th style="width: 22px;">ROJ</th>
                 <th colspan="2" class="rowspan-der-cell" rowspan="31">
                     <!-- CONTENIDO DE LA COLUMNA DERECHA -->
                     <div class="panel-derecho-interno">
-                        <table class="sub-goles" id="matriz-goles"></table>
+                        <!-- Matriz de Goles -->
+                        <table class="sub-goles" id="matriz-goles">
+                            <!-- JS inyectará los goles -->
+                        </table>
+
+                        <!-- Sustituciones -->
                         <table class="sub-sustituciones">
                             <tr><th colspan="10">Sustituciones</th></tr>
                             <tr>
@@ -126,10 +132,14 @@
                                 <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                             </tr>
                         </table>
+
+                        <!-- Entrenador y Capitán -->
                         <table class="sub-entrenador">
                             <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
                             <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
                         </table>
+
+                        <!-- Comentarios -->
                         <div class="sub-comentarios">
                             <strong><u>COMENTARIOS</u>:</strong>
                         </div>
