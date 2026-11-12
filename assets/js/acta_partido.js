@@ -180,18 +180,23 @@ async function cargarSociosActivos() {
 
 async function cargarDatosConvocatoriaActiva() {
     try {
+        console.log("-> Iniciando llamada a la Edge Function 'gestion-convocatorias'...");
         const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias');
 
         if (error) throw error;
 
+        console.log("<- Respuesta completa de 'gestion-convocatorias':", data);
+
         // Adaptamos la respuesta de la Edge Function
         const listaConvocatorias = data?.data || (Array.isArray(data) ? data : []);
+        console.log("📋 Lista de convocatorias parseada:", listaConvocatorias);
 
         // Filtrar la convocatoria que cumple con activa === true y tipo_convocatoria === "Oficial"
         const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial");
+        console.log("🎯 Convocatoria oficial activa encontrada:", oficialActiva);
 
         if (!oficialActiva) {
-            console.warn("No se encontró ninguna convocatoria activa de tipo Oficial.");
+            console.warn("⚠️ No se encontró ninguna convocatoria activa de tipo Oficial.");
             return;
         }
 
@@ -208,6 +213,7 @@ async function cargarDatosConvocatoriaActiva() {
 
         if (inputLocal) inputLocal.value = textoLocal;
         if (valLocalBadge) valLocalBadge.textContent = textoLocal;
+        console.log("🏟️ Campo Local asignado:", textoLocal);
 
         // 2. Campo Sitio / Campo
         const inputSitio = document.getElementById('input-sitio');
@@ -215,28 +221,41 @@ async function cargarDatosConvocatoriaActiva() {
         
         if (inputSitio) inputSitio.value = oficialActiva.lugar || "";
         if (valSitio) valSitio.textContent = oficialActiva.lugar || "";
+        console.log("📍 Sitio asignado:", oficialActiva.lugar);
 
         // 3. Extraer Fecha y Horario del campo "hora" (Formato esperado: "22/11/26 - 09:30")
         if (oficialActiva.hora) {
+            console.log("⏰ Cadena 'hora' original a procesar:", oficialActiva.hora);
             const partes = oficialActiva.hora.split(" - ");
             const fechaExtraida = partes[0] ? partes[0].trim() : "";
             const horaExtraida = partes[1] ? partes[1].trim() : "";
 
-            // Asignar Fecha (input tipo date requiere formato YYYY-MM-DD, pero si viene en DD/MM/YY se puede volcar o adaptar)
+            // Adaptar fecha a formato ISO (YYYY-MM-DD) si el input es de tipo date
+            let fechaIso = fechaExtraida;
+            if (fechaExtraida.includes("/")) {
+                const [dia, mes, anioCorto] = fechaExtraida.split("/");
+                if (dia && mes && anioCorto) {
+                    fechaIso = `20${anioCorto}-${mes}-${dia}`;
+                }
+            }
+
             const inputFecha = document.getElementById('input-fecha');
             const valFecha = document.getElementById('val-fecha');
-            if (inputFecha) inputFecha.value = fechaExtraida; // O puedes mapearlo si usas formato estándar
+            if (inputFecha) inputFecha.value = fechaIso;
             if (valFecha) valFecha.textContent = fechaExtraida;
 
-            // Asignar Horario
             const inputHorario = document.getElementById('input-horario');
             const valHorario = document.getElementById('val-horario');
             if (inputHorario) inputHorario.value = horaExtraida;
             if (valHorario) valHorario.textContent = horaExtraida;
+
+            console.log(`📅 Fecha asignada (ISO: ${fechaIso}, Texto: ${fechaExtraida}) | ⌚ Horario asignado: ${horaExtraida}`);
+        } else {
+            console.warn("⚠️ La convocatoria activa no tiene definido el campo 'hora'.");
         }
 
     } catch (error) {
-        console.error("Error al obtener los datos de la convocatoria oficial:", error);
+        console.error("❌ Error crítico al obtener los datos de la convocatoria oficial:", error);
     }
 }
 
