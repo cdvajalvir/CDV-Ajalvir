@@ -173,11 +173,15 @@ body.body-acta {
 
 /* ANCHOS CONTROLADOS DE LA TABLA INFERIOR (Independientes de arriba) */
 .th-n { width: 20px !important; text-align: center; }
-.th-jug { width: 38% !important; }
+.th-jug { width: 44% !important; }
 .th-dor { width: 6% !important; }
 .th-dni { width: 15% !important; }
 .th-eda { width: 5% !important; }
-.th-t-col { width: 22px !important; }
+.th-t-col { 
+    width: 18px !important; 
+    min-width: 18px !important; 
+    max-width: 18px !important; 
+}
 
 /* Panel Derecho (Goles, Sustituciones, Comentarios) */
 .panel-derecho-interno {
