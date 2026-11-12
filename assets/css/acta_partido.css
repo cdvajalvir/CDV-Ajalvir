@@ -81,7 +81,22 @@
     padding: 4px;
     border: 1px solid #aaa;
     border-radius: 3px;
-    font-size: 10px;
+    font-size: 11px; /* Subido un puntito para ganar legibilidad */
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Asegurar que las opciones internas también mantengan el contraste */
+.selector-socios-multiple option {
+    padding: 4px 6px;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Opcional: un toque sutil cuando una opción está seleccionada */
+.selector-socios-multiple option:checked {
+    background-color: #007bff;
+    color: #ffffff;
 }
 
 .btn-accion-cargar {
