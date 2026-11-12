@@ -194,6 +194,34 @@ body.body-acta {
     flex-direction: column;
 }
 
+/* Ajuste de anchos para las columnas de la tabla de jugadores */
+.acta-grid-maestra th.th-n, 
+.acta-grid-maestra td:first-child {
+    width: 25px; /* Columna numérica estrecha */
+}
+
+.acta-grid-maestra th.th-jug {
+    width: 32%; /* Más ancho para JUGADOR */
+}
+
+.acta-grid-maestra th.th-dor {
+    width: 6%; /* Dorsal compacto */
+}
+
+.acta-grid-maestra th.th-dni {
+    width: 14%; /* Más ancho para DNI */
+}
+
+.acta-grid-maestra th.th-eda {
+    width: 5%; /* Edad compacto */
+}
+
+/* Las tres columnas de tarjetas (AMA, AMA, ROJ) con ancho idéntico y equilibrado */
+.acta-grid-maestra th.th-tar-col,
+.acta-grid-maestra tr.tr-th-subtarjetas th:nth-last-child(-n+4):not(:first-child) {
+    width: 5.5%; 
+}
+
 /* Impresión limpia */
 @media print {
     body.body-acta { background: none; }
