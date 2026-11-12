@@ -136,7 +136,7 @@ async function cargarSociosActivos() {
     try {
         // Pasamos la temporada exacta que la Edge Function espera para filtrar
         const { data, error } = await supabaseClient.functions.invoke('get-socios', {
-            body: { temporada: "26/27" } // Asegúrate de que este texto coincide exactamente con el guardado en la BD
+            body: { temporada: "2026/2027" } // Asegúrate de que este texto coincide exactamente con el guardado en la BD
         });
 
         if (error) throw error;
