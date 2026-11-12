@@ -12,25 +12,102 @@ body.body-acta {
 }
 
 .no-print {
+    background: #fff;
+    padding: 8px 15px;
+    border-radius: 4px;
+}
+
+.barra-control {
     width: 1080px;
     margin: 10px auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
-    padding: 8px 15px;
-    border-radius: 4px;
+}
+
+/* --- NUEVO LAYOUT PRINCIPAL (ACTA + CARD DERECHA) --- */
+.contenedor-principal-layout {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 15px;
+    width: fit-content;
+    margin: 10px auto;
 }
 
 .acta-page {
     width: 1080px;
     height: 730px;
     background: #fff;
-    margin: 0 auto;
     padding: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
+}
+
+/* --- CARD LATERAL DE CUMPLIMENTACIÓN --- */
+.card-cumplimentacion {
+    width: 280px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    font-size: 11px;
+}
+
+.card-cumplimentacion h3 {
+    margin-bottom: 10px;
+    font-size: 13px;
+    border-bottom: 2px solid #008080;
+    padding-bottom: 4px;
+    color: #008080;
+}
+
+.form-group {
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    padding: 5px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.selector-socios-multiple {
+    width: 100%;
+    height: 160px;
+    padding: 4px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.btn-accion-cargar {
+    width: 100%;
+    background: #008080;
+    color: white;
+    border: none;
+    padding: 8px;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.btn-accion-cargar:hover {
+    background: #006666;
 }
 
 /* --- TABLA SUPERIOR (INTACTA Y ESTABLE) --- */
@@ -210,7 +287,7 @@ body.body-acta {
 }
 .sub-entrenador td { 
     border: 1px solid #000; 
-    height: 30px !important; /* El doble de altura (antes 15px) */
+    height: 30px !important; 
     font-size: 8.5px; 
     vertical-align: middle;
 }
@@ -234,6 +311,7 @@ body.body-acta {
 @media print {
     body.body-acta { background: none; }
     .no-print { display: none !important; }
+    .contenedor-principal-layout { margin: 0; justify-content: flex-start; }
     .acta-page { width: 100vw !important; height: 100vh !important; box-shadow: none; padding: 0; border: none; }
     @page { size: A4 landscape; margin: 0; }
 }
