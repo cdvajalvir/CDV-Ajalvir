@@ -93,29 +93,24 @@
                 </td>
             </tr>
 
-            <!-- CABECERA DE LA TABLA DE JUGADORES (Alineadas abajo) -->
+            <!-- CABECERA DE LA TABLA DE JUGADORES -->
             <tr class="tr-th-jugadores" style="height: 14px;">
                 <th class="th-n" rowspan="2"></th>
                 <th colspan="4" style="border: none;"></th>
-                <th colspan="3" class="th-tar">TARJETAS</th>
+                <th colspan="3" class="th-tar" style="font-size: 7.5px;">TARJETAS</th>
             </tr>
             <tr class="tr-th-subtarjetas">
                 <th class="th-jug">JUGADOR</th>
                 <th class="th-dor">DORSAL</th>
                 <th class="th-dni">DNI</th>
                 <th class="th-eda">EDAD</th>
-                <th>AMA</th>
-                <th>AMA</th>
-                <th>ROJ</th>
+                <th style="width: 5.5%;">AMA</th>
+                <th style="width: 5.5%;">AMA</th>
+                <th style="width: 5.5%;">ROJ</th>
                 <th colspan="2" class="rowspan-der-cell" rowspan="31">
-                    <!-- CONTENIDO DE LA COLUMNA DERECHA (Goles, Sustituciones, Comentarios) -->
+                    <!-- CONTENIDO DE LA COLUMNA DERECHA -->
                     <div class="panel-derecho-interno">
-                        <!-- Matriz de Goles -->
-                        <table class="sub-goles" id="matriz-goles">
-                            <!-- JS inyectará los goles -->
-                        </table>
-
-                        <!-- Sustituciones -->
+                        <table class="sub-goles" id="matriz-goles"></table>
                         <table class="sub-sustituciones">
                             <tr><th colspan="10">Sustituciones</th></tr>
                             <tr>
@@ -131,14 +126,10 @@
                                 <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                             </tr>
                         </table>
-
-                        <!-- Entrenador y Capitán -->
                         <table class="sub-entrenador">
                             <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
                             <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
                         </table>
-
-                        <!-- Comentarios (Ocupa todo el hueco hacia abajo) -->
                         <div class="sub-comentarios">
                             <strong><u>COMENTARIOS</u>:</strong>
                         </div>
