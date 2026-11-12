@@ -203,9 +203,22 @@ body.body-acta {
 .sub-sustituciones td, .sub-sustituciones th { border: 1px solid #000; text-align: center; height: 15px; font-size: 8px; }
 .s-lab { font-weight: bold; text-align: left !important; padding-left: 3px; }
 
-.sub-entrenador { width: 100%; border-collapse: collapse; margin-top: 2px; }
-.sub-entrenador td { border: 1px solid #000; height: 15px; font-size: 8.5px; }
-.e-lbl { font-weight: bold; width: 65px; background: #f9f9f9; }
+.sub-entrenador { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 2px; 
+}
+.sub-entrenador td { 
+    border: 1px solid #000; 
+    height: 30px !important; /* El doble de altura (antes 15px) */
+    font-size: 8.5px; 
+    vertical-align: middle;
+}
+.e-lbl { 
+    font-weight: bold; 
+    width: 65px; 
+    background: #f9f9f9; 
+}
 
 .sub-comentarios {
     flex-grow: 1;
