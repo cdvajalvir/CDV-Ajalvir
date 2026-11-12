@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     generarMatrizGoles();
     inicializarListenersControl();
     cargarSociosActivos();
+    cargarDatosConvocatoriaActiva();
 });
 
 // Función para verificar sesión y rol administrador
@@ -179,6 +180,57 @@ async function cargarSociosActivos() {
 
     } catch (error) {
         console.error("Error al cargar los socios desde la Edge Function:", error);
+    }
+}
+
+async function cargarDatosConvocatoriaActiva() {
+    try {
+        const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias');
+
+        if (error) throw error;
+
+        // Adaptamos según el formato de respuesta de la Edge Function
+        const listaConvocatorias = data?.data || (Array.isArray(data) ? data : []);
+
+        // Buscar la convocatoria oficial y activa
+        const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial");
+
+        if (!oficialActiva) {
+            console.warn("No se encontró ninguna convocatoria activa de tipo Oficial.");
+            return;
+        }
+
+        // 1. Campo LOCAL (según el lugar)
+        const campoLocal = document.getElementById('local'); // Asegúrate de que el ID coincide con tu HTML
+        if (campoLocal) {
+            if (oficialActiva.lugar === "Polideportivo Ajalvir") {
+                campoLocal.value = "LOCAL -- CDV Ajalvir";
+            } else {
+                campoLocal.value = "VISITANTE -- CDV Ajalvir";
+            }
+        }
+
+        // 2. Campo Sitio (contenido de lugar)
+        const campoSitio = document.getElementById('sitio'); // Asegúrate de que el ID coincide con tu HTML
+        if (campoSitio) {
+            campoSitio.value = oficialActiva.lugar || "";
+        }
+
+        // 3. Extraer Fecha y Horario del campo "hora" (ej: "22/11/26 - 09:30")
+        if (oficialActiva.hora) {
+            const partes = oficialActiva.hora.split(" - ");
+            const fechaExtraida = partes[0] ? partes[0].trim() : "";
+            const horaExtraida = partes[1] ? partes[1].trim() : "";
+
+            const campoFecha = document.getElementById('fecha'); // Asegúrate de que el ID coincide con tu HTML
+            if (campoFecha) campoFecha.value = fechaExtraida;
+
+            const campoHorario = document.getElementById('horario'); // Asegúrate de que el ID coincide con tu HTML
+            if (campoHorario) campoHorario.value = horaExtraida;
+        }
+
+    } catch (error) {
+        console.error("Error al obtener los datos de la convocatoria:", error);
     }
 }
 
