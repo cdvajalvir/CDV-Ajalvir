@@ -4,8 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function generarFilasJugadores() {
-    const tabla = document.querySelector(".acta-grid-maestra");
-    if (!tabla) return;
+    // Apuntamos al cuerpo de la tabla inferior de jugadores
+    const cuerpoJugadores = document.getElementById("cuerpo-jugadores");
+    if (!cuerpoJugadores) return;
 
     let htmlFilas = "";
     for (let i = 1; i <= 30; i++) {
@@ -22,8 +23,8 @@ function generarFilasJugadores() {
             </tr>
         `;
     }
-    // Insertamos las 30 filas después de las cabeceras
-    tabla.insertAdjacentHTML('beforeend', htmlFilas);
+    // Insertamos las 30 filas dentro del cuerpo de la tabla independiente
+    cuerpoJugadores.innerHTML = htmlFilas;
 }
 
 function generarMatrizGoles() {
