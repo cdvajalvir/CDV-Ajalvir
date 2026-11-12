@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/acta_partido.css">
     <style>
-        /* Ajuste para alinear el contenido principal respetando el tema global */
+        /* Contenedor adaptado para alinear el acta respetando el diseño global */
         .main-acta-container {
             padding-top: 2rem;
             padding-bottom: 3rem;
@@ -24,25 +24,25 @@
             margin-left: auto;
         }
         .btn-header-custom {
-            background-color: var(--color-primary, #008080);
-            color: white;
+            background-color: var(--yellow, #feda0a);
+            color: var(--blue-dark, #06162a);
             border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 900;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.4rem;
         }
         .btn-header-custom:hover {
             opacity: 0.9;
         }
     </style>
 </head>
-<body>
+<body class="body-acta">
 
     <!-- HEADER OFICIAL EXACTO AL RESTO DEL PROYECTO (OCULTO AL IMPRIMIR) -->
     <header class="site-header no-print">
@@ -267,27 +267,25 @@
 
     <!-- FOOTER OFICIAL EXACTO AL RESTO DEL PROYECTO (OCULTO AL IMPRIMIR) -->
     <footer class="site-footer no-print">
-        <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-                <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
-                <div class="footer-links" style="display: flex; gap: 0.75rem; align-items: center; margin: 0;">
-                    <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram">
-                        <i class="fa-brands fa-instagram"></i>
-                    </a>
-                    <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook">
-                        <i class="fa-brands fa-facebook-f"></i>
-                    </a>
-                    <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico">
-                        <i class="fa-solid fa-envelope"></i>
-                    </a>
-                </div>
-            </div>
+        <div class="container footer-grid">
             <div>
+                <p>© 2026 CD Veteranos Ajalvir</p>
+            </div>
+            <div class="footer-links">
+                <a href="https://www.instagram.com/cdveteranosajalvir?igsh=MXN6NDMxZmhhOTVlcQ%3D%3D" target="_blank" class="social-link instagram" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://facebook.com/people/CD-Veteranos-Ajalvir/100054549756163/" target="_blank" class="social-link facebook" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="mailto:cdve.ajalvir@gmail.com" class="social-link mail" aria-label="Correo electrónico">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
                 <a href="../pprivacidad.html" style="color: inherit; text-decoration: underline; font-size: 0.9rem; white-space: nowrap;">Política de privacidad</a>
             </div>
         </div>
-    </footer> 
-    
+    </footer>
+
     <!-- SCRIPTS -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/acta_partido.js"></script>
