@@ -299,9 +299,47 @@
 
 /* Impresión limpia del acta y panel lateral */
 @media print {
-    body.body-acta { background: none; }
-    .no-print { display: none !important; }
-    .contenedor-principal-layout { margin: 0; justify-content: flex-start; }
-    .acta-page { width: 100vw !important; height: 100vh !important; box-shadow: none; padding: 0; border: none; }
-    @page { size: A4 landscape; margin: 0; }
+    body.body-acta { 
+        background: none !important; 
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .no-print { 
+        display: none !important; 
+    }
+    
+    .main-acta-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+    }
+
+    .contenedor-principal-layout { 
+        margin: 0 !important; 
+        justify-content: flex-start !important; 
+        gap: 0 !important;
+    }
+
+    .acta-page { 
+        width: 100% !important; 
+        height: 100vh !important; 
+        max-height: 190mm !important; /* Limita la altura máxima al área imprimible A4 */
+        box-shadow: none !important; 
+        padding: 0 !important; 
+        border: none !important; 
+        margin: 0 !important;
+    }
+
+    /* Forzar al navegador a no generar saltos de página automáticos */
+    * {
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    @page { 
+        size: A4 landscape; 
+        margin: 5mm; /* Margen de seguridad mínimo de la impresora */
+    }
 }
