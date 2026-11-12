@@ -70,7 +70,11 @@ export async function cargarNavegacionDinamica() {
             renderizarMenuPaginaAdmin(contenedorNav, basePath);
         } else if (pathName.endsWith("directiva.html")) {
             renderizarMenuPaginaDirectiva(contenedorNav, rol, basePath);
+            
+        } else if (pathName.endsWith("acta_partido.html")) {
+            renderizarMenuPaginaActa(contenedorNav, rol, basePath);
         }
+
 
     } catch (err) {
         console.warn("Aviso en navegación:", err.message);
@@ -199,6 +203,13 @@ function renderizarMenuUnicoConvocatoria(contenedor, basePath) {
     contenedor.innerHTML = `
         <a href="socios.html">Área socios</a>
     `;
+}
+
+function renderizarMenuPaginaActa(contenedorNav, rol, basePath); {
+    contenedor.innerHTML = `
+        
+        <a href="${basePath}admin/administracion.html">Administración</a>
+    ;
 }
 
 function configurarBotonLogout(basePath) {
