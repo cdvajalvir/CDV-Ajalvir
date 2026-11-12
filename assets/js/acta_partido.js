@@ -180,25 +180,18 @@ async function cargarSociosActivos() {
 
 async function cargarDatosConvocatoriaActiva() {
     try {
-        console.log("-> Iniciando llamada a la Edge Function 'gestion-convocatorias'...");
         const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
             body: { action: 'cargar' }
         });
 
         if (error) throw error;
-
-        console.log("<- Respuesta completa de 'gestion-convocatorias':", data);
-
         // Adaptamos la respuesta de la Edge Function
         const listaConvocatorias = data?.data || (Array.isArray(data) ? data : []);
-        console.log("📋 Lista de convocatorias parseada:", listaConvocatorias);
 
         // Filtrar la convocatoria que cumple con activa === true y tipo_convocatoria === "Oficial"
-        const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial");
-        console.log("🎯 Convocatoria oficial activa encontrada:", oficialActiva);
+        const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial);
 
         if (!oficialActiva) {
-            console.warn("⚠️ No se encontró ninguna convocatoria activa de tipo Oficial.");
             return;
         }
 
@@ -215,7 +208,6 @@ async function cargarDatosConvocatoriaActiva() {
 
         if (inputLocal) inputLocal.value = textoLocal;
         if (valLocalBadge) valLocalBadge.textContent = textoLocal;
-        console.log("🏟️ Campo Local asignado:", textoLocal);
 
         // 2. Campo Sitio / Campo
         const inputSitio = document.getElementById('input-sitio');
@@ -223,11 +215,9 @@ async function cargarDatosConvocatoriaActiva() {
         
         if (inputSitio) inputSitio.value = oficialActiva.lugar || "";
         if (valSitio) valSitio.textContent = oficialActiva.lugar || "";
-        console.log("📍 Sitio asignado:", oficialActiva.lugar);
 
         // 3. Extraer Fecha y Horario del campo "hora" (Formato esperado: "22/11/26 - 09:30")
         if (oficialActiva.hora) {
-            console.log("⏰ Cadena 'hora' original a procesar:", oficialActiva.hora);
             const partes = oficialActiva.hora.split(" - ");
             const fechaExtraida = partes[0] ? partes[0].trim() : "";
             const horaExtraida = partes[1] ? partes[1].trim() : "";
@@ -250,15 +240,35 @@ async function cargarDatosConvocatoriaActiva() {
             const valHorario = document.getElementById('val-horario');
             if (inputHorario) inputHorario.value = horaExtraida;
             if (valHorario) valHorario.textContent = horaExtraida;
-
-            console.log(`📅 Fecha asignada (ISO: ${fechaIso}, Texto: ${fechaExtraida}) | ⌚ Horario asignado: ${horaExtraida}`);
         } else {
             console.warn("⚠️ La convocatoria activa no tiene definido el campo 'hora'.");
         }
 
+        // 4. Preseleccionar automáticamente los socios que han confirmado asistencia
+        if (oficialActiva.users && oficialActiva.users.length > 0) {
+            precargarSociosConfirmados(oficialActiva.users);
+
     } catch (error) {
         console.error("❌ Error crítico al obtener los datos de la convocatoria oficial:", error);
     }
+}
+
+function precargarSociosConfirmados(usuariosConfirmados) {
+    const selectSocios = document.getElementById('select-socios');
+    if (!selectSocios || !Array.isArray(usuariosConfirmados)) return;
+
+    // Extraer los IDs de los socios que están en la convocatoria oficial
+    const idsConfirmados = usuariosConfirmados.map(socio => socio.id);
+
+    // Recorrer las opciones del select múltiple y marcar las que coincidan
+    Array.from(selectSocios.options).forEach(option => {
+        // option.value contiene el id del socio (según lo configuramos al cargar la lista de socios)
+        if (idsConfirmados.includes(option.value)) {
+            option.selected = true; // Los deja seleccionados automáticamente
+        }
+    });
+
+    console.log(`✅ Se han preseleccionado ${idsConfirmados.length} jugadores confirmados en la convocatoria.`);
 }
 
 // Volcar los socios seleccionados en el selector múltiple a las filas del acta
