@@ -18,8 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     generarFilasJugadores();
     generarMatrizGoles();
     inicializarListenersControl();
-    cargarSociosActivos();
-    cargarDatosConvocatoriaActiva();
+    await cargarSociosActivos();
+    await cargarDatosConvocatoriaActiva();
 });
 
 // Función para verificar sesión y rol administrador
@@ -247,6 +247,8 @@ async function cargarDatosConvocatoriaActiva() {
         // 4. Preseleccionar automáticamente los socios que han confirmado asistencia
         if (oficialActiva.users && oficialActiva.users.length > 0) {
             precargarSociosConfirmados(oficialActiva.users);
+            // Volcar automáticamente los seleccionados a las filas del acta
+            volcarJugadoresSeleccionados();
         }
     } catch (error) {
         console.error("❌ Error crítico al obtener los datos de la convocatoria oficial:", error);
