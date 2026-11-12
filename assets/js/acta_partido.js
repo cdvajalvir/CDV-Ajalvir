@@ -189,7 +189,7 @@ async function cargarDatosConvocatoriaActiva() {
         const listaConvocatorias = data?.data || (Array.isArray(data) ? data : []);
 
         // Filtrar la convocatoria que cumple con activa === true y tipo_convocatoria === "Oficial"
-        const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial);
+        const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial");
 
         if (!oficialActiva) {
             return;
@@ -247,7 +247,7 @@ async function cargarDatosConvocatoriaActiva() {
         // 4. Preseleccionar automáticamente los socios que han confirmado asistencia
         if (oficialActiva.users && oficialActiva.users.length > 0) {
             precargarSociosConfirmados(oficialActiva.users);
-
+        }
     } catch (error) {
         console.error("❌ Error crítico al obtener los datos de la convocatoria oficial:", error);
     }
