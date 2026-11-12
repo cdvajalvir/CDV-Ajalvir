@@ -15,146 +15,192 @@
         <button onclick="window.print()" class="btn-imprimir">🖨️ Imprimir Acta</button>
     </div>
 
-    <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
-    <div class="acta-page">
+    <!-- CONTENEDOR GENERAL EN DOS COLUMNAS (ACTA + PANEL DE GESTIÓN) -->
+    <div class="contenedor-principal-layout">
 
-        <!-- ================= TABLA SUPERIOR (INDEPENDIENTE Y MODULAR) ================= -->
-        <table class="acta-tabla-superior">
-            <!-- LÍNEA 1: LOGO, CAMPEONATO / JUEGO Y TIEMPOS -->
-            <tr>
-                <td rowspan="4" class="c-logo">
-                    <img src="../assets/img/logo-liga-alcarria.png" alt="Logo" class="img-logo">
-                </td>
-                <td class="c-campeonato">
-                    Nombre del campeonato: "SUPERLIGA HENARES ALCARRIA" 26/27
-                </td>
-                <td class="c-juego">
-                    Juego: <span id="val-juego"></span>
-                </td>
-                <td rowspan="4" class="c-tiempos-container">
-                    <table class="sub-tabla-tiempos-sup">
-                        <tr>
-                            <td style="width: 44%; background: #f9f9f9;"></td>
-                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
-                            <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">1º Tiempo</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold;">2º Tiempo</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: bold; font-size: 7.5px;">Tiempo añadido</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+        <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
+        <div class="acta-page">
 
-            <!-- LÍNEA 2: CATEGORÍA Y FASE -->
-            <tr>
-                <td class="c-categoria">
-                    Categoría: <span id="val-categoria"></span>
-                </td>
-                <td class="c-fase">
-                    Fase: 1ª Fase
-                </td>
-            </tr>
+            <!-- ================= TABLA SUPERIOR (INDEPENDIENTE Y MODULAR) ================= -->
+            <table class="acta-tabla-superior">
+                <!-- LÍNEA 1: LOGO, CAMPEONATO / JUEGO Y TIEMPOS -->
+                <tr>
+                    <td rowspan="4" class="c-logo">
+                        <img src="../assets/img/logo-liga-alcarria.png" alt="Logo" class="img-logo">
+                    </td>
+                    <td class="c-campeonato">
+                        Nombre del campeonato: "SUPERLIGA HENARES ALCARRIA" 26/27
+                    </td>
+                    <td class="c-juego">
+                        Juego: <span id="val-juego"></span>
+                    </td>
+                    <td rowspan="4" class="c-tiempos-container">
+                        <table class="sub-tabla-tiempos-sup">
+                            <tr>
+                                <td style="width: 44%; background: #f9f9f9;"></td>
+                                <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Inicio</td>
+                                <td style="width: 28%; font-weight: bold; text-align: center; background: #f9f9f9;">Final</td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">1º Tiempo</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;">2º Tiempo</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold; font-size: 7.5px;">Tiempo añadido</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-            <!-- LÍNEA 3: ETIQUETA LOCAL -->
-            <tr>
-                <td colspan="2" class="c-local-row">
-                    <div class="badge-local">LOCAL</div>
-                </td>
-            </tr>
+                <!-- LÍNEA 2: CATEGORÍA Y FASE -->
+                <tr>
+                    <td class="c-categoria">
+                        Categoría: <span id="val-categoria"></span>
+                    </td>
+                    <td class="c-fase">
+                        Fase: <span id="val-fase">1ª Fase</span>
+                    </td>
+                </tr>
 
-            <!-- LÍNEA 4: SITIO, FECHA, HORARIO (TOTALMENTE INDEPENDIENTES) -->
-            <tr>
-                <td colspan="2" class="c-sitio-fecha-horario-wrapper" style="padding: 0; border: none;">
-                    <table style="width: 100%; border-collapse: collapse; height: 100%;">
-                        <tr>
-                            <td class="c-sitio">Sitio: <span id="val-sitio"></span></td>
-                            <td class="c-fecha">Fecha: <span id="val-fecha"></span></td>
-                            <td class="c-horario">Horario: <span id="val-horario"></span></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+                <!-- LÍNEA 3: ETIQUETA LOCAL -->
+                <tr>
+                    <td colspan="2" class="c-local-row">
+                        <div class="badge-local" id="val-local-badge">LOCAL</div>
+                    </td>
+                </tr>
 
-            <!-- LÍNEA 5: ARBITRAJE -->
-            <tr>
-                <td colspan="4" class="c-arbitraje">
-                    <strong>Arbitraje:</strong> <span id="val-arbitraje"></span>
-                </td>
-            </tr>
-        </table>
+                <!-- LÍNEA 4: SITIO, FECHA, HORARIO (TOTALMENTE INDEPENDIENTES) -->
+                <tr>
+                    <td colspan="2" class="c-sitio-fecha-horario-wrapper" style="padding: 0; border: none;">
+                        <table style="width: 100%; border-collapse: collapse; height: 100%;">
+                            <tr>
+                                <td class="c-sitio">Sitio: <span id="val-sitio"></span></td>
+                                <td class="c-fecha">Fecha: <span id="val-fecha"></span></td>
+                                <td class="c-horario">Horario: <span id="val-horario"></span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-        <!-- ================= BLOQUE INFERIOR (TABLA JUGADORES + PANEL DERECHO) ================= -->
-        <div class="contenedor-inferior">
-            <!-- Tabla de Jugadores a la izquierda -->
-            <table class="acta-tabla-jugadores" id="tabla-jugadores-master">
-                <thead>
-                    <tr class="tr-th-jugadores" style="height: 14px;">
-                        <th class="th-n" rowspan="2"></th>
-                        <th colspan="4" style="border: none;"></th>
-                        <th colspan="3" class="th-tar">TARJETAS</th>
-                    </tr>
-                    <tr class="tr-th-subtarjetas">
-                        <th class="th-jug">JUGADOR</th>
-                        <th class="th-dor">DORSAL</th>
-                        <th class="th-dni">DNI</th>
-                        <th class="th-eda">EDAD</th>
-                        <th class="th-t-col">AMA</th>
-                        <th class="th-t-col">AMA</th>
-                        <th class="th-t-col">ROJ</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpo-jugadores">
-                    <!-- Las 30 filas de jugadores se inyectarán mediante JS -->
-                </tbody>
+                <!-- LÍNEA 5: ARBITRAJE -->
+                <tr>
+                    <td colspan="4" class="c-arbitraje">
+                        <strong>Arbitraje:</strong> <span id="val-arbitraje"></span>
+                    </td>
+                </tr>
             </table>
 
-            <!-- Panel Derecho a la derecha (Goles, Sustituciones, Comentarios) -->
-            <div class="panel-derecho-interno">
-                <!-- Matriz de Goles -->
-                <table class="sub-goles" id="matriz-goles">
-                    <!-- JS inyectará los goles -->
+            <!-- ================= BLOQUE INFERIOR (TABLA JUGADORES + PANEL DERECHO) ================= -->
+            <div class="contenedor-inferior">
+                <!-- Tabla de Jugadores a la izquierda -->
+                <table class="acta-tabla-jugadores" id="tabla-jugadores-master">
+                    <thead>
+                        <tr class="tr-th-jugadores" style="height: 14px;">
+                            <th class="th-n" rowspan="2"></th>
+                            <th colspan="4" style="border: none;"></th>
+                            <th colspan="3" class="th-tar">TARJETAS</th>
+                        </tr>
+                        <tr class="tr-th-subtarjetas">
+                            <th class="th-jug">JUGADOR</th>
+                            <th class="th-dor">DORSAL</th>
+                            <th class="th-dni">DNI</th>
+                            <th class="th-eda">EDAD</th>
+                            <th class="th-t-col">AMA</th>
+                            <th class="th-t-col">AMA</th>
+                            <th class="th-t-col">ROJ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-jugadores">
+                        <!-- Las 30 filas de jugadores se inyectarán mediante JS -->
+                    </tbody>
                 </table>
 
-                <!-- Sustituciones -->
-                <table class="sub-sustituciones">
-                    <tr><th colspan="10">Sustituciones</th></tr>
-                    <tr>
-                        <td class="s-vacio"></td>
-                        <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
-                    </tr>
-                    <tr>
-                        <td class="s-lab">Entrado</td>
-                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                    <tr>
-                        <td class="s-lab">Salió</td>
-                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                </table>
+                <!-- Panel Derecho a la derecha (Goles, Sustituciones, Comentarios) -->
+                <div class="panel-derecho-interno">
+                    <!-- Matriz de Goles -->
+                    <table class="sub-goles" id="matriz-goles">
+                        <!-- JS inyectará los goles -->
+                    </table>
 
-                <!-- Entrenador y Capitán -->
-                <table class="sub-entrenador">
-                    <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
-                    <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
-                </table>
+                    <!-- Sustituciones -->
+                    <table class="sub-sustituciones">
+                        <tr><th colspan="10">Sustituciones</th></tr>
+                        <tr>
+                            <td class="s-vacio"></td>
+                            <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+                        </tr>
+                        <tr>
+                            <td class="s-lab">Entrado</td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                        <tr>
+                            <td class="s-lab">Salió</td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                    </table>
 
-                <!-- Comentarios -->
-                <div class="sub-comentarios">
-                    <strong><u>COMENTARIOS</u>:</strong>
+                    <!-- Entrenador y Capitán -->
+                    <table class="sub-entrenador">
+                        <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
+                        <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
+                    </table>
+
+                    <!-- Comentarios -->
+                    <div class="sub-comentarios">
+                        <strong><u>COMENTARIOS</u>:</strong>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        <!-- ================= CARD LATERAL DE CUMPLIMENTACIÓN (NO SE IMPRIME) ================= -->
+        <div class="no-print card-cumplimentacion">
+            <h3>Panel de Control del Acta</h3>
+            
+            <div class="form-group">
+                <label for="input-fase">Fase:</label>
+                <input type="text" id="input-fase" placeholder="Ej. 1ª Fase" value="1ª Fase">
+            </div>
+
+            <div class="form-group">
+                <label for="input-fecha">Fecha:</label>
+                <input type="date" id="input-fecha">
+            </div>
+
+            <div class="form-group">
+                <label for="input-horario">Horario:</label>
+                <input type="time" id="input-horario">
+            </div>
+
+            <div class="form-group">
+                <label for="input-sitio">Sitio / Campo:</label>
+                <input type="text" id="input-sitio" placeholder="Ej. Municipal Ajalvir">
+            </div>
+
+            <div class="form-group">
+                <label for="input-local">Equipo Local:</label>
+                <input type="text" id="input-local" placeholder="Nombre equipo local">
+            </div>
+
+            <hr style="margin: 12px 0; border: 0; border-top: 1px solid #ccc;">
+
+            <div class="form-group">
+                <label for="select-socios">Seleccionar Socios Activos:</label>
+                <select id="select-socios" multiple class="selector-socios-multiple">
+                    <!-- Opciones cargadas dinámicamente desde Supabase -->
+                </select>
+                <small style="color: #666; font-size: 8.5px; display: block; margin-top: 4px;">Selecciona los jugadores y pulsa el botón para alinearlos.</small>
+            </div>
+
+            <button id="btn-cargar-plantilla" class="btn-accion-cargar">Añadir Seleccionados al Acta</button>
         </div>
 
     </div>
