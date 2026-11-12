@@ -134,26 +134,19 @@ async function cargarSociosActivos() {
     if (!selectSocios) return;
 
     try {
+        // Pasamos la temporada exacta que la Edge Function espera para filtrar
         const { data, error } = await supabaseClient.functions.invoke('get-socios', {
-            body: { temporada: "26/27" }
+            body: { temporada: "26/27" } // Asegúrate de que este texto coincide exactamente con el guardado en la BD
         });
 
         if (error) throw error;
 
-        // 🔍 AÑADE ESTO PARA DEBUGEAR EN LA CONSOLA (F12)
-        console.log("Respuesta cruda de la Edge Function get-socios:", data);
-
-        // Dependiendo de cómo devuelva los datos la Edge Function:
-        // Opción A: Si la función devuelve directamente un array de socios:
-        // const socios = Array.isArray(data) ? data : (data?.data || data?.socios || []);
-        
-        // Opción B: Si devuelve un objeto con propiedad data:
         const socios = data?.data || [];
 
         selectSocios.innerHTML = "";
         
         if (socios.length === 0) {
-            console.warn("La Edge Function no devolvió ningún socio o el array está vacío.");
+            console.warn("La Edge Function devolvió 0 socios para esta temporada.");
             return;
         }
 
