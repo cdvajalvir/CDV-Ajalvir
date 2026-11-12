@@ -44,8 +44,8 @@
 </head>
 <body>
 
-    <!-- HEADER OFICIAL EXACTO AL RESTO DEL PROYECTO -->
-    <header class="site-header">
+    <!-- HEADER OFICIAL EXACTO AL RESTO DEL PROYECTO (OCULTO AL IMPRIMIR) -->
+    <header class="site-header no-print">
         <nav class="navbar container" style="display: flex; align-items: center; width: 100%;">
             <a class="brand" href="../index.html">
                 <span class="brand-logo">
@@ -55,7 +55,7 @@
             </a>
             
             <!-- Botones de Volver e Imprimir integrados a la derecha del header -->
-            <div class="header-acta-actions no-print">
+            <div class="header-acta-actions">
                 <a href="#" id="btn-volver-atras" class="btn-header-custom">
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </a>
@@ -265,8 +265,8 @@
 
     </main>
 
-    <!-- FOOTER OFICIAL EXACTO AL RESTO DEL PROYECTO -->
-    <footer class="site-footer">
+    <!-- FOOTER OFICIAL EXACTO AL RESTO DEL PROYECTO (OCULTO AL IMPRIMIR) -->
+    <footer class="site-footer no-print">
         <div class="container footer-grid" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
                 <p style="margin: 0;">© 2026 CD Veteranos Ajalvir</p>
@@ -287,7 +287,7 @@
             </div>
         </div>
     </footer>
-
+    
     <!-- SCRIPTS -->
     <script type="module" src="../assets/js/nav-auth.js"></script>
     <script type="module" src="../assets/js/acta_partido.js"></script>
