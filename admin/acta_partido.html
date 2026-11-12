@@ -17,7 +17,9 @@
 
     <!-- HOJA DIN A4 APAISADA CONTENEDORA -->
     <div class="acta-page">
-        <table class="acta-grid-maestra">
+
+        <!-- ================= TABLA SUPERIOR (INDEPENDIENTE) ================= -->
+        <table class="acta-tabla-superior">
             <!-- FILA 1: LOGO, CAMPEONATO, JUEGO Y TIEMPOS SUPERIORES -->
             <tr>
                 <td rowspan="3" class="c-logo">
@@ -92,63 +94,70 @@
                     <strong>Arbitraje:</strong> <span id="val-arbitraje"></span>
                 </td>
             </tr>
-
-            <!-- CABECERA DE LA TABLA DE JUGADORES (Alineación exacta original) -->
-            <tr class="tr-th-jugadores" style="height: 14px;">
-                <th class="th-n" rowspan="2"></th>
-                <th colspan="4" style="border: none;"></th>
-                <th colspan="3" class="th-tar">TARJETAS</th>
-                <th colspan="2" class="th-bloque-der-head" style="display:none;"></th>
-            </tr>
-            <tr class="tr-th-subtarjetas">
-                <th class="th-jug">JUGADOR</th>
-                <th class="th-dor">DORSAL</th>
-                <th class="th-dni">DNI</th>
-                <th class="th-eda">EDAD</th>
-                <th>AMA</th>
-                <th>AMA</th>
-                <th>ROJ</th>
-                <th colspan="2" class="rowspan-der-cell" rowspan="31">
-                    <!-- CONTENIDO DE LA COLUMNA DERECHA -->
-                    <div class="panel-derecho-interno">
-                        <!-- Matriz de Goles -->
-                        <table class="sub-goles" id="matriz-goles">
-                            <!-- JS inyectará los goles -->
-                        </table>
-
-                        <!-- Sustituciones -->
-                        <table class="sub-sustituciones">
-                            <tr><th colspan="10">Sustituciones</th></tr>
-                            <tr>
-                                <td class="s-vacio"></td>
-                                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
-                            </tr>
-                            <tr>
-                                <td class="s-lab">Entrado</td>
-                                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                            </tr>
-                            <tr>
-                                <td class="s-lab">Salió</td>
-                                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                            </tr>
-                        </table>
-
-                        <!-- Entrenador y Capitán -->
-                        <table class="sub-entrenador">
-                            <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
-                            <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
-                        </table>
-
-                        <!-- Comentarios -->
-                        <div class="sub-comentarios">
-                            <strong><u>COMENTARIOS</u>:</strong>
-                        </div>
-                    </div>
-                </th>
-            </tr>
-
-            <!-- LAS 30 FILAS DE JUGADORES SE INYECTAN MEDIANTE JS -->
         </table>
+
+        <!-- ================= BLOQUE INFERIOR (TABLA JUGADORES + PANEL DERECHO) ================= -->
+        <div class="contenedor-inferior">
+            <!-- Tabla de Jugadores a la izquierda -->
+            <table class="acta-tabla-jugadores" id="tabla-jugadores-master">
+                <thead>
+                    <tr class="tr-th-jugadores" style="height: 14px;">
+                        <th class="th-n" rowspan="2"></th>
+                        <th colspan="4" style="border: none;"></th>
+                        <th colspan="3" class="th-tar">TARJETAS</th>
+                    </tr>
+                    <tr class="tr-th-subtarjetas">
+                        <th class="th-jug">JUGADOR</th>
+                        <th class="th-dor">DORSAL</th>
+                        <th class="th-dni">DNI</th>
+                        <th class="th-eda">EDAD</th>
+                        <th class="th-t-col">AMA</th>
+                        <th class="th-t-col">AMA</th>
+                        <th class="th-t-col">ROJ</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo-jugadores">
+                    <!-- Las 30 filas de jugadores se inyectarán mediante JS -->
+                </tbody>
+            </table>
+
+            <!-- Panel Derecho a la derecha (Goles, Sustituciones, Comentarios) -->
+            <div class="panel-derecho-interno">
+                <!-- Matriz de Goles -->
+                <table class="sub-goles" id="matriz-goles">
+                    <!-- JS inyectará los goles -->
+                </table>
+
+                <!-- Sustituciones -->
+                <table class="sub-sustituciones">
+                    <tr><th colspan="10">Sustituciones</th></tr>
+                    <tr>
+                        <td class="s-vacio"></td>
+                        <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>
+                    </tr>
+                    <tr>
+                        <td class="s-lab">Entrado</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td class="s-lab">Salió</td>
+                        <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                </table>
+
+                <!-- Entrenador y Capitán -->
+                <table class="sub-entrenador">
+                    <tr><td class="e-lbl">Entrenador</td><td class="e-inp"></td></tr>
+                    <tr><td class="e-lbl">Capitán</td><td class="e-inp"></td></tr>
+                </table>
+
+                <!-- Comentarios -->
+                <div class="sub-comentarios">
+                    <strong><u>COMENTARIOS</u>:</strong>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script type="module" src="../assets/js/acta_partido.js"></script>
