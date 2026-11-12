@@ -134,11 +134,19 @@ body.body-acta {
 }
 
 .th-n { width: 22px; }
-.th-jug { width: 220px; }
+.th-jug { width: 240px; } /* Ensanchado para ganar espacio */
 .th-dor { width: 45px; }
-.th-dni { width: 75px; }
+.th-dni { width: 85px; } /* Ensanchado para ganar espacio */
 .th-eda { width: 35px; }
 .th-tar { width: 66px; }
+
+/* Forzamos un ancho idéntico a cada una de las 3 columnas de tarjetas */
+.tr-th-subtarjetas th:nth-child(5),
+.tr-th-subtarjetas th:nth-child(6),
+.tr-th-subtarjetas th:nth-child(7) {
+    width: 22px !important;
+    min-width: 22px !important;
+}
 
 .rowspan-der-cell {
     padding: 0;
