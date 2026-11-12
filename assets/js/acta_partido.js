@@ -140,17 +140,12 @@ async function cargarSociosActivos() {
         });
 
         if (error) throw error;
-
-        // 🔍 INSPECCIONA ESTO EN LA CONSOLA (F12)
-        console.log("Respuesta de get-socios con '2026/2027':", data);
-
         // Comprobamos si viene en data.data o directamente en data
         const socios = data?.data || (Array.isArray(data) ? data : []);
 
         selectSocios.innerHTML = "";
         
         if (socios.length === 0) {
-            console.warn("La función sigue devolviendo 0 socios. Revisa la consola.");
             return;
         }
 
@@ -189,10 +184,10 @@ async function cargarDatosConvocatoriaActiva() {
 
         if (error) throw error;
 
-        // Adaptamos según el formato de respuesta de la Edge Function
+        // Adaptamos la respuesta de la Edge Function
         const listaConvocatorias = data?.data || (Array.isArray(data) ? data : []);
 
-        // Buscar la convocatoria oficial y activa
+        // Filtrar la convocatoria que cumple con activa === true y tipo_convocatoria === "Oficial"
         const oficialActiva = listaConvocatorias.find(c => c.activa === true && c.tipo_convocatoria === "Oficial");
 
         if (!oficialActiva) {
@@ -200,37 +195,48 @@ async function cargarDatosConvocatoriaActiva() {
             return;
         }
 
-        // 1. Campo LOCAL (según el lugar)
-        const campoLocal = document.getElementById('local'); // Asegúrate de que el ID coincide con tu HTML
-        if (campoLocal) {
-            if (oficialActiva.lugar === "Polideportivo Ajalvir") {
-                campoLocal.value = "LOCAL -- CDV Ajalvir";
-            } else {
-                campoLocal.value = "VISITANTE -- CDV Ajalvir";
-            }
+        // 1. Campo LOCAL (Evaluación del lugar)
+        const inputLocal = document.getElementById('input-local');
+        const valLocalBadge = document.getElementById('val-local-badge');
+        
+        let textoLocal = "";
+        if (oficialActiva.lugar === "Polideportivo Ajalvir") {
+            textoLocal = "LOCAL -- CDV Ajalvir";
+        } else {
+            textoLocal = "VISITANTE -- CDV Ajalvir";
         }
 
-        // 2. Campo Sitio (contenido de lugar)
-        const campoSitio = document.getElementById('sitio'); // Asegúrate de que el ID coincide con tu HTML
-        if (campoSitio) {
-            campoSitio.value = oficialActiva.lugar || "";
-        }
+        if (inputLocal) inputLocal.value = textoLocal;
+        if (valLocalBadge) valLocalBadge.textContent = textoLocal;
 
-        // 3. Extraer Fecha y Horario del campo "hora" (ej: "22/11/26 - 09:30")
+        // 2. Campo Sitio / Campo
+        const inputSitio = document.getElementById('input-sitio');
+        const valSitio = document.getElementById('val-sitio');
+        
+        if (inputSitio) inputSitio.value = oficialActiva.lugar || "";
+        if (valSitio) valSitio.textContent = oficialActiva.lugar || "";
+
+        // 3. Extraer Fecha y Horario del campo "hora" (Formato esperado: "22/11/26 - 09:30")
         if (oficialActiva.hora) {
             const partes = oficialActiva.hora.split(" - ");
             const fechaExtraida = partes[0] ? partes[0].trim() : "";
             const horaExtraida = partes[1] ? partes[1].trim() : "";
 
-            const campoFecha = document.getElementById('fecha'); // Asegúrate de que el ID coincide con tu HTML
-            if (campoFecha) campoFecha.value = fechaExtraida;
+            // Asignar Fecha (input tipo date requiere formato YYYY-MM-DD, pero si viene en DD/MM/YY se puede volcar o adaptar)
+            const inputFecha = document.getElementById('input-fecha');
+            const valFecha = document.getElementById('val-fecha');
+            if (inputFecha) inputFecha.value = fechaExtraida; // O puedes mapearlo si usas formato estándar
+            if (valFecha) valFecha.textContent = fechaExtraida;
 
-            const campoHorario = document.getElementById('horario'); // Asegúrate de que el ID coincide con tu HTML
-            if (campoHorario) campoHorario.value = horaExtraida;
+            // Asignar Horario
+            const inputHorario = document.getElementById('input-horario');
+            const valHorario = document.getElementById('val-horario');
+            if (inputHorario) inputHorario.value = horaExtraida;
+            if (valHorario) valHorario.textContent = horaExtraida;
         }
 
     } catch (error) {
-        console.error("Error al obtener los datos de la convocatoria:", error);
+        console.error("Error al obtener los datos de la convocatoria oficial:", error);
     }
 }
 
