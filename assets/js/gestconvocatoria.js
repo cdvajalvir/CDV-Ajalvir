@@ -192,13 +192,20 @@ function renderizarHistorico(lista) {
 
     const temporadaSeleccionada = filtroTemporada ? filtroTemporada.value : null;
 
-    const historicas = lista.filter(c => {
-        if (c.activa) return false; // Las activas están arriba
-        if (temporadaSeleccionada && c.temporadaCalculada !== temporadaSeleccionada) {
-            return false;
-        }
-        return true;
-    });
+    const historicas = lista
+        .filter(c => {
+            if (c.activa) return false; // Las activas están arriba
+            if (temporadaSeleccionada && c.temporadaCalculada !== temporadaSeleccionada) {
+                return false;
+            }
+            return true;
+        })
+        .sort((a, b) => {
+            const diffFecha = parsearTimestampConvocatoria(b.hora) - parsearTimestampConvocatoria(a.hora);
+            if (diffFecha !== 0) return diffFecha;
+            // Desempate por id descendente si comparten fecha y hora
+            return (Number(b.id) || 0) - (Number(a.id) || 0);
+        });
 
     if (historicas.length === 0) {
         contenedor.innerHTML = `<p style="text-align: center; padding: 1rem; color: #94a3b8; font-size: 0.85rem;">No hay más convocatorias en el histórico para esta temporada.</p>`;
@@ -227,6 +234,37 @@ function renderizarHistorico(lista) {
 
         contenedor.appendChild(item);
     });
+}
+
+// Convierte "dd/mm/aa - hh:mm" (o "dd/mm/aaaa - hh:mm:ss") en timestamp numérico para ordenar
+function parsearTimestampConvocatoria(textoHora) {
+    if (!textoHora || typeof textoHora !== 'string') return 0;
+
+    const partesPrincipales = textoHora.split("-");
+    const parteFecha = (partesPrincipales[0] || "").trim();
+    const parteHora = partesPrincipales.slice(1).join("-").trim();
+
+    const matchFecha = parteFecha.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (!matchFecha) return 0;
+
+    const dia = parseInt(matchFecha[1], 10);
+    const mes = parseInt(matchFecha[2], 10) - 1;
+    let anio = parseInt(matchFecha[3], 10);
+    if (anio < 100) anio += 2000;
+
+    let horas = 0;
+    let minutos = 0;
+    let segundos = 0;
+
+    const matchHora = parteHora.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (matchHora) {
+        horas = parseInt(matchHora[1], 10);
+        minutos = parseInt(matchHora[2], 10);
+        segundos = matchHora[3] ? parseInt(matchHora[3], 10) : 0;
+    }
+
+    const fechaObj = new Date(anio, mes, dia, horas, minutos, segundos);
+    return isNaN(fechaObj.getTime()) ? 0 : fechaObj.getTime();
 }
 
 // Rellena los dos paneles laterales derechos con la Convocatoria 1 y la Convocatoria 2 activas
