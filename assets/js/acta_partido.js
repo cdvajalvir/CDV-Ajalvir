@@ -178,6 +178,22 @@ async function cargarSociosActivos() {
     }
 }
 
+function extraerNombreRival(textoConvocatoria, juegaEnCasa) {
+    if (!textoConvocatoria || typeof textoConvocatoria !== "string") return "";
+
+    const partes = textoConvocatoria.split(" - ").map(p => p.trim()).filter(Boolean);
+    if (partes.length < 2) return textoConvocatoria.trim();
+
+    const izquierda = partes[0];
+    const derecha = partes.slice(1).join(" - ");
+
+    if (juegaEnCasa) {
+        return derecha.toLowerCase().includes("ajalvir") ? izquierda : derecha;
+    }
+
+    return izquierda.toLowerCase().includes("ajalvir") ? derecha : izquierda;
+}
+
 async function cargarDatosConvocatoriaActiva() {
     try {
         const { data, error } = await supabaseClient.functions.invoke('gestion-convocatorias', {
@@ -195,16 +211,15 @@ async function cargarDatosConvocatoriaActiva() {
             return;
         }
 
-        // 1. Campo LOCAL (Evaluación del lugar)
+        // 1. Campo LOCAL (Evaluación del lugar y extracción del rival)
         const inputLocal = document.getElementById('input-local');
         const valLocalBadge = document.getElementById('val-local-badge');
-        
-        let textoLocal = "";
-        if (oficialActiva.lugar === "Polideportivo Ajalvir") {
-            textoLocal = "LOCAL -- CDV Ajalvir";
-        } else {
-            textoLocal = "VISITANTE -- CDV Ajalvir";
-        }
+        const juegaEnCasa = oficialActiva.lugar === "Polideportivo Ajalvir";
+        const nombreVisitante = extraerNombreRival(oficialActiva.convocatoria, juegaEnCasa);
+
+        const textoLocal = juegaEnCasa
+            ? `LOCAL -- CDV Ajalvir /****/ VISITANTE -- ${nombreVisitante}`
+            : `LOCAL -- ${nombreVisitante} /****/ VISITANTE -- CDV Ajalvir`;
 
         if (inputLocal) inputLocal.value = textoLocal;
         if (valLocalBadge) valLocalBadge.textContent = textoLocal;
