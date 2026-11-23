@@ -141,7 +141,14 @@ async function cargarSociosActivos() {
 
         if (error) throw error;
         // Comprobamos si viene en data.data o directamente en data
-        const socios = data?.data || (Array.isArray(data) ? data : []);
+        const socios = [...(data?.data || (Array.isArray(data) ? data : []))];
+
+        // Ordenar alfabéticamente por nombre (ignorando tildes y mayúsculas)
+        socios.sort((a, b) => {
+            const nombreA = (a.nombre || '').trim();
+            const nombreB = (b.nombre || '').trim();
+            return nombreA.localeCompare(nombreB, 'es', { sensitivity: 'base' });
+        });
 
         selectSocios.innerHTML = "";
         
@@ -164,12 +171,16 @@ async function cargarSociosActivos() {
                 }
             }
 
-            option.dataset.nombre = `${socio.nombre || ''} ${socio.apellido || ''}`.trim();
+            const nombre = (socio.nombre || '').trim();
+            const apellido = (socio.apellido || '').trim();
+
+            option.dataset.nombre = `${nombre} ${apellido}`.trim();
             option.dataset.dni = socio.dni || '';
             option.dataset.edad = edadCalculada;
             option.dataset.dorsal = socio.numero || '';
 
-            option.textContent = `${socio.apellido || ''}, ${socio.nombre || ''}`.trim();
+            // Mostrar como "Nombre, Apellido" (o solo "Nombre" si no tiene apellido)
+            option.textContent = apellido ? `${nombre}, ${apellido}` : nombre;
             selectSocios.appendChild(option);
         });
 
@@ -177,7 +188,6 @@ async function cargarSociosActivos() {
         console.error("Error al cargar los socios desde la Edge Function:", error);
     }
 }
-
 function extraerNombreRival(textoConvocatoria, juegaEnCasa) {
     if (!textoConvocatoria || typeof textoConvocatoria !== "string") return "";
 
